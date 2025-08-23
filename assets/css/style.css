@@ -1,0 +1,119 @@
+:root {
+    --primary: #C1121F;
+    --secondary: #212121;
+    --accent: #2F4366;
+    --light: #FEF0D5;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+body{
+    font-family: 'Poppins', 'sans-serif';
+    background-color: #f0f0f0;
+}
+
+a{
+    outline: none;
+    text-decoration: none;
+}
+
+.btn-custom{
+    margin-top: 3px;
+    display: inline-block;
+    padding: 6px 20px;
+    font-size: 15px;
+    color: #fff;
+    background-color: var(--primary);
+    border-radius: 80px;
+    cursor: pointer;
+    font-style: normal;
+
+    &:hover{
+        background: var(--light);
+        border:1px solid var(--primary);
+        color: var(--primary);
+    }
+}
+
+/* Navbar */
+.navbar{
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar-brand img {
+  max-height: 50px; 
+}
+
+.navbar,
+.offcanvas-header,
+.offcanvas-body {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+.navbar-nav .nav-link,
+.dropdown-menu .dropdown-item {
+  font-size: 0.9rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.navbar-nav .nav-link {
+    color: var(--secondary);
+
+    &:hover{
+        color: var(--primary);
+    }
+
+    &:active{
+        color: var(--primary);
+    }
+}
+
+.dropdown-menu .dropdown-item:hover{
+    background-color: var(--light);
+    color: var(--primary);
+
+    &:active{
+        background-color: var(--primary);
+        color: #fff;
+    }
+}
+
+/* Transisi hanya aktif di layar lebar (>=992px) */
+@media (min-width: 992px) {
+  .navbar .dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .navbar .dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+
+/* footer */
+footer .container{
+    font-size: smaller;
+    padding-top: 5px;
+}
