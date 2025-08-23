@@ -26,5 +26,32 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+</section>
+<!-- End of Hero Slider  -->
 
+<!-- Berita -->
+<section class="berita py-5" id="berita">
+  <div class="container-fluid px-5">
+    <h2 class="text-center fw-bold mb-4">Berita Terbaru</h2>
+    <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
+
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="card mb-5 shadow-lg border-0">
+          <div class="row g-0">
+            <div class="col-lg-6">
+              <img src="<?= base_url('assets/image/slider2.svg'); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita 1">
+            </div>
+            <div class="col-lg-6 d-flex align-items-center">
+              <div class="card-body p-5">
+                <h3 class="card-title fw-bold mb-3">Judul Berita</h3>
+                <p class="card-text fs-5">Deskripsi berita. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint adipisci, veniam modi suscipit quos explicabo vitae, nulla iure quidem, voluptate ipsa laborum! Eos provident tempora corrupti laborum quidem voluptate veniam.</p>
+                <a href="#" class="btn btn-custom btn-lg mt-3 px-4">Selengkapnya</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

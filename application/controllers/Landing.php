@@ -11,7 +11,8 @@ class Landing extends CI_Controller {
 
     public function index()
     {
-        $this->load->view('layouts/header');
+        $data['title'] = "Website Desa Blahbatuh";
+        $this->load->view('layouts/header', $data);
         $this->load->view('layouts/navbar');
         $this->load->view('landing/beranda');
         $this->load->view('layouts/footer');
