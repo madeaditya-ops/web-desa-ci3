@@ -60,3 +60,4 @@ $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
 
 
+$route['berita'] = 'Berita';

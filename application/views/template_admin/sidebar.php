@@ -36,8 +36,8 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html"> Data Berita</a>
-                <a class="collapse-item" href="cards.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('berita')?>"> Data Berita</a>
+                <a class="collapse-item" href="<?= site_url('berita/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
