@@ -33,7 +33,15 @@ class Auth extends CI_Controller {
                 'logged_in' => true
             ]);
 
-            redirect('dashboard');
+            if ($user->role === 'admin' || $user->role === 'kades') {
+                redirect('dashboard');
+            } 
+            elseif ($user->role === 'kadus') {
+                redirect('dashboard/kadus');
+            } 
+            else {
+                redirect('auth'); 
+            }
         } else {
             $this->session->set_flashdata('error', 'Username atau Password salah!');
             redirect('auth');
