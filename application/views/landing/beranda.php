@@ -32,10 +32,9 @@
 
 <!-- Berita -->
 <section class="berita py-5" id="berita">
-  <div class="container-fluid px-4">
+  <div class="container-fluid px-4 px-md-5">
     <h2 class="text-center fw-bold mb-4">Berita Terbaru</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
-
     <?php foreach ($berita as $item): ?>
     <!-- Card -->
     <div class="row justify-content-center">
@@ -62,7 +61,6 @@
         </div>
       </div>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -88,6 +86,27 @@
       </div>
     </div>
     <?php endforeach; ?>
+  </div>
+</section>
+<!-- End berita section -->
 
+<!-- Galeri -->
+<section class="galeri pb-5" id="galeri">
+  <div class="container-fluid px-4 px-md-5">
+    <h2 class="text-center fw-bold mb-4">Galeri</h2>
+    <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
+    <?php foreach ($galeri as $item): ?>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div class="col">
+            <div class="card h-100 shadow-sm">
+              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" class="card-img-top" alt="UMKM Desa Blahbatuh">
+              <div class="card-body">
+                <p class="caption fw-bold mb-1"><?= potong_caption($item['caption'], 35); ?></p>
+                <span class="badge2"><?=$item['created_at']?></span>
+              </div>
+            </div>
+          </div>
+        </div>
+    <?php endforeach; ?>
   </div>
 </section>

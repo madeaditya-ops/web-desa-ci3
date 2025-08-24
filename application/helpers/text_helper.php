@@ -15,3 +15,16 @@ if (!function_exists('potong_deskripsi_perkata')) {
         return $output . '...';
     }
 }
+
+function potong_caption($text, $maxLength = 100) {
+    $text = strip_tags($text);
+    if (strlen($text) <= $maxLength) return $text;
+
+    $words = explode(' ', $text);
+    $output = '';
+    foreach ($words as $word) {
+        if (strlen($output . ' ' . $word) > $maxLength) break;
+        $output .= ($output ? ' ' : '') . $word;
+    }
+    return $output;
+}

@@ -64,6 +64,8 @@ a{
     font-weight: 200;
 }
 
+
+
 /* Navbar */
 .navbar{
     background-color: #fff;
@@ -133,6 +135,11 @@ a{
   }
 }
 
+/* Galeri */
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
 
 /* footer */
 footer .container{

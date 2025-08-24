@@ -7,16 +7,17 @@ class Landing extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Berita_model');
-        
+        $this->load->model('Galeri_model');
     }
 
     public function index()
     {
         $data['title'] = "Website Desa Blahbatuh";
         $data['berita'] = $this->Berita_model->get_latest_berita();
-        $this->load->view('layouts/header', $data);
-        $this->load->view('layouts/navbar');
+        $data['galeri'] = $this->Galeri_model->get_latest_galeri();
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
         $this->load->view('landing/beranda', $data);
-        $this->load->view('layouts/footer');
+        $this->load->view('template/footer');
     }
 }
