@@ -1,3 +1,4 @@
+
 <!-- Hero Slider  -->
 <section class="slider">
     <div id="carouselExampleIndicators" class="carousel slide">
@@ -31,27 +32,62 @@
 
 <!-- Berita -->
 <section class="berita py-5" id="berita">
-  <div class="container-fluid px-5">
+  <div class="container-fluid px-4">
     <h2 class="text-center fw-bold mb-4">Berita Terbaru</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
 
+    <?php foreach ($berita as $item): ?>
+    <!-- Card -->
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="card mb-5 shadow-lg border-0">
+        <div class="card mb-5 shadow-sm border-0">
           <div class="row g-0">
             <div class="col-lg-6">
-              <img src="<?= base_url('assets/image/slider2.svg'); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita 1">
+              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-5">
-                <h3 class="card-title fw-bold mb-3">Judul Berita</h3>
-                <p class="card-text fs-5">Deskripsi berita. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint adipisci, veniam modi suscipit quos explicabo vitae, nulla iure quidem, voluptate ipsa laborum! Eos provident tempora corrupti laborum quidem voluptate veniam.</p>
-                <a href="#" class="btn btn-custom btn-lg mt-3 px-4">Selengkapnya</a>
+                <h4 class="card-title fw-bold mb-2"> <?=$item['judul']?> </h4>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                  <span class="badge1">Berita</span>
+                  <span class="badge2"> <?=$item['created_at']?> </span>
+                </div>
+                <p class="card-text"><?=potong_deskripsi_perkata($item['isi'], 250);?></p>
+                <button type="button" class="btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                  Selengkapnya
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <!-- Body -->
+          <div class="modal-body">
+            <div class="modal-img">
+              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" alt="Berita" class="img-fluid rounded w-100 h-100 object-fit-cover">
+            </div>
+            <div class="modal-subject mt-2">
+              <h3 class="modal-title mb-1" id="staticBackdropLabel"><?=$item['judul']?></h3>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge1">Berita</span>
+                <span class="badge2"><?=$item['created_at']?></span>
+              </div>
+              <p class="modal-desc"><?=$item['isi']?></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Keluar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php endforeach; ?>
+
   </div>
 </section>
