@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="bg-danger text-white text-center py-2 fixed-bottom">
+<footer class="bg-danger text-white text-center py-2">
     <div class="container">
         <p class="mb-1">&copy; 2025 Pemerintah Desa Blahbatuh</p>
         <p class="mb-1">Design by <strong>Jurusan Teknologi Informasi PNB</strong></p>
