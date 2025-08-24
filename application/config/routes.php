@@ -53,6 +53,7 @@ $route['default_controller'] = 'Landing';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] = 'Dashboard';
+$route['admin'] = 'Berita';
 
 $route['kadus'] = 'Kadus';
 

@@ -12,6 +12,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
+    <?php if ($this->session->userdata('role') == 'kades'): ?>
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" href="index.html">
@@ -129,12 +130,21 @@
             </div>
         </div>
     </li>
+    <?php endif;?>
 
-     <?php if ($this->session->userdata('role') == 'admin'): ?>
-    <li class="nav-item">
+    <?php if ($this->session->userdata('role') == 'admin'): ?>
+    <li class="nav-item active">
         <a class="nav-link" href="charts.html">
             <i class="fas fa-file-alt"></i>
                 <span>Surat</span></a>
+    </li>
+    <?php endif;?>
+
+    <?php if ($this->session->userdata('role') == 'kadus'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="charts.html">
+            <i class="fas fa-file-alt"></i>
+                <span>Surat Dusun</span></a>
     </li>
     <?php endif;?>
 
