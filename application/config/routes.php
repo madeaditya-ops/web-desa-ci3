@@ -53,6 +53,9 @@ $route['default_controller'] = 'Landing';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] = 'Dashboard';
+
+$route['kadus'] = 'Kadus';
+
 $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
 

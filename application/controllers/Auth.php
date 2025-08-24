@@ -30,6 +30,7 @@ class Auth extends CI_Controller {
                 'id_user'   => $user->id,
                 'username'  => $user->username,
                 'role'      => $user->role,
+                'dusun_id' => $user->dusun_id,
                 'logged_in' => true
             ]);
 
@@ -37,7 +38,7 @@ class Auth extends CI_Controller {
                 redirect('dashboard');
             } 
             elseif ($user->role === 'kadus') {
-                redirect('dashboard/kadus');
+                redirect('kadus');
             } 
             else {
                 redirect('auth'); 
