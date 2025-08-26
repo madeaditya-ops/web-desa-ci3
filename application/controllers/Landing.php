@@ -20,4 +20,22 @@ class Landing extends CI_Controller {
         $this->load->view('landing/beranda', $data);
         $this->load->view('template/footer');
     }
+
+    public function sejarah_desa()
+    {
+        $data['title'] = "Sejarah Desa Blahbatuh";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/sejarah_desa', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function visi_misi()
+    {
+        $data['title'] = "Visi Misi Desa Blahbatuh";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/visi_misi', $data);
+        $this->load->view('template/footer');
+    }
 }
