@@ -36,8 +36,8 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html"> Data Berita</a>
-                <a class="collapse-item" href="cards.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= base_url('berita/index'); ?>"> Data Berita</a>
+                <a class="collapse-item" href="<?= base_url('berita/create'); ?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -81,8 +81,8 @@
         </a>
         <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Surat</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= base_url('admin/daftar_surat'); ?>">Data Surat</a>
+                <a class="collapse-item" href="<?= base_url('admin/upload_template'); ?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -109,8 +109,8 @@
         </a>
         <div id="collapseDusun" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Users</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= base_url('dusun/index'); ?>">Data Dusun</a>
+                <a class="collapse-item" href="<?= base_url('dusun/tambah'); ?>">Tambah Data</a>
             </div>
         </div>
     </li>

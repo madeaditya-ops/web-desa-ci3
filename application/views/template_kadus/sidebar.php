@@ -19,6 +19,20 @@
             <span>Dashboard</span></a>
     </li>
 
+     <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-file-alt"></i>
+            <span>Surat</span>
+        </a>
+        <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= base_url('kadus/daftar_surat'); ?>">Daftar Surat</a>
+                <a class="collapse-item" href="<?= base_url('kadus/form_surat'); ?>">Form Surat</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
