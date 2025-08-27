@@ -136,7 +136,7 @@ class Berita extends CI_Controller {
         if ($berita) {
             // Hapus file gambar dari folder uploads jika ada
             if ($berita->gambar && file_exists('./uploads/berita/' . $berita->gambar)) {
-                unlink('./uploads/' . $berita->gambar);
+                unlink('./uploads/berita/' . $berita->gambar);
             }
             // Hapus data dari database
             $this->Berita_model->delete($id);
