@@ -30,20 +30,22 @@
   </div>
 
   <div class="container-fluid px-4 px-md-5">
-    <div class="row">
-      <div class="col-sm-3">
-        <div class="card aparat-card">
-          <div class="card-body text-center">
-            <img src="<?=base_url('upload/aparat/foto1.jpeg')?>" alt="Kepala Desa" class="aparat-photo">
-            <p class="aparat-nama">
-              <?= ucwords(strtolower("GEDE SATYA KUSUMA, S.H.")) ?>
-            </p>
-            <p class="aparat-jabatan">
-              <?= ucwords(strtolower("PERBEKEL BLAHBATUH")) ?>
-            </p>
+    <div class="row g-2 row-aparat">
+      <?php foreach ($aparatur as $item): ?>
+        <div class="col-sm-3">
+          <div class="card aparat-card mb-2">
+            <div class="card-body text-center card-aparat-body">
+              <img src="<?= base_url('uploads/aparatur/' . $item['foto']); ?>" alt="Kepala Desa" class="aparat-photo">
+              <p class="aparat-nama">
+                <?= ucwords(strtolower($item['nama'])) ?>
+              </p>
+              <p class="aparat-jabatan">
+                <?= ucwords(strtolower($item['jabatan'])) ?>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>

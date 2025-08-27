@@ -45,7 +45,7 @@
               <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover" alt="Berita">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
-              <div class="card-body p-5">
+              <div class="card-body p-4 p-md-5">
                 <h4 class="card-title fw-bold mb-2"> <?=$item['judul']?> </h4>
                 <div class="d-flex flex-wrap gap-2 mb-2">
                   <span class="badge1">Berita</span>

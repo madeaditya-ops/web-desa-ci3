@@ -212,34 +212,90 @@ a{
   margin: 0;
 }
 
+
+.row.g-2 .row-aparat {
+  row-gap: 1rem;
+  column-gap: 1rem;
+}
+
 .aparat-card {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
   margin-top: 1rem;
-  max-width: 230px;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+.aparat-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-aparat-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 15px;
 }
 
 .aparat-photo {
-  width: 100%;
-  height: auto;
+  width: 200px;
+  height: 250px;
   object-fit: cover;
-  display: block;
-  margin: 0.25rem auto;
-  border: 2px solid #dee2e6;
-  max-width: 180px;
+  border: 2px solid #ddd;
+  margin-bottom: 10px;
 }
+
 
 .aparat-nama {
   text-transform: capitalize;
   font-weight: bold;
-  font-size: 15px;
-  margin-bottom: 2px;
+  font-size: 1rem;
+  margin-bottom: 4px;
 }
 
 .aparat-jabatan {
   text-transform: capitalize;
-  font-size: 14px;
+  font-size: 0.9rem;
 }
+
+
+@media (max-width: 992px) and (min-width: 577px) {
+  .col-sm-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .aparat-card {
+    max-width: 300px;
+    margin: 10px auto;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .col-sm-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .aparat-card {
+    height: auto;
+    max-width: 250px; 
+    margin: 0 auto;
+    margin-top: 1rem; 
+    
+  }
+
+  .card-aparat-body {
+    height: auto;
+  }
+}
+
 
 
 /* footer */
