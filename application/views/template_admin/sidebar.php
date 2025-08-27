@@ -53,8 +53,8 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="utilities-animation.html">Data Aparatur</a>
-                <a class="collapse-item" href="utilities-other.html">Tampil Data</a>
+                <a class="collapse-item" href="<?= site_url('aparatur')?>">Data Aparatur</a>
+                <a class="collapse-item" href="<?= site_url('aparatur/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -68,8 +68,8 @@
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Galeri</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('galeri')?>">Data Galeri</a>
+                <a class="collapse-item" href="<?= site_url('galeri/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -110,8 +110,8 @@
         </a>
         <div id="collapseDusun" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Users</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('dusun')?>">Data Dusun</a>
+                <a class="collapse-item" href="<?= site_url('dusun/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
