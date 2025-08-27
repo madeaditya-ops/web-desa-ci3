@@ -67,3 +67,4 @@ $route['berita'] = 'Berita';
 $route['galeri'] = 'Galeri';
 $route['aparatur'] = 'Aparatur';
 $route['dusun'] = 'Dusun';
+$route['users'] = 'Users';

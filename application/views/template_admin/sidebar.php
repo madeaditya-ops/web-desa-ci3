@@ -125,8 +125,8 @@
         </a>
         <div id="collapseUsers" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Users</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('users')?>">Data Users</a>
+                <a class="collapse-item" href="<?= site_url('users/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -347,14 +347,7 @@
                             <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                             Profile
                         </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Settings
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Activity Log
-                        </a>
+
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

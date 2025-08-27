@@ -99,7 +99,7 @@ class Berita extends CI_Controller {
             $gambar = $old_data->gambar;
 
             if (!empty($_FILES['gambar']['name'])) {
-                $config['upload_path']   = './uploads/';
+                $config['upload_path']   = './uploads/berita/';
                 $config['allowed_types'] = 'jpg|png|jpeg';
                 $config['max_size']      = 2048;
                 $config['encrypt_name']  = TRUE;
@@ -135,8 +135,8 @@ class Berita extends CI_Controller {
 
         if ($berita) {
             // Hapus file gambar dari folder uploads jika ada
-            if ($berita->gambar && file_exists('./uploads/' . $berita->gambar)) {
-                unlink('./uploads/' . $berita->gambar);
+            if ($berita->gambar && file_exists('./uploads/berita/' . $berita->gambar)) {
+                unlink('./uploads/berita/' . $berita->gambar);
             }
             // Hapus data dari database
             $this->Berita_model->delete($id);
