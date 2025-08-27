@@ -135,6 +135,19 @@ a{
   }
 }
 
+/* Berita */
+/* .cover-img-container {
+  height: 380px;
+  overflow: hidden;
+} */
+
+.aspect-ratio-box {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+
+
 /* Galeri */
 .card-img-top {
   height: 200px;

@@ -81,9 +81,9 @@
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
+
 <!-- Leaflet Js -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
 <script>
 
     var map = L.map('map').setView([-8.5442, 115.3256], 16);
