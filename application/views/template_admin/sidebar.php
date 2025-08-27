@@ -12,6 +12,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
+    <?php if ($this->session->userdata('role') == 'kades'): ?>
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" href="index.html">
@@ -36,8 +37,8 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html"> Data Berita</a>
-                <a class="collapse-item" href="cards.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('berita')?>"> Data Berita</a>
+                <a class="collapse-item" href="<?= site_url('berita/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -52,8 +53,8 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="utilities-animation.html">Data Aparatur</a>
-                <a class="collapse-item" href="utilities-other.html">Tampil Data</a>
+                <a class="collapse-item" href="<?= site_url('aparatur')?>">Data Aparatur</a>
+                <a class="collapse-item" href="<?= site_url('aparatur/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -67,8 +68,8 @@
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Galeri</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('galeri')?>">Data Galeri</a>
+                <a class="collapse-item" href="<?= site_url('galeri/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -109,8 +110,8 @@
         </a>
         <div id="collapseDusun" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Users</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('dusun')?>">Data Dusun</a>
+                <a class="collapse-item" href="<?= site_url('dusun/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -129,12 +130,21 @@
             </div>
         </div>
     </li>
+    <?php endif;?>
 
-     <?php if ($this->session->userdata('role') == 'admin'): ?>
-    <li class="nav-item">
+    <?php if ($this->session->userdata('role') == 'admin'): ?>
+    <li class="nav-item active">
         <a class="nav-link" href="charts.html">
             <i class="fas fa-file-alt"></i>
                 <span>Surat</span></a>
+    </li>
+    <?php endif;?>
+
+    <?php if ($this->session->userdata('role') == 'kadus'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="charts.html">
+            <i class="fas fa-file-alt"></i>
+                <span>Surat Dusun</span></a>
     </li>
     <?php endif;?>
 
