@@ -29,8 +29,8 @@
               Profile Desa
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Sejarah Desa</a></li>
-              <li><a class="dropdown-item" href="#">Visi Misi</a></li>
+              <li><a class="dropdown-item" href="<?= site_url('landing/sejarah_desa'); ?>">Sejarah Desa</a></li>
+              <li><a class="dropdown-item" href="<?= site_url('landing/visi_misi'); ?>">Visi Misi</a></li>
               <li><a class="dropdown-item" href="#">Struktur Pemerintahan</a></li>
               <li><a class="dropdown-item" href="#">Peta Wilayah</a></li>
             </ul>
