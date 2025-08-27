@@ -32,10 +32,9 @@
 
 <!-- Berita -->
 <section class="berita py-5" id="berita">
-  <div class="container-fluid px-4">
+  <div class="container-fluid px-4 px-md-5">
     <h2 class="text-center fw-bold mb-4">Berita Terbaru</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
-
     <?php foreach ($berita as $item): ?>
     <!-- Card -->
     <div class="row justify-content-center">
@@ -43,7 +42,7 @@
         <div class="card mb-5 shadow-sm border-0">
           <div class="row g-0">
             <div class="col-lg-6">
-              <img src="<?= base_url('uploads/berita' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
+              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-5">
@@ -62,7 +61,6 @@
         </div>
       </div>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -70,7 +68,7 @@
           <!-- Body -->
           <div class="modal-body">
             <div class="modal-img">
-              <img src="<?= base_url('uploads/berita' . $item['gambar']); ?>" alt="Berita" class="img-fluid rounded w-100 h-100 object-fit-cover">
+              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" alt="Berita" class="img-fluid rounded w-100 h-100 object-fit-cover">
             </div>
             <div class="modal-subject mt-2">
               <h3 class="modal-title mb-1" id="staticBackdropLabel"><?=$item['judul']?></h3>
@@ -88,6 +86,49 @@
       </div>
     </div>
     <?php endforeach; ?>
-
   </div>
 </section>
+<!-- End berita section -->
+
+<!-- Galeri Foto-->
+<section class="galeri pb-5" id="galeri">
+  <div class="container-fluid px-4 px-md-5">
+    <h2 class="text-center fw-bold mb-4">Galeri Foto</h2>
+    <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
+    <?php foreach ($galeri as $item): ?>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div class="col">
+            <div class="card h-100 shadow-sm">
+              <img src="<?= base_url('uploads/galeri/' . $item['gambar']); ?>" class="card-img-top" alt="UMKM Desa Blahbatuh">
+              <div class="card-body">
+                <p class="caption fw-bold mb-1"><?= potong_caption($item['caption'], 35); ?></p>
+                <span class="badge2"><?=$item['created_at']?></span>
+              </div>
+            </div>
+          </div>
+        </div>
+    <?php endforeach; ?>
+  </div>
+</section>
+<!-- Galeri foto section end -->
+
+<!-- Galeri Video-->
+<section class="galeri pb-5" id="galeri">
+  <div class="container-fluid px-4 px-md-5">
+    <h2 class="text-center fw-bold mb-4">Galeri Video</h2>
+    <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+          <div class="ratio ratio-16x9">
+            <iframe src="https://www.youtube.com/embed/zZNcNLGc58Y" title="YouTube video" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="col">
+          <div class="ratio ratio-16x9">
+            <iframe src="https://www.youtube.com/embed/zZNcNLGc58Y" title="YouTube video" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+<!-- Galeri video section end -->

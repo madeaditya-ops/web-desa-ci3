@@ -60,17 +60,3 @@ $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
 
 
-$route['berita'] = 'Berita';
-
-// CRUD Dusun
-$route['dusun'] = 'dusun/index';
-$route['dusun/tambah'] = 'dusun/tambah';
-$route['dusun/edit/(:num)'] = 'dusun/edit/$1';
-$route['dusun/hapus/(:num)'] = 'dusun/hapus/$1';
-
-
-// ===== ROUTE TEMPLATE SURAT =====
-$route['admin/template'] = 'admin/upload_template';               // halaman form upload
-$route['admin/template/save'] = 'admin/save_template';            // proses simpan upload
-$route['admin/template/delete/(:num)'] = 'admin/delete_template/$1'; // hapus template by id
-$route['admin/template/edit/(:num)'] = 'admin/edit_template/$1';     // edit template
