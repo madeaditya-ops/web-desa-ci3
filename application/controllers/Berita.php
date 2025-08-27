@@ -22,14 +22,14 @@ class Berita extends CI_Controller {
         $data['berita'] = $this->Berita_model->get_all();
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/berita/index', $data);
+        $this->load->view('kades/berita/index', $data);
         $this->load->view('template_admin/footer');
     }
 
     public function create() {
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/berita/create');
+        $this->load->view('kades/berita/create');
         $this->load->view('template_admin/footer');
     }
 
@@ -83,7 +83,7 @@ class Berita extends CI_Controller {
         }
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/berita/edit', $data);
+        $this->load->view('kades/berita/edit', $data);
         $this->load->view('template_admin/footer');
     }
 
