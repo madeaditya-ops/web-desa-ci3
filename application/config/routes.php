@@ -64,3 +64,4 @@ $route['logout'] = 'Auth/logout';
 
 
 $route['berita'] = 'Berita';
+$route['galeri'] = 'Galeri';
