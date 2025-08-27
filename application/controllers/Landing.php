@@ -32,10 +32,19 @@ class Landing extends CI_Controller {
 
     public function visi_misi()
     {
-        $data['title'] = "Visi Misi Desa Blahbatuh";
+        $data['title'] = "Visi & Misi Desa Blahbatuh";
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/visi_misi', $data);
+        $this->load->view('template/footer');
+    }
+
+        public function struktur_pemerintahan()
+    {
+        $data['title'] = "Struktur Organisasi dan Tata Kerja";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/struktur_pemerintahan', $data);
         $this->load->view('template/footer');
     }
 }

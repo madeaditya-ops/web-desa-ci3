@@ -3,7 +3,7 @@
     <div class="row bg-dark-subtle px-4 px-md-5 py-3">
       <div class="col m-0 p-0">
         <div class="d-flex align-items-center">
-          <h4 class="fw-bold text-start m-0" style="color:var(--primary);">Visi & Misi Desa Blahbatuh</h4>
+          <h4 class="fw-bold text-start m-0" style="color:var(--primary);"><?=$title;?></h4>
         </div>
       </div>
     </div>

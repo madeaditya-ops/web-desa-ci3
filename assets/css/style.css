@@ -176,8 +176,57 @@ a{
 }
 
 
+/* Struktur pemerintahan */
+.section-title {
+  color: var(--primary);
+  font-weight: bold;
+  text-align: start;
+  margin: 0;
+}
 
+.struktur-img {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  margin: auto;
+}
 
+.section-subtitle {
+  color: var(--primary);
+  font-weight: bold;
+  text-align: start;
+  margin: 0;
+}
+
+.aparat-card {
+  margin-top: 1rem;
+  max-width: 230px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.aparat-photo {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  margin: 0.25rem auto;
+  border: 2px solid #dee2e6;
+  max-width: 180px;
+}
+
+.aparat-nama {
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.aparat-jabatan {
+  text-transform: capitalize;
+  font-size: 14px;
+}
 
 
 /* footer */
