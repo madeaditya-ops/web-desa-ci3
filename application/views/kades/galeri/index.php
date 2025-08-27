@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Data Galeri</title>
-</head>
-<body id="page-top">
     <div class="container-fluid">
 
         <h1 class="h3 mb-2 text-gray-800">Daftar Galeri</h1>
@@ -65,5 +59,3 @@
         </div>
 
     </div>
-</body>
-</html>

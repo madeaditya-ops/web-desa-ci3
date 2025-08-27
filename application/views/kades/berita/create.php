@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Tambah Berita</title>
-</head>
 <body id="page-top">
     <div class="container-fluid">
 
@@ -62,5 +57,3 @@
             nextSibling.innerText = fileName
         })
     </script>
-</body>
-</html>

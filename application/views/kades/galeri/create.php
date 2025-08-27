@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Tambah Foto Galeri</title>
-</head>
-<body id="page-top">
     <div class="container-fluid">
 
         <h1 class="h3 mb-4 text-gray-800">Tambah Foto Galeri Baru</h1>
@@ -56,5 +50,3 @@
             nextSibling.innerText = fileName
         })
     </script>
-</body>
-</html>
