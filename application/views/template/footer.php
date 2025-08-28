@@ -27,13 +27,13 @@
                 <p class="mb-0 small text-muted">(0361) 479419</p>
                 </div>
             </div>
-
+ 
             <!-- Info Email -->
             <div class="info-box mb-3 d-flex align-items-start gap-3">
                 <i class="bi bi-envelope fs-4 text-danger"></i>
                 <div>
                 <h6 class="mb-1 fw-semibold">Email</h6>
-                <p class="mb-0 small text-muted">desablahbatuh@gmail.com</p>
+                <p class="mb-0 small text-muted">desablahbatuhofc@gmail.com</p>
                 </div>
             </div>
         </div>
@@ -81,9 +81,9 @@
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
+
 <!-- Leaflet Js -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
 <script>
 
     var map = L.map('map').setView([-8.5442, 115.3256], 16);

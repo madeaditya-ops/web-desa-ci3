@@ -41,18 +41,18 @@
       <div class="col-12">
         <div class="card mb-5 shadow-sm border-0">
           <div class="row g-0">
-            <div class="col-lg-6">
-              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
+            <div class="col-lg-6 aspect-ratio-box">
+              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover" alt="Berita">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
-              <div class="card-body p-5">
+              <div class="card-body p-4 p-md-5">
                 <h4 class="card-title fw-bold mb-2"> <?=$item['judul']?> </h4>
                 <div class="d-flex flex-wrap gap-2 mb-2">
                   <span class="badge1">Berita</span>
                   <span class="badge2"> <?=$item['created_at']?> </span>
                 </div>
                 <p class="card-text"><?=potong_deskripsi_perkata($item['isi'], 250);?></p>
-                <button type="button" class="btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <button type="button" class="btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalBerita<?=$item['id_berita']?>">
                   Selengkapnya
                 </button>
               </div>
@@ -61,17 +61,18 @@
         </div>
       </div>
     </div>
+
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="modalBerita<?=$item['id_berita']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <!-- Body -->
           <div class="modal-body">
-            <div class="modal-img">
+            <div class="modal-img aspect-ratio-box">
               <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" alt="Berita" class="img-fluid rounded w-100 h-100 object-fit-cover">
             </div>
             <div class="modal-subject mt-2">
-              <h3 class="modal-title mb-1" id="staticBackdropLabel"><?=$item['judul']?></h3>
+              <h3 class="modal-title mb-2 fw-bold lh-sm" id="staticBackdropLabel"><?=$item['judul']?></h3>
               <div class="d-flex flex-wrap gap-2 mb-3">
                 <span class="badge1">Berita</span>
                 <span class="badge2"><?=$item['created_at']?></span>
@@ -85,7 +86,7 @@
         </div>
       </div>
     </div>
-    <?php endforeach; ?>
+  <?php endforeach; ?>
   </div>
 </section>
 <!-- End berita section -->
@@ -95,19 +96,21 @@
   <div class="container-fluid px-4 px-md-5">
     <h2 class="text-center fw-bold mb-4">Galeri Foto</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
-    <?php foreach ($galeri as $item): ?>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              <img src="<?= base_url('uploads/galeri/' . $item['gambar']); ?>" class="card-img-top" alt="UMKM Desa Blahbatuh">
-              <div class="card-body">
-                <p class="caption fw-bold mb-1"><?= potong_caption($item['caption'], 35); ?></p>
-                <span class="badge2"><?=$item['created_at']?></span>
-              </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <?php foreach ($galeri as $item): ?>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <img src="<?= base_url('uploads/galeri/' . $item['gambar']); ?>" class="card-img-top" alt="UMKM Desa Blahbatuh">
+            <div class="card-body">
+              <p class="caption fw-bold mb-1"><?= potong_caption($item['caption'], 35); ?></p>
+              <span class="badge2"><?= $item['created_at'] ?></span>
             </div>
           </div>
         </div>
-    <?php endforeach; ?>
+      <?php endforeach; ?>
+    </div>
+
   </div>
 </section>
 <!-- Galeri foto section end -->
