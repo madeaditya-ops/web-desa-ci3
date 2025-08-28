@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @property Berita_model $Berita_model
+ * @property Galeri_model $Galeri_model
+ * @property Aparatur_model $Aparatur_model
+ */
+
 class Landing extends CI_Controller {
 
     public function __construct()
@@ -8,6 +14,7 @@ class Landing extends CI_Controller {
         parent::__construct();
         $this->load->model('Berita_model');
         $this->load->model('Galeri_model');
+        $this->load->model('Aparatur_model');
     }
 
     public function index()
@@ -32,10 +39,20 @@ class Landing extends CI_Controller {
 
     public function visi_misi()
     {
-        $data['title'] = "Visi Misi Desa Blahbatuh";
+        $data['title'] = "Visi & Misi Desa Blahbatuh";
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/visi_misi', $data);
+        $this->load->view('template/footer');
+    }
+
+        public function struktur_pemerintahan()
+    {
+        $data['title'] = "Struktur Organisasi dan Tata Kerja";
+        $data['aparatur'] = $this->Aparatur_model->get_aparatur_for_view();
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/struktur_pemerintahan', $data);
         $this->load->view('template/footer');
     }
 }
