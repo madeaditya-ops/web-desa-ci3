@@ -42,7 +42,7 @@
         <div class="card mb-5 shadow-sm border-0">
           <div class="row g-0">
             <div class="col-lg-6">
-              <img src="<?= base_url('uploads/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
+              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-5">
