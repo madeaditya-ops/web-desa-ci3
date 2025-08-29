@@ -27,7 +27,7 @@
                         <tr>
                             <th style="width: 5%;">No</th>
                             <th>Nama Surat</th>
-                            <th>File Template</th>
+                            <!-- <th>File Template</th> -->
                             <th style="width: 25%;">Aksi</th> </tr>
                     </thead>
                     <tbody>
@@ -35,11 +35,11 @@
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= htmlspecialchars($template->nama_surat, ENT_QUOTES, 'UTF-8') ?></td>
-                            <td>
+                            <!-- <td>
                                 <a href="<?= base_url('uploads/template_surat/' . $template->file_template) ?>" target="_blank">
                                     <?= htmlspecialchars($template->file_template, ENT_QUOTES, 'UTF-8') ?>
                                 </a>
-                            </td>
+                            </td> -->
                             <td class="text-center">
                                 <a href="<?= site_url('kadus/gunakan/'.$template->id_template) ?>" class="btn btn-success btn-sm">
                                     <i class="fas fa-file-signature"></i> Buat Surat
