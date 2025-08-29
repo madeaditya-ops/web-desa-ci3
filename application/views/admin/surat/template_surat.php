@@ -55,7 +55,7 @@
                 <td><?= $t->nomor_surat ?></td>
                 <td><?= $t->nama_dusun ?? '-' ?></td>
                 <td>
-                    <a href="<?= base_url('uploads/template_surat/'.$t->file_template) ?>" target="_blank" class="btn btn-sm btn-info">Lihat</a>
+                    <a href="ms-word:ofe|u|<?= base_url('uploads/template_surat/'.$t->file_template) ?>"class="btn btn-sm btn-info">Lihat</a>
                     <a href="<?= base_url('uploads/template_surat/'.$t->file_template) ?>" download class="btn btn-sm btn-success">Download</a>
                 </td>
                 <td>
@@ -69,3 +69,4 @@
         </tbody>
     </table>
 </div>
+
