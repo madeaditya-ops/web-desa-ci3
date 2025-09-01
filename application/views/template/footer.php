@@ -39,7 +39,7 @@
         </div>
         <!-- Tabel Jam Kerja -->
         <div class="table-responsive mt-2">
-            <table class="table table-hover table-sm custom-table">
+            <table class="table table-hover table-sm custom-table text-center">
               <thead class="table-light">
                 <tr>
                   <th scope="col">No</th>
@@ -53,7 +53,7 @@
                 <tr><th scope="row">2</th><td>Selasa</td><td>08:00 WITA</td><td>16:00 WITA</td></tr>
                 <tr><th scope="row">3</th><td>Rabu</td><td>08:00 WITA</td><td>16:00 WITA</td></tr>
                 <tr><th scope="row">4</th><td>Kamis</td><td>08:00 WITA</td><td>16:00 WITA</td></tr>
-                <tr><th scope="row">5</th><td>Jumat</td><td>08:00 WITA</td><td>16:00 WITA</td></tr>
+                <tr><th scope="row">5</th><td>Jumat</td><td>08:00 WITA</td><td>14:00 WITA</td></tr>
               </tbody>
             </table>
         </div>
@@ -70,7 +70,7 @@
 </section>
 
 <!-- Footer -->
-<footer class="bg-danger text-white text-center py-2">
+<footer class="text-white text-center py-2" style="background-color: var(--primary);">
     <div class="container">
         <p class="mb-1">&copy; 2025 Pemerintah Desa Blahbatuh</p>
         <p class="mb-1">Design by <strong>Jurusan Teknologi Informasi PNB</strong></p>
@@ -86,21 +86,20 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 
-    var map = L.map('map').setView([-8.5442, 115.3256], 16);
+    var map = L.map('map').setView([-8.566260, 115.300647], 16);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    var marker = L.marker([-8.5442, 115.3256]).addTo(map);
+    var marker = L.marker([-8.566260, 115.300647]).addTo(map);
     marker.bindPopup(`
-      <strong>Desa Blahbatuh</strong><br>
+      <strong>Kantor Desa Blahbatuh</strong><br>
       <a href="https://maps.app.goo.gl/8TbpS7mWbyBNcYqY6" target="_blank">
         📍 Lihat di Google Maps
       </a>
     `).openPopup(); 
 </script>
-
 
 
 

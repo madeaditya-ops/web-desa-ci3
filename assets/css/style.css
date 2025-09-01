@@ -45,6 +45,7 @@ a{
 .badge1{
     padding: 3px 12px;
     font-size: 12px;
+    text-align: center;
     color: #fff;
     background-color: var(--primary);
     border-radius: 80px;
@@ -56,6 +57,7 @@ a{
 .badge2{
     padding: 3px 12px;
     font-size: 12px;
+    text-align: center;
     color: #fff;
     background-color: var(--accent);
     border-radius: 80px;
@@ -295,6 +297,20 @@ a{
     height: auto;
   }
 }
+
+/* Peraturan desa */
+.peraturan-table .btn-unduh{
+    background-color: var(--primary);
+    border: none;
+    color: #fff;
+}
+
+.peraturan-table .btn-lihat{
+    background-color: var(--accent);
+    border: none;
+    color: #fff;
+}
+
 
 
 

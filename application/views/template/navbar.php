@@ -37,7 +37,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Potensi Desa</a>
+            <a class="nav-link" href="<?= site_url('landing/potensi_desa'); ?>">Potensi Desa</a>
           </li>
 
           <!-- Informasi Publik Dropdown -->
@@ -46,7 +46,7 @@
               Informasi Publik
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Peraturan Desa</a></li>
+              <li><a class="dropdown-item" href="<?= site_url('landing/peraturan_desa'); ?>">Peraturan Desa</a></li>
               <li><a class="dropdown-item" href="#">APBDes</a></li>
             </ul>
           </li>

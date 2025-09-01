@@ -5,6 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Berita_model $Berita_model
  * @property Galeri_model $Galeri_model
  * @property Aparatur_model $Aparatur_model
+ * @property Peraturan_model $Peraturan_model
  */
 
 class Landing extends CI_Controller {
@@ -15,6 +16,7 @@ class Landing extends CI_Controller {
         $this->load->model('Berita_model');
         $this->load->model('Galeri_model');
         $this->load->model('Aparatur_model');
+        $this->load->model('Peraturan_model');
     }
 
     public function index()
@@ -53,6 +55,25 @@ class Landing extends CI_Controller {
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/struktur_pemerintahan', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function potensi_desa()
+    {
+        $data['title'] = "Potensi Desa Blahbatuh";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/potensi_desa', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function peraturan_desa()
+    {
+        $data['title'] = "Peraturan Desa Blahbatuh";
+        $data['peraturan'] = $this->Peraturan_model->get_all_peraturan();
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/peraturan_desa', $data);
         $this->load->view('template/footer');
     }
 }

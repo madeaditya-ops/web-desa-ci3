@@ -9,13 +9,13 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-        <img src="<?= base_url("assets/image/slider1.svg");?>" class="d-block w-100" alt="Slider 1">
+        <img src="<?= base_url("assets/image/slider4.svg");?>" class="d-block w-100" alt="Slider 1">
         </div>
         <div class="carousel-item">
-        <img src="<?= base_url("assets/image/slider2.svg");?>" class="d-block w-100" alt="Slider 2">
+        <img src="<?= base_url("assets/image/slider5.svg");?>" class="d-block w-100" alt="Slider 2">
         </div>
         <div class="carousel-item">
-        <img src="<?= base_url("assets/image/slider3.svg");?>" class="d-block w-100" alt="Slider 3">
+        <img src="<?= base_url("assets/image/slider6.svg");?>" class="d-block w-100" alt="Slider 3">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
