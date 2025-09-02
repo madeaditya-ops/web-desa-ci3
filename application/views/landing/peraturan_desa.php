@@ -1,8 +1,10 @@
 <section class="peraturan_desa" id="peraturan_desa">
   <div class="container-fluid">
-    <div class="row bg-light px-4 px-md-5 py-3 border-bottom">
-      <div class="col">
-        <h4 class="section-title"><?= $title; ?></h4>
+    <div class="row bg-dark-subtle px-4 px-md-5 py-3">
+      <div class="col m-0 p-0">
+        <div class="d-flex align-items-center">
+          <h4 class="fw-bold text-start m-0" style="color:var(--primary);"><?=$title;?></h4>
+        </div>
       </div>
     </div>
   </div>
@@ -11,7 +13,7 @@
     <div class="table-responsive mt-4 mb-2 peraturan-table">
       <p class="mb-1">Daftar peraturan desa yang dapat Anda unduh atau lihat secara langsung.</p>
       <table class="table table-bordered table-hover align-middle shadow-sm">
-        <thead class="table-primary text-center">
+        <thead class="table-dark text-center">
           <tr>
             <th scope="col" style="width: 5%;">No</th>
             <th scope="col">Nama File</th>

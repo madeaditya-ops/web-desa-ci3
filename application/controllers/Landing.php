@@ -6,6 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Galeri_model $Galeri_model
  * @property Aparatur_model $Aparatur_model
  * @property Peraturan_model $Peraturan_model
+ * @property Potensi_model $Potensi_model
  */
 
 class Landing extends CI_Controller {
@@ -17,6 +18,7 @@ class Landing extends CI_Controller {
         $this->load->model('Galeri_model');
         $this->load->model('Aparatur_model');
         $this->load->model('Peraturan_model');
+        $this->load->model('Potensi_model');
     }
 
     public function index()
@@ -61,6 +63,7 @@ class Landing extends CI_Controller {
     public function potensi_desa()
     {
         $data['title'] = "Potensi Desa Blahbatuh";
+        $data['potensi'] = $this->Potensi_model->get_all();
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/potensi_desa', $data);

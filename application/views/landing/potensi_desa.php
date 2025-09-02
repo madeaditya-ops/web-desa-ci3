@@ -9,18 +9,25 @@
     </div>
   </div>
 
+  
   <div class="container-fluid px-4 px-md-5">
     <div class="row row-cols-1 row-cols-md-3 g-4 py-4">
-      <div class="col">
+      <?php foreach ($potensi as $item): ?>
+      <div class="col">        
         <div class="card h-100">
-          <img src="<?=base_url('assets/image/pura_ageng.jpg')?>" class="card-img-top" alt="...">
+          <img src="<?=base_url('uploads/potensi/' .$item['gambar']);?>" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title fw-bold">Pura Ageng Blahbatuh</h5>
-            <a href="#" class="badge1">Cagar budaya</a>
-            <a href="#" class="badge2"><i class="bi bi-geo-alt" style="padding-right: 3px;"></i>Kunjungi</a>
+            <h5 class="card-title fw-bold"><?=$item['nama']?></h5>
+            <span class="badge1"><?=$item['kategori']?></span>
+            <?php if(!empty($item['lokasi'])): ?>
+              <a href="<?=$item['lokasi']?>" target="_blank" class="badge2">
+                <i class="bi bi-geo-alt" style="padding-right: 3px;"></i>Kunjungi
+              </a>
+            <?php endif; ?>
           </div>
         </div>
-      </div>      
+      </div>  
+      <?php endforeach; ?>    
     </div>
   </div>
 </section>
