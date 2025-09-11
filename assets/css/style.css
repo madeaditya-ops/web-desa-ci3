@@ -79,7 +79,7 @@ a{
 }
 
 .navbar-brand img {
-  max-height: 50px; 
+  max-height: 70px; 
 }
 
 .navbar,
@@ -135,6 +135,10 @@ a{
     visibility: visible;
     pointer-events: auto;
   }
+
+  /* .navbar .navbar-brand img{
+    max-height: 50px;
+  } */
 }
 
 /* Berita */

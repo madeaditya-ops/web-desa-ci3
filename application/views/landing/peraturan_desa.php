@@ -26,7 +26,7 @@
             <tr>
                 <td class="text-center"><?= $no++; ?></td>
                 <td><?= $item['judul']; ?></td>
-                <td class="text-center">
+                <td class="text-center d-grid gap-2 d-md-flex">
                 <a href="<?= base_url('uploads/peraturan/' . $item['file_peraturan']); ?>" class="btn btn-sm btn-unduh me-1" download>
                     <i class="bi bi-download"></i> Unduh
                 </a>
