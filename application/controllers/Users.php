@@ -54,12 +54,14 @@ class Users extends CI_Controller {
         if ($this->form_validation->run() == FALSE) {
             $this->create();
         } else {
+            $dusun_id = $this->input->post('dusun_id');
+
             $data = [
                 'nama'      => $this->input->post('nama'),
                 'username'  => $this->input->post('username'),
                 'password'  => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
                 'role'      => $this->input->post('role'),
-                'dusun_id'  => $this->input->post('dusun_id')
+                'dusun_id'  => empty($dusun_id) ? NULL : $dusun_id
             ];
 
             $this->User_model->insert($data);
@@ -104,13 +106,15 @@ class Users extends CI_Controller {
                 }
                 $password = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
             }
+            
+            $dusun_id = $this->input->post('dusun_id');
 
             $data = [
                 'nama'      => $this->input->post('nama'),
                 'username'  => $this->input->post('username'),
                 'password'  => $password,
                 'role'      => $this->input->post('role'),
-                'dusun_id'  => $this->input->post('dusun_id')
+                'dusun_id'  => empty($dusun_id) ? NULL : $dusun_id
             ];
 
             $this->User_model->update($id, $data);
@@ -122,12 +126,21 @@ class Users extends CI_Controller {
     public function delete($id) {
         $user = $this->User_model->get_user_with_dusun_by_id($id);
 
-        if ($user) {
-            $this->User_model->delete($id);
-            $this->session->set_flashdata('success', 'User berhasil dihapus!');
-        } else {
+        if (!$user) {
             $this->session->set_flashdata('error', 'Data user tidak ditemukan!');
+            redirect('users');
+            return;
         }
+
+        if ($user->role == 'kades') {
+            $this->session->set_flashdata('error', 'User dengan role Kades tidak dapat dihapus!');
+            redirect('users');
+            return;
+        }
+
+        $this->User_model->delete($id);
+        $this->session->set_flashdata('success', 'User berhasil dihapus!');
         redirect('users');
     }
+
 }

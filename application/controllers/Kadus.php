@@ -16,4 +16,5 @@ class Kadus extends CI_Controller {
         $this->load->view('kadus/dashboard');
         $this->load->view('template_admin/footer');
     }
+    
 }
