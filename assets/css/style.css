@@ -118,6 +118,12 @@ a{
     }
 }
 
+.navbar-nav .nav-item .active {
+  background-color: var(--primary);
+  color: var(--light);
+}
+
+
 /* Transisi hanya aktif di layar lebar (>=992px) */
 @media (min-width: 992px) {
   .navbar .dropdown-menu {

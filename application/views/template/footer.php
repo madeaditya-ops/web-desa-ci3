@@ -101,7 +101,8 @@
     `).openPopup(); 
 </script>
 
-
+<!-- javascript -->
+ <script src="<?= base_url('assets/js/script.js');?>"></script>
 
 
 </body>
