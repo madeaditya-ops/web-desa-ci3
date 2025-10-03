@@ -12,13 +12,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/style.css?v=1.2'); ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/style.css'); ?>">
 
     <!-- Icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+    
 </head>
 <body>
     

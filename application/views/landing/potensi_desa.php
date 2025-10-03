@@ -15,7 +15,7 @@
       <?php foreach ($potensi as $item): ?>
       <div class="col">        
         <div class="card h-100">
-          <img src="<?=base_url('uploads/potensi/' .$item['gambar']);?>" class="card-img-top" alt="potensi_desa" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
+          <img src="<?=base_url('uploads/potensi/' .$item['gambar']);?>" class="card-img-top img-potensi" alt="potensi_desa" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
           <div class="card-body">
             <h5 class="card-title fw-bold"><?=$item['nama']?></h5>
             <span class="badge1"><?=$item['kategori']?></span>
@@ -33,7 +33,7 @@
         </div>
       </div>  
       <!-- Modal -->
-      <div class="modal fade" id="modalPotensi<?=$item['id_potensi']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="modalPotensi<?=$item['id_potensi']?>" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <!-- Body -->
