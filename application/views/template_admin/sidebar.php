@@ -73,6 +73,20 @@
             </div>
         </div>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePotensi"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-seedling"></i>
+            <span>Potensi desa</span>
+        </a>
+        <div id="collapsePotensi" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('potensi')?>">Data Potensi</a>
+                <a class="collapse-item" href="<?= site_url('potensi/create')?>">Tambah Data</a>
+            </div>
+        </div>
+    </li>
     
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
