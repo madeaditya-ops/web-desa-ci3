@@ -39,10 +39,11 @@
     <!-- Card -->
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="card mb-5 shadow-sm border-0">
+        <div class="card mb-5 shadow-sm border-0 card-berita">
           <div class="row g-0">
             <div class="col-lg-6 aspect-ratio-box">
-              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover" alt="Berita">
+              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover img-berita" alt="Berita" 
+                data-bs-toggle="modal" data-bs-target="#modalBerita<?=$item['id_berita']?>">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-4 p-md-5">

@@ -118,6 +118,13 @@ a{
     }
 }
 
+.navbar-nav .nav-item .active {
+  background: none;
+  border-bottom: 2px solid var(--primary) ;
+  color: #000;
+}
+
+
 /* Transisi hanya aktif di layar lebar (>=992px) */
 @media (min-width: 992px) {
   .navbar .dropdown-menu {
@@ -142,6 +149,9 @@ a{
 }
 
 /* Berita */
+.img-berita{
+  cursor: pointer;
+}
 /* .cover-img-container {
   height: 380px;
   overflow: hidden;
@@ -313,6 +323,11 @@ a{
     background-color: var(--accent);
     border: none;
     color: #fff;
+}
+
+/* Potensi Desa */
+.img-potensi{
+  cursor: pointer;
 }
 
 

@@ -33,7 +33,9 @@
                 <i class="bi bi-envelope fs-4 text-danger"></i>
                 <div>
                 <h6 class="mb-1 fw-semibold">Email</h6>
-                <p class="mb-0 small text-muted">desablahbatuhofc@gmail.com</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=desablahbatuhofc@gmail.com" class="mb-0 small text-muted" target="_blank">
+                  desablahbatuhofc@gmail.com
+                </a>
                 </div>
             </div>
         </div>
@@ -101,7 +103,8 @@
     `).openPopup(); 
 </script>
 
-
+<!-- javascript -->
+ <script src="<?= base_url('assets/js/script.js');?>"></script>
 
 
 </body>
