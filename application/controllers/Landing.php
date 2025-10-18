@@ -59,6 +59,16 @@ class Landing extends CI_Controller {
         $this->load->view('landing/struktur_pemerintahan', $data);
         $this->load->view('template/footer');
     }
+        public function peta_wilayah()
+    {
+        $this->load->helper('map');
+        $data['lokasi_banjar'] = get_lokasi_banjar();
+        $data['title'] = "Peta Wilayah";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/peta_wilayah', $data);
+        $this->load->view('template/footer');
+    }
 
     public function potensi_desa()
     {
