@@ -3,14 +3,24 @@
     <h1 class="h3 mb-2 text-gray-800">Daftar Pengguna (User)</h1>
     <p class="mb-4">Manajemen data pengguna sistem.</p>
 
-    <?php if($this->session->flashdata('message')): ?>
+   <?php if($this->session->flashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?= $this->session->flashdata('message') ?>
+            <?= $this->session->flashdata('success') ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
     <?php endif; ?>
+
+    <?php if($this->session->flashdata('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('error') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
