@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
     <!-- Logo -->
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="<?= site_url('/'); ?>">
       <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
     </a>
 
@@ -23,7 +23,7 @@
 
           <!-- Beranda -->
           <li class="nav-item">
-            <a class="nav-link <?= ($this->uri->segment(1) == '' ? 'active' : '') ?>" aria-current="page" href="<?= site_url('/'); ?>">Beranda</a>
+            <a class="nav-link <?= ($this->router->class == 'Landing' ? 'active' : '') ?>" href="<?= site_url('/'); ?>">Beranda</a>
           </li>
 
           <!-- Profile Desa Dropdown -->
