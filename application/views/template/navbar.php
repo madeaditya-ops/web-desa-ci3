@@ -75,7 +75,7 @@
 
         <!-- Tombol Login -->
         <div class="d-flex">
-          <a href="<?= base_url('login'); ?>" class="btn btn-custom w-100" target="_blank">Login</a>
+          <a href="<?= base_url('login'); ?>" class="btn btn-custom w-100">Login</a>
         </div>
       </div>
     </div>
