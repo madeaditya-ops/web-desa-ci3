@@ -58,7 +58,7 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peraturan_desa' ? 'active' : '') ?>" href="<?= site_url('landing/peraturan_desa'); ?>">Peraturan Desa</a></li>
-              <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'apbdes' ? 'active' : '') ?>" href="#">APBDes</a></li>
+              <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'apbdes' ? 'active' : '') ?>" href="<?= site_url('landing/apbdes'); ?>">APBDes</a></li>
             </ul>
           </li>
 
