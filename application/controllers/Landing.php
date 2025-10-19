@@ -75,6 +75,13 @@ class Landing extends CI_Controller {
 
     public function potensi_desa()
     {
+        // $kategori = $this->input->get('kategori');
+        // if (!empty($kategori)) {
+        //     $data['potensi'] = $this->Potensi_model->get_by_kategori($kategori);
+        // } else {
+        //     $data['potensi'] = $this->Potensi_model->get_all();
+        // }
+
         $data['title'] = "Potensi Desa Blahbatuh";
         $data['potensi'] = $this->Potensi_model->get_all();
         $this->load->view('template/header', $data);

@@ -9,11 +9,22 @@
     </div>
   </div>
 
+  <div class="text-center my-3">
+    <button class="btn btn-sm btn-outline-danger filter-btn active" data-filter="all">Semua</button>
+    <?php 
+    $kategori_unik = array_unique(array_column($potensi, 'kategori'));
+    foreach ($kategori_unik as $kategori): ?>
+      <button class="btn btn-sm btn-outline-danger filter-btn" data-filter="<?=$kategori?>"><?=$kategori?></button>
+    <?php endforeach; ?>
+  </div>
+
+
+
   
   <div class="container-fluid px-4 px-md-5">
     <div class="row row-cols-1 row-cols-md-3 g-4 py-4">
       <?php foreach ($potensi as $item): ?>
-      <div class="col">        
+      <div class="col" data-category="<?=$item['kategori']?>">        
         <div class="card h-100">
           <img src="<?=base_url('uploads/potensi/' .$item['gambar']);?>" class="card-img-top img-potensi" alt="potensi_desa" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
           <div class="card-body">
@@ -64,5 +75,31 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".filter-btn");
+    const cards = document.querySelectorAll(".col[data-category]");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const filter = btn.getAttribute("data-filter");
+
+        cards.forEach(card => {
+          const category = card.getAttribute("data-category");
+          if (filter === "all" || category === filter) {
+            card.style.display = "";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+  });
+</script>
+
 
 

@@ -11,4 +11,9 @@ class Potensi_model extends CI_Model {
                         ->result_array();
     }
 
+    // public function get_by_kategori($kategori) {
+    //     $this->db->where('kategori', $kategori);
+    //     return $this->db->get('potensi')->result_array();
+    // }
+
 }
