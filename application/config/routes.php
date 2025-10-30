@@ -69,3 +69,4 @@ $route['aparatur'] = 'Aparatur';
 $route['dusun'] = 'Dusun';
 $route['users'] = 'Users';
 $route['potensi'] = 'Potensi';
+$route['peraturan'] = 'Peraturan';
