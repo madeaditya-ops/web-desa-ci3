@@ -70,3 +70,4 @@ $route['dusun'] = 'Dusun';
 $route['users'] = 'Users';
 $route['potensi'] = 'Potensi';
 $route['peraturan'] = 'Peraturan';
+$route['apbdes'] = 'Apbdes';
