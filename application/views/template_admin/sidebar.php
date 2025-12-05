@@ -96,8 +96,8 @@
         </a>
         <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Surat</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('surat')?>">Data Surat</a>
+                <a class="collapse-item" href="<?= site_url('Template_surat/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
