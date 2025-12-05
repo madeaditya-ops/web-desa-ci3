@@ -22,4 +22,12 @@ class Aparatur_model extends CI_Model {
     public function delete($id) {
         return $this->db->delete('aparatur', ['id_aparatur' => $id]);
     }
+
+    public function get_aparatur_for_view() {
+        return $this->db->select('*')
+                        ->from('aparatur')
+                        ->order_by('id_aparatur', 'ASC')
+                        ->get()
+                        ->result_array();
+    }
 }

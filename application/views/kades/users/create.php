@@ -41,7 +41,7 @@
                                 
                 <div class="form-group">
                     <label for="dusun_id">Dusun</label>
-                    <select name="dusun_id" id="dusun_id" class="form-control" required>
+                    <select name="dusun_id" id="dusun_id" class="form-control">
                         <option value="">-- Pilih Dusun --</option>
                         <?php foreach($dusun as $item): ?>
                             <option value="<?= $item->id_dusun ?>" <?= set_select('dusun_id', $item->id_dusun); ?>><?= $item->nama_dusun ?></option>

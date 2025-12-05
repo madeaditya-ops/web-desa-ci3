@@ -42,9 +42,16 @@ a{
     }
 }
 
+.btn-lihat{
+    background-color: var(--accent);
+    border: none;
+    color: #fff;
+}
+
 .badge1{
     padding: 3px 12px;
     font-size: 12px;
+    text-align: center;
     color: #fff;
     background-color: var(--primary);
     border-radius: 80px;
@@ -56,6 +63,7 @@ a{
 .badge2{
     padding: 3px 12px;
     font-size: 12px;
+    text-align: center;
     color: #fff;
     background-color: var(--accent);
     border-radius: 80px;
@@ -77,7 +85,7 @@ a{
 }
 
 .navbar-brand img {
-  max-height: 50px; 
+  max-height: 70px; 
 }
 
 .navbar,
@@ -116,6 +124,13 @@ a{
     }
 }
 
+.navbar-nav .nav-item .active {
+  background: none;
+  border-bottom: 2px solid var(--primary) ;
+  color: #000;
+}
+
+
 /* Transisi hanya aktif di layar lebar (>=992px) */
 @media (min-width: 992px) {
   .navbar .dropdown-menu {
@@ -133,7 +148,28 @@ a{
     visibility: visible;
     pointer-events: auto;
   }
+
+  /* .navbar .navbar-brand img{
+    max-height: 50px;
+  } */
 }
+
+/* Berita */
+.img-berita{
+  cursor: pointer;
+}
+/* .cover-img-container {
+  height: 380px;
+  overflow: hidden;
+} */
+
+.aspect-ratio-box {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+
+
 
 /* Galeri */
 .card-img-top {
@@ -173,6 +209,128 @@ a{
     .map-wrapper {
       padding-top: 2rem;
     }
+}
+
+
+/* Struktur pemerintahan */
+.section-title {
+  color: var(--primary);
+  font-weight: bold;
+  text-align: start;
+  margin: 0;
+}
+
+.struktur-img {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  margin: auto;
+}
+
+.section-subtitle {
+  color: var(--primary);
+  font-weight: bold;
+  text-align: start;
+  margin: 0;
+}
+
+
+.row.g-2 .row-aparat {
+  row-gap: 1rem;
+  column-gap: 1rem;
+}
+
+.aparat-card {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+  margin-top: 1rem;
+}
+
+.aparat-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-aparat-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 15px;
+}
+
+.aparat-photo {
+  width: 200px;
+  height: 250px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  margin-bottom: 10px;
+}
+
+
+.aparat-nama {
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.aparat-jabatan {
+  text-transform: capitalize;
+  font-size: 0.9rem;
+}
+
+
+@media (max-width: 992px) and (min-width: 577px) {
+  .col-sm-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .aparat-card {
+    max-width: 300px;
+    margin: 10px auto;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .col-sm-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .aparat-card {
+    height: auto;
+    max-width: 250px; 
+    margin: 0 auto;
+    margin-top: 1rem; 
+    
+  }
+
+  .card-aparat-body {
+    height: auto;
+  }
+}
+
+/* Peraturan desa */
+.peraturan-table .btn-unduh{
+    background-color: var(--primary);
+    border: none;
+    color: #fff;
+}
+
+
+
+/* Potensi Desa */
+.img-potensi{
+  cursor: pointer;
 }
 
 

@@ -36,7 +36,7 @@
 
                 <div class="form-group">
                     <label for="dusun_id">Dusun</label>
-                    <select name="dusun_id" id="dusun_id" class="form-control" required>
+                    <select name="dusun_id" id="dusun_id" class="form-control">
                         <option value="">-- Pilih Dusun --</option>
                         <?php foreach($dusun as $d): ?>
                             <option value="<?= $d->id_dusun ?>" 
