@@ -162,9 +162,19 @@
 
     <?php if ($this->session->userdata('role') == 'admin'): ?>
     <li class="nav-item active">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="<?= base_url('admin'); ?>">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('admin/daftar_surat'); ?>">
             <i class="fas fa-file-alt"></i>
                 <span>Surat</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('admin/arsip'); ?>">
+            <i class="fas fa-file-alt"></i>
+                <span>Arsip Surat</span></a>
     </li>
     <?php endif;?>
 

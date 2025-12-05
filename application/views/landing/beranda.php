@@ -41,14 +41,9 @@
       <div class="col-12">
         <div class="card mb-5 shadow-sm border-0 card-berita">
           <div class="row g-0">
-<<<<<<< HEAD
-            <div class="col-lg-6">
-              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Berita">
-=======
             <div class="col-lg-6 aspect-ratio-box">
               <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover img-berita" alt="Berita" 
                 data-bs-toggle="modal" data-bs-target="#modalBerita<?=$item['id_berita']?>">
->>>>>>> 0d36a349b646bdb140b5bec45680bb4d33a8702f
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-4 p-md-5">

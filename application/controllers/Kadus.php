@@ -1,7 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Memuat library PHPWord
+/**
+ * @property CI_Session $session
+ * @property CI_Input $input
+ * @property Template_surat_model $Template_surat_model
+ * @property Dusun_model $Dusun_model
+ */
+
 require FCPATH.'vendor/autoload.php';
 use PhpOffice\PhpWord\TemplateProcessor;
 
