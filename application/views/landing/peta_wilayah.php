@@ -70,7 +70,7 @@
     <div class="row">
       <div class="col">
         <div class="card border-0 rounded-0 shadow-sm p-3 mt-3">
-          <h5 class="fw-bold text-danger mb-3">Lokasi Kantor Desa</h5>
+          <h5 class="fw-bold text-danger mb-3">Lokasi Banjar Dinas</h5>
           <div id="map_lengkap" class="z-0 position-relative" style="height: 412px; border-radius: 0.5rem;"></div>
         </div>
       </div>

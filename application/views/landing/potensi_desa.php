@@ -63,6 +63,11 @@
                   <?php endif; ?>
                 </div>
                 <p class="modal-desc"><?=$item['deskripsi']?></p>
+                <div class="icon-sosmed mt-2">
+                <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-4 me-3 "></i></a>
+                <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-4 me-3 "></i></a>
+                <a href="https://www.youtube.com/@kantordesablahbatuh" target="_blank"><i class="bi bi-youtube fs-4 "></i></a>
+              </div>
               </div>
             </div>
             <div class="modal-footer">
