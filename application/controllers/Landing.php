@@ -7,6 +7,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Aparatur_model $Aparatur_model
  * @property Peraturan_model $Peraturan_model
  * @property Potensi_model $Potensi_model
+ * @property Apbdes_model $Apbdes_model
+ * @property CI_Input $input
  */
 
 class Landing extends CI_Controller {
@@ -19,6 +21,7 @@ class Landing extends CI_Controller {
         $this->load->model('Aparatur_model');
         $this->load->model('Peraturan_model');
         $this->load->model('Potensi_model');
+        $this->load->model('Apbdes_model');
     }
 
     public function index()
@@ -59,9 +62,26 @@ class Landing extends CI_Controller {
         $this->load->view('landing/struktur_pemerintahan', $data);
         $this->load->view('template/footer');
     }
+        public function peta_wilayah()
+    {
+        $this->load->helper('map');
+        $data['lokasi_banjar'] = get_lokasi_banjar();
+        $data['title'] = "Peta Wilayah";
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/peta_wilayah', $data);
+        $this->load->view('template/footer');
+    }
 
     public function potensi_desa()
     {
+        // $kategori = $this->input->get('kategori');
+        // if (!empty($kategori)) {
+        //     $data['potensi'] = $this->Potensi_model->get_by_kategori($kategori);
+        // } else {
+        //     $data['potensi'] = $this->Potensi_model->get_all();
+        // }
+
         $data['title'] = "Potensi Desa Blahbatuh";
         $data['potensi'] = $this->Potensi_model->get_all();
         $this->load->view('template/header', $data);
@@ -79,4 +99,21 @@ class Landing extends CI_Controller {
         $this->load->view('landing/peraturan_desa', $data);
         $this->load->view('template/footer');
     }
+    public function apbdes()
+    {
+
+        $tahun = $this->input->post('tahun');
+        $judul = $this->input->post('judul');
+        
+        $data['title'] = "APBDes Blahbatuh";
+        $data['dropdown_tahun'] = $this->Apbdes_model->get_tahun_dropdown('tahun');
+        $data['dropdown_judul'] = $this->Apbdes_model->get_judul_dropdown('judul');
+        $data['hasil'] = $this->Apbdes_model->get_apbdes_by_tahun_judul($tahun, $judul);
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/apbdes', $data);
+        $this->load->view('template/footer');
+    }
+
 }

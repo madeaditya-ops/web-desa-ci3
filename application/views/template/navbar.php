@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
     <!-- Logo -->
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="<?= site_url('/'); ?>">
       <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
     </a>
 
@@ -23,7 +23,7 @@
 
           <!-- Beranda -->
           <li class="nav-item">
-            <a class="nav-link <?= ($this->uri->segment(1) == '' ? 'active' : '') ?>" aria-current="page" href="<?= site_url('/'); ?>">Beranda</a>
+            <a class="nav-link <?= ($this->router->class == 'Landing' ? 'active' : '') ?>" href="<?= site_url('/'); ?>">Beranda</a>
           </li>
 
           <!-- Profile Desa Dropdown -->
@@ -39,7 +39,7 @@
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'sejarah_desa' ? 'active' : '') ?>" href="<?= site_url('landing/sejarah_desa'); ?>">Sejarah Desa</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'visi_misi' ? 'active' : '') ?>" href="<?= site_url('landing/visi_misi'); ?>">Visi Misi</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'struktur_pemerintahan' ? 'active' : '') ?>" href="<?= site_url('landing/struktur_pemerintahan'); ?>">Struktur Pemerintahan</a></li>
-            <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peta_wilayah' ? 'active' : '') ?>" href="#">Peta Wilayah</a></li>
+            <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peta_wilayah' ? 'active' : '') ?>" href="<?= site_url('landing/peta_wilayah'); ?>">Peta Wilayah</a></li>
           </ul>
         </li>
 
@@ -58,7 +58,7 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peraturan_desa' ? 'active' : '') ?>" href="<?= site_url('landing/peraturan_desa'); ?>">Peraturan Desa</a></li>
-              <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'apbdes' ? 'active' : '') ?>" href="#">APBDes</a></li>
+              <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'apbdes' ? 'active' : '') ?>" href="<?= site_url('landing/apbdes'); ?>">APBDes</a></li>
             </ul>
           </li>
 
@@ -75,7 +75,7 @@
 
         <!-- Tombol Login -->
         <div class="d-flex">
-          <a href="<?= base_url('login'); ?>" class="btn btn-custom w-100" target="_blank">Login</a>
+          <a href="<?= base_url('login'); ?>" class="btn btn-custom w-100">Login</a>
         </div>
       </div>
     </div>

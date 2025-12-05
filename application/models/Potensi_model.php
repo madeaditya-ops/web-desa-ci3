@@ -11,7 +11,7 @@ class Potensi_model extends CI_Model {
                         ->result_array();
     }
 
-    public function get_all_potensi() {
+     public function get_all_potensi() {
         return $this->db->order_by('id_potensi', 'DESC')->get('potensi')->result();
     }
 
@@ -29,6 +29,11 @@ class Potensi_model extends CI_Model {
 
     public function delete($id) {
         return $this->db->delete('potensi', ['id_potensi' => $id]);
+    }
+
+    public function get_by_kategori($kategori) {
+        $this->db->where('kategori', $kategori);
+        return $this->db->get('potensi')->result_array();
     }
 
 }

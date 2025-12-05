@@ -42,6 +42,12 @@ a{
     }
 }
 
+.btn-lihat{
+    background-color: var(--accent);
+    border: none;
+    color: #fff;
+}
+
 .badge1{
     padding: 3px 12px;
     font-size: 12px;
@@ -161,6 +167,7 @@ a{
   aspect-ratio: 16 / 9;
   overflow: hidden;
 }
+
 
 
 
@@ -319,16 +326,14 @@ a{
     color: #fff;
 }
 
-.peraturan-table .btn-lihat{
-    background-color: var(--accent);
-    border: none;
-    color: #fff;
-}
+
 
 /* Potensi Desa */
 .img-potensi{
   cursor: pointer;
 }
+
+
 
 
 

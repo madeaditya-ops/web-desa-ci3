@@ -79,6 +79,12 @@
                 <span class="badge2"><?=$item['created_at']?></span>
               </div>
               <p class="modal-desc"><?=$item['isi']?></p>
+              <div class="icon-sosmed mt-2">
+                <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-3 me-3"></i></a>
+                <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-3 me-3"></i></a>
+                <a href="https://www.youtube.com/@kantordesablahbatuh" target="_blank"><i class="bi bi-youtube fs-3"></i></a>
+              </div>
+
             </div>
           </div>
           <div class="modal-footer">
