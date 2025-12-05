@@ -9,13 +9,13 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-        <img src="<?= base_url("assets/image/slider1.svg");?>" class="d-block w-100" alt="Slider 1">
+        <img src="<?= base_url("assets/image/slider4.svg");?>" class="d-block w-100" alt="Slider 1">
         </div>
         <div class="carousel-item">
-        <img src="<?= base_url("assets/image/slider2.svg");?>" class="d-block w-100" alt="Slider 2">
+        <img src="<?= base_url("assets/image/slider5.svg");?>" class="d-block w-100" alt="Slider 2">
         </div>
         <div class="carousel-item">
-        <img src="<?= base_url("assets/image/slider3.svg");?>" class="d-block w-100" alt="Slider 3">
+        <img src="<?= base_url("assets/image/slider6.svg");?>" class="d-block w-100" alt="Slider 3">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -39,10 +39,11 @@
     <!-- Card -->
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="card mb-5 shadow-sm border-0">
+        <div class="card mb-5 shadow-sm border-0 card-berita">
           <div class="row g-0">
             <div class="col-lg-6 aspect-ratio-box">
-              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover" alt="Berita">
+              <img src="<?= base_url('uploads/berita/' . $item['gambar']); ?>" class="img-fluid rounded w-100 h-100 object-fit-cover img-berita" alt="Berita" 
+                data-bs-toggle="modal" data-bs-target="#modalBerita<?=$item['id_berita']?>">
             </div>
             <div class="col-lg-6 d-flex align-items-center">
               <div class="card-body p-4 p-md-5">
@@ -78,6 +79,12 @@
                 <span class="badge2"><?=$item['created_at']?></span>
               </div>
               <p class="modal-desc"><?=$item['isi']?></p>
+              <div class="icon-sosmed mt-2">
+                <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-3 me-3"></i></a>
+                <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-3 me-3"></i></a>
+                <a href="https://www.youtube.com/@kantordesablahbatuh" target="_blank"><i class="bi bi-youtube fs-3"></i></a>
+              </div>
+
             </div>
           </div>
           <div class="modal-footer">
