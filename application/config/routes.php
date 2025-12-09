@@ -71,3 +71,4 @@ $route['users'] = 'Users';
 $route['potensi'] = 'Potensi';
 $route['peraturan'] = 'Peraturan';
 $route['apbdes'] = 'Apbdes';
+$route['surat'] = 'Template_surat';

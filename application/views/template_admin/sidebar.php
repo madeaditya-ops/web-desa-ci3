@@ -96,8 +96,8 @@
         </a>
         <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="404.html">Data Surat</a>
-                <a class="collapse-item" href="blank.html">Tambah Data</a>
+                <a class="collapse-item" href="<?= site_url('surat')?>">Data Surat</a>
+                <a class="collapse-item" href="<?= site_url('Template_surat/create')?>">Tambah Data</a>
             </div>
         </div>
     </li>
@@ -162,9 +162,19 @@
 
     <?php if ($this->session->userdata('role') == 'admin'): ?>
     <li class="nav-item active">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="<?= base_url('admin'); ?>">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('admin/daftar_surat'); ?>">
             <i class="fas fa-file-alt"></i>
                 <span>Surat</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('admin/arsip'); ?>">
+            <i class="fas fa-file-alt"></i>
+                <span>Arsip Surat</span></a>
     </li>
     <?php endif;?>
 
