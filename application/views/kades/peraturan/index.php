@@ -51,7 +51,7 @@
                                 </a>
                             </td>
                             <td>
-                                <?= date('d F Y', strtotime($item->dibuat_tanggal)) ?>
+                                <?= date('d F Y', strtotime($item->created_at)) ?>
                             </td>
                             <td class="text-center">
                                 <a href="<?= site_url('peraturan/edit/'.$item->id_peraturan) ?>" class="btn btn-warning btn-sm">

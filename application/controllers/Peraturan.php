@@ -76,7 +76,7 @@ class Peraturan extends CI_Controller {
             $data = [
                 'judul'           => $this->input->post('judul'),
                 'file_peraturan'  => $file_peraturan,
-                'dibuat_tanggal'  => date('Y-m-d H:i:s') // Set tanggal hari ini
+                'created_at'  => date('Y-m-d H:i:s') // Set tanggal hari ini
             ];
 
             $this->Peraturan_model->insert($data);
