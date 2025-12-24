@@ -63,6 +63,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Informasi Batas Wilayah -->
+    <div class="row">
+        <div class="col-12">
+          <div class="card rounded-0 border-0 shadow-sm my-3 p-4 bg-light">
+            <h5 class="fw-bold text-danger mb-3">Batas Wilayah Desa</h5>
+            <h6 class="text-muted mb-3">Batas-Batas Wilayah Desa Blahbatuh</h6></h6>
+            <ul class="list-group list-group-flush mb-4">
+              <li class="list-group-item">Di Sebelah Utara : <strong>Desa Buruan</strong></li>
+              <li class="list-group-item">Di Sebelah Timur : <strong>Desa Belega</strong></li>
+              <li class="list-group-item">Di Sebelah Selatan : <strong>Desa Saba</strong></li>
+              <li class="list-group-item">Di Sebelah Barat : <strong>Desa Kemenuh (Kecamatan Sukawati)</strong></li>
+            </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Peta Interaktif -->

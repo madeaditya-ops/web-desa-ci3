@@ -1,3 +1,10 @@
+<style>
+  .text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+</style>
+
 <section class="potensi_desa" id="potensi_desa">
   <div class="container-fluid">
     <div class="row bg-dark-subtle px-4 px-md-5 py-3">
@@ -35,7 +42,7 @@
                 <i class="bi bi-geo-alt" style="padding-right: 3px;"></i>Kunjungi
               </a>
             <?php endif; ?>
-            <p class="card-text pt-2"><?=potong_deskripsi_perkata($item['deskripsi'], 100);?></p>
+            <p class="card-text pt-2 text-justify"><?=potong_deskripsi_perkata($item['deskripsi'], 100);?></p>
 
             <button type="button" class="btn-modal btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
                   Selengkapnya
@@ -62,7 +69,7 @@
                     </a>
                   <?php endif; ?>
                 </div>
-                <p class="modal-desc"><?=$item['deskripsi']?></p>
+                <p class="modal-desc text-justify"><?=$item['deskripsi']?></p>
                 <div class="icon-sosmed mt-2">
                 <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-4 me-3 "></i></a>
                 <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-4 me-3 "></i></a>

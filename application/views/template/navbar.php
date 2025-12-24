@@ -1,8 +1,251 @@
+<!-- <style>
+  @media (max-width: 991px) and (min-width: 577px) {
+  .navbar-brand img {
+    max-height: 65px;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.85rem;
+  }
+
+  .offcanvas {
+    width: 70% !important;
+  }
+}
+
+/* Mobile kecil (≤576px) */
+@media (max-width: 576px) {
+  .navbar {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .navbar-brand img {
+    max-height: 60px;
+  }
+
+  .navbar-nav .nav-link,
+  .dropdown-menu .dropdown-item {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .offcanvas {
+    width: 80% !important;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.2rem;
+  }
+
+  .navbar-toggler {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small mobile (≤480px) */
+@media (max-width: 480px) {
+  .navbar-brand img {
+    max-height: 60px;
+  }
+
+  .navbar-nav .nav-link,
+  .dropdown-menu .dropdown-item {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.3rem;
+  }
+
+  .offcanvas {
+    width: 90% !important;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.15rem;
+  }
+}
+
+/* Ultra small (iPhone 4 / 320px) */
+/* @media (max-width: 320px) {
+  .navbar-brand img {
+    max-height: 25px;
+  }
+
+  .navbar-nav .nav-link,
+  .dropdown-menu .dropdown-item {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.2rem;
+  }
+
+  .offcanvas {
+    width: 100% !important;
+  }
+
+  .navbar-nav {
+    flex-wrap: wrap;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.1rem;
+  }
+
+  .navbar-toggler {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+  }
+} */
+</style> -->
+<style>
+.navbar{
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+
+.navbar-brand img {
+  height: clamp(62px, 14vw, 76px);
+  width: auto;
+}
+
+
+.navbar,
+.offcanvas-header,
+.offcanvas-body {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+.navbar-nav .nav-link,
+.dropdown-menu .dropdown-item {
+  font-size: 0.9rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.navbar-nav .nav-link {
+    color: var(--secondary);
+
+    &:hover{
+        color: var(--primary);
+    }
+
+    &:active{
+        color: var(--primary);
+    }
+}
+
+.dropdown-menu .dropdown-item:hover{
+    background-color: var(--light);
+    color: var(--primary);
+
+    &:active{
+        background-color: var(--primary);
+        color: #fff;
+    }
+}
+
+.navbar-nav .nav-item .active {
+  background: none;
+  border-bottom: 2px solid var(--primary) ;
+  color: #000;
+}
+
+
+/* Transisi hanya aktif di layar lebar (>=992px) */
+@media (min-width: 992px) {
+  .navbar .dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .navbar .dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+}
+
+@media (max-width: 991px) and (min-width: 577px) {
+  /*.navbar-brand img {*/
+  /*  max-height: 65px;*/
+  /*}*/
+
+  .navbar-nav .nav-link {
+    font-size: 0.85rem;
+  }
+
+  .offcanvas {
+    width: 70% !important;
+  }
+}
+
+/* Mobile kecil (≤576px) */
+@media (max-width: 576px) {
+  .navbar {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  /*.navbar-brand img {*/
+  /*  max-height: 65px;*/
+  /*}*/
+
+  .navbar-nav .nav-link,
+  .dropdown-menu .dropdown-item {
+    font-size: 1rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .offcanvas {
+    width: 80% !important;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.2rem;
+  }
+
+  .navbar-toggler {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /*.navbar-brand img {*/
+  /*  max-height: 60px;*/
+  /*}*/
+
+  .navbar-nav .nav-link,
+  .dropdown-menu .dropdown-item {
+    font-size: 1rem;
+    padding: 0.25rem 0.3rem;
+  }
+
+  .offcanvas {
+    width: 85% !important;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.15rem;
+  }
+}
+</style>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
     <!-- Logo -->
-    <a class="navbar-brand" href="<?= site_url('/'); ?>">
-      <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
+    <a class="navbar-brand d-flex align-items-center" href="<?= site_url('/'); ?>">
+      <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid" >
     </a>
 
     <!-- Hamburger Menu -->

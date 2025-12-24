@@ -1,3 +1,10 @@
+<style>
+  .text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+</style>
+
 
 <!-- Hero Slider  -->
 <section class="slider">
@@ -52,7 +59,7 @@
                   <span class="badge1">Berita</span>
                   <span class="badge2"> <?=$item['created_at']?> </span>
                 </div>
-                <p class="card-text"><?=potong_deskripsi_perkata($item['isi'], 250);?></p>
+                <p class="card-text text-justify"><?=potong_deskripsi_perkata($item['isi'], 250);?></p>
                 <button type="button" class="btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalBerita<?=$item['id_berita']?>">
                   Selengkapnya
                 </button>
@@ -78,7 +85,7 @@
                 <span class="badge1">Berita</span>
                 <span class="badge2"><?=$item['created_at']?></span>
               </div>
-              <p class="modal-desc"><?=$item['isi']?></p>
+              <p class="modal-desc text-justify"><?=$item['isi']?></p>
               <div class="icon-sosmed mt-2">
                 <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-3 me-3"></i></a>
                 <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-3 me-3"></i></a>
@@ -142,3 +149,6 @@
   </div>
 </section>
 <!-- Galeri video section end -->
+
+
+

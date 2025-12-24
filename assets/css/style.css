@@ -75,7 +75,7 @@ a{
 
 
 /* Navbar */
-.navbar{
+/* .navbar{
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: sticky;
@@ -85,7 +85,7 @@ a{
 }
 
 .navbar-brand img {
-  max-height: 70px; 
+  max-height: clamp(48px, 7.5vw, 65px); 
 }
 
 .navbar,
@@ -147,12 +147,12 @@ a{
     transform: translateY(0);
     visibility: visible;
     pointer-events: auto;
-  }
-
+  } 
   /* .navbar .navbar-brand img{
     max-height: 50px;
   } */
-}
+} */
+
 
 /* Berita */
 .img-berita{
@@ -162,6 +162,12 @@ a{
   height: 380px;
   overflow: hidden;
 } */
+
+.text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
 
 .aspect-ratio-box {
   aspect-ratio: 16 / 9;

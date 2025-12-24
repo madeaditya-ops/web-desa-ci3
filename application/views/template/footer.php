@@ -13,7 +13,7 @@
                 <h6 class="mb-1 fw-semibold">Alamat</h6>
                 <p class="mb-0 small text-muted">
                     <a href="https://maps.app.goo.gl/8TbpS7mWbyBNcYqY6" target="_blank" class="text-decoration-none text-muted">
-                        Jl. Kebo Iwa No.1, Blahbatuh, Kec. Blahbatuh, Kabupaten Gianyar, Bali 80581
+                        Jl. Kebo Iwa No.2, Blahbatuh, Kec. Blahbatuh, Kabupaten Gianyar, Bali 80581
                     </a>
                 </p>
                 </div>
