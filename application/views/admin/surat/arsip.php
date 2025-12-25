@@ -25,7 +25,10 @@
 
                 <div class="mb-3">
                     <button type="submit" name="type" value="csv" class="btn btn-sm btn-success">
-                        <i class="fas fa-file-csv"></i> Download Laporan (CSV)
+                        <i class="fas fa-file-csv"></i> Download Rekapan (CSV)
+                    </button>
+                    <button type="submit" name="type" value="xlsx" class="btn btn-sm btn-success">
+                        <i class="fas fa-file-excel"></i> Download Rekapan (Excel)
                     </button>
                     <button type="submit" name="type" value="zip" class="btn btn-sm btn-primary">
                         <i class="fas fa-file-archive"></i> Download Berkas (.zip)
@@ -36,8 +39,8 @@
                     <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th style="width:30px;"><input type="checkbox" id="select_all"></th>
-                                <th style="width:40px;">#</th>
+
+                                <th style="width:40px;">No</th>
                                 <th>Nama Surat</th>
                                 <th>Nomor Surat</th>
                                 <th>Nama (Penerima)</th>
@@ -49,7 +52,6 @@
                         <tbody>
                             <?php $no=1; foreach($arsip as $a): ?>
                             <tr>
-                                <td><input type="checkbox" name="ids[]" value="<?= htmlspecialchars($a->id) ?>"></td>
                                 <td><?= $no++ ?></td>
                                 <td><?= htmlspecialchars($a->nama_surat ?? '-') ?></td>
                                 <td><?= htmlspecialchars($a->nomor_surat ?? '-') ?></td>
@@ -64,7 +66,7 @@
                                 <td><?= htmlspecialchars($a->created_at ?? '-') ?></td>
                                 <td>
                                     <?php if (!empty($a->filename) && file_exists(FCPATH.'uploads/surat/'.$a->filename)): ?>
-                                        <a href="<?= base_url('uploads/surat/'.rawurlencode($a->filename)) ?>" class="btn btn-sm btn-outline-primary" target="_blank" title="Download"><i class="fas fa-download"></i></a>
+                                        <a href="<?= site_url('admin/preview_surat/'.$a->id) ?>" class="btn btn-sm btn-info" title="Preview"><i class="fas fa-eye"></i></a>
                                     <?php else: ?>
                                         <span class="text-muted">-</span>
                                     <?php endif; ?>

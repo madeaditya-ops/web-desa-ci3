@@ -13,8 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use PhpOffice\PhpWord\IOFactory;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-
-use PhpOffice\PhpWord\TemplateProcessor;
+use PhpOffice\PhpWord\Shared\Html;
 
 
 
@@ -176,7 +175,9 @@ public function edit_surat($id)
     if ($this->input->post()) {
         $data_input = $this->input->post();
 
-        $new_filename = 'surat_' . time() . '.docx';
+        // Gunakan nama surat sebagai base filename, sanitize
+        $base_name = preg_replace('/[^A-Za-z0-9_\-]/', '_', $surat->nama_surat);
+        $new_filename = $base_name . '_' . time() . '.docx';
         $new_file = './uploads/surat/' . $new_filename;
 
         if (!copy($file_path, $new_file)) {
@@ -196,8 +197,14 @@ public function edit_surat($id)
 
                 // Alias khusus untuk beberapa field
                 $aliases = [
-                    'jenis_kelamin'     => ['jenis_kelamin','jenis kelamin','gender','jk','sex'],
-                    'status_perkawinan' => ['status_perkawinan','status perkawinan','perkawinan','status']
+                    'jenis_kelamin'     => ['jenis_kelamin','jenis kelamin','gender','jk','sex','kelamin'],
+                    'status_perkawinan' => ['status_perkawinan','status perkawinan','perkawinan','status'],
+                    'agama'             => ['agama','religion'],
+                    'tempat_lahir'      => ['tempat_lahir','tempat lahir','lahir_di'],
+                    'tanggal_lahir'     => ['tanggal_lahir','tanggal lahir','tgl_lahir','lahir_tanggal'],
+                    'pekerjaan'         => ['pekerjaan','job','occupation'],
+                    'alamat'            => ['alamat','address'],
+                    'nomor_surat'       => ['nomor_surat','nomor surat','no_surat','nomor']
                 ];
 
                 // Ambil nilai dari input dengan beberapa fallback
@@ -255,6 +262,20 @@ public function edit_surat($id)
                 'created_at'  => date('Y-m-d H:i:s')
             ];
             $this->Arsip_model->add($arsip_data);
+
+            // Convert DOCX to HTML for preview and save
+            try {
+                libxml_use_internal_errors(true);
+                $phpWord = \PhpOffice\PhpWord\IOFactory::load($new_file);
+                libxml_clear_errors();
+                $temp_html = tempnam(sys_get_temp_dir(), 'gen_') . '.html';
+                $phpWord->save($temp_html, 'HTML');
+                $html_content = file_get_contents($temp_html);
+                file_put_contents($new_file . '.html', $html_content);
+                @unlink($temp_html);
+            } catch (\Exception $e) {
+                // Ignore, HTML will be generated on demand if needed
+            }
 
             $this->session->set_flashdata('success_file', $new_filename);
             $this->session->set_flashdata('message', 'Surat berhasil dibuat!');
@@ -331,7 +352,9 @@ public function cetak_pdf($filename = null)
     $temp_html = tempnam(sys_get_temp_dir(), 'word_') . '.html';
     try {
         // Load dokumen Word
+        libxml_use_internal_errors(true); // Suppress XML warnings
         $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
+        libxml_clear_errors();
 
         // Simpan sementara ke HTML
         $phpWord->save($temp_html, 'HTML');
@@ -371,37 +394,11 @@ public function cetak_pdf($filename = null)
  */
 public function arsip()
 {
+    $from = $this->input->get('from');
+    $to = $this->input->get('to');
+
     $this->load->model('Arsip_model');
-    $this->load->model('Surat_model');
-
-    // Ambil filter dari GET (format YYYY-MM-DD)
-    $from_raw = $this->input->get('from');
-    $to_raw   = $this->input->get('to');
-
-    if ($from_raw && $to_raw) {
-        $from = date('Y-m-d 00:00:00', strtotime($from_raw));
-        $to   = date('Y-m-d 23:59:59', strtotime($to_raw));
-        $arsip = $this->Arsip_model->get_between($from, $to);
-    } else {
-        $arsip = $this->Arsip_model->get_all();
-    }
-
-    // Tambahkan nama template (nama_surat) ke setiap record arsip
-    foreach ($arsip as $idx => $a) {
-        $nama_surat = null;
-        if (!empty($a->id_template)) {
-            $surat = $this->Surat_model->get_by_id($a->id_template);
-            $nama_surat = $surat ? $surat->nama_surat : null;
-        }
-        $arsip[$idx]->nama_surat = $nama_surat ?: '-';
-        $arsip[$idx]->nomor_surat = !empty($a->nomor_surat) ? $a->nomor_surat : '-';
-        $arsip[$idx]->nama = !empty($a->nama) ? $a->nama : '-';
-        $arsip[$idx]->created_at = !empty($a->created_at) ? $a->created_at : '-';
-    }
-
-    $data['arsip'] = $arsip;
-    $data['filter_from'] = $from_raw;
-    $data['filter_to']   = $to_raw;
+    $data['arsip'] = $this->Arsip_model->get_between($from, $to) ?: []; // Pastikan array
 
     $this->load->view('template_admin/header');
     $this->load->view('template_admin/sidebar');
@@ -412,68 +409,170 @@ public function arsip()
 
 public function arsip_download()
 {
-    // input
-    $type = $this->input->post('type') ?? 'csv';
-    $ids  = $this->input->post('ids');
     $from = $this->input->post('from');
     $to   = $this->input->post('to');
+    $type = $this->input->post('type');
 
-    // pilih rows berdasarkan ids atau rentang tanggal atau semua
-    if (is_array($ids) && count($ids) > 0) {
-        $rows = $this->Arsip_model->get_by_ids($ids);
-    } elseif (!empty($from) && !empty($to)) {
-        $from_dt = date('Y-m-d 00:00:00', strtotime($from));
-        $to_dt   = date('Y-m-d 23:59:59', strtotime($to));
-        $rows = $this->Arsip_model->get_between($from_dt, $to_dt);
-    } else {
-        $rows = $this->Arsip_model->get_all();
+    // ==========================
+    // QUERY DATA ARSIP
+    // ==========================
+    $this->db->select('arsip_surat.*, template_surat.nama_surat');
+    $this->db->from('arsip_surat');
+    $this->db->join(
+        'template_surat',
+        'arsip_surat.id_template = template_surat.id_template',
+        'left'
+    );
+
+    if (!empty($from)) {
+        $this->db->where('DATE(arsip_surat.created_at) >=', $from);
     }
 
-    // augment nama_surat
-    foreach ($rows as $k => $r) {
-        $r->nama_surat = '-';
-        if (!empty($r->id_template)) {
-            $t = $this->Surat_model->get_by_id($r->id_template);
-            $r->nama_surat = $t ? $t->nama_surat : '-';
-        }
-        $rows[$k] = $r;
+    if (!empty($to)) {
+        $this->db->where('DATE(arsip_surat.created_at) <=', $to);
     }
 
+    $arsip = $this->db
+        ->order_by('arsip_surat.created_at', 'DESC')
+        ->get()
+        ->result();
+
+    if (!$arsip) {
+        $arsip = [];
+    }
+
+    // ==========================
+    // EXPORT CSV
+    // ==========================
     if ($type === 'csv') {
+
         $filename = 'laporan_arsip_' . date('Ymd_His') . '.csv';
+
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename='.$filename);
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
 
         $out = fopen('php://output', 'w');
-        fputcsv($out, ['ID','Filename','Nama Surat','Nomor Surat','Nama Penerima','Tanggal']);
-        foreach ($rows as $r) {
+        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
+
+        fputcsv($out, [
+            'No',
+            'Nama Surat',
+            'Nomor Surat',
+            'Nama Penerima',
+            'Nama File',
+            'Tanggal Dibuat'
+        ]);
+
+        $no = 1;
+        foreach ($arsip as $r) {
             fputcsv($out, [
-                $r->id,
-                $r->filename,
-                $r->nama_surat,
-                $r->nomor_surat ?? '',
-                $r->nama ?? '',
-                $r->created_at ?? ''
+                $no++,
+                $r->nama_surat ?? '-',
+                $r->nomor_surat ?? '-',
+                $r->nama ?? '-',
+                $r->filename ?? '-',
+                $r->created_at ?? '-'
             ]);
         }
+
         fclose($out);
         exit;
-    } else {
-        $zipname = 'arsip_surat_' . date('Ymd_His') . '.zip';
-        $zip = new ZipArchive();
-        $tmpZip = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipname;
-        if ($zip->open($tmpZip, ZipArchive::CREATE) !== TRUE) {
-            show_error('Gagal membuat zip');
+    }
+
+    // ==========================
+    // EXPORT EXCEL TANPA COMPOSER
+    // ==========================
+    elseif ($type === 'xlsx') {
+
+        $filename = 'rekapan_arsip_' . date('Ymd_His') . '.xls';
+
+        header("Content-Type: application/vnd.ms-excel; charset=utf-8");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        echo '<html><head><meta charset="UTF-8"></head><body>';
+        echo '<table border="1" cellspacing="0" cellpadding="5">';
+
+        // Judul
+        echo '<tr>';
+        echo '<th colspan="6" style="font-size:14px;font-weight:bold;text-align:center;">REKAPAN ARSIP SURAT</th>';
+        echo '</tr>';
+
+        // Periode
+        echo '<tr>';
+        echo '<td colspan="6">';
+        echo 'Periode: ' . (!empty($from) ? $from : '-') . ' s/d ' . (!empty($to) ? $to : '-');
+        echo '</td>';
+        echo '</tr>';
+
+        // Header tabel
+        echo '<tr style="font-weight:bold;background:#f0f0f0;text-align:center;">';
+        echo '<th>No</th>';
+        echo '<th>Nama Surat</th>';
+        echo '<th>Nomor Surat</th>';
+        echo '<th>Nama Penerima</th>';
+        echo '<th>Nama File</th>';
+        echo '<th>Tanggal Dibuat</th>';
+        echo '</tr>';
+
+        // Data
+        $no = 1;
+        foreach ($arsip as $a) {
+            echo '<tr>';
+            echo '<td align="center">'.$no++.'</td>';
+            echo '<td>'.htmlspecialchars($a->nama_surat ?? '-').'</td>';
+            echo '<td>'.htmlspecialchars($a->nomor_surat ?? '-').'</td>';
+            echo '<td>'.htmlspecialchars($a->nama ?? '-').'</td>';
+            echo '<td>'.htmlspecialchars($a->filename ?? '-').'</td>';
+            echo '<td>'.htmlspecialchars($a->created_at ?? '-').'</td>';
+            echo '</tr>';
         }
-        foreach ($rows as $r) {
+
+        if (count($arsip) === 0) {
+            echo '<tr><td colspan="6" align="center">Tidak ada data</td></tr>';
+        }
+
+        echo '</table>';
+        echo '</body></html>';
+        exit;
+    }
+
+    // ==========================
+    // EXPORT ZIP FILE SURAT
+    // ==========================
+    elseif ($type === 'zip') {
+
+        $zipname = 'arsip_surat_' . date('Ymd_His') . '.zip';
+        $tmpZip  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipname;
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpZip, ZipArchive::CREATE) !== TRUE) {
+            show_error('Gagal membuat file ZIP');
+        }
+
+        foreach ($arsip as $r) {
+            if (empty($r->filename)) continue;
+
             $file = FCPATH . 'uploads/surat/' . $r->filename;
             if (file_exists($file)) {
-                // safe nama surat untuk file dalam zip
-                $safe_title = preg_replace('/[^A-Za-z0-9_\-]+/', '_', trim($r->nama_surat ?? 'surat'));
-                $localname = date('Ymd_His', strtotime($r->created_at ?? date('Y-m-d H:i:s'))) . '_' . $safe_title . '_id' . $r->id . '_' . $r->filename;
+
+                $safe_title = preg_replace(
+                    '/[^A-Za-z0-9_\-]+/',
+                    '_',
+                    trim($r->nama_surat ?? 'surat')
+                );
+
+                $localname =
+                    date('Ymd_His', strtotime($r->created_at ?? date('Y-m-d H:i:s'))) .
+                    '_' . $safe_title .
+                    '_id' . $r->id .
+                    '_' . $r->filename;
+
                 $zip->addFile($file, $localname);
             }
         }
+
         $zip->close();
 
         header('Content-Type: application/zip');
@@ -483,7 +582,15 @@ public function arsip_download()
         @unlink($tmpZip);
         exit;
     }
+
+    // ==========================
+    // INVALID TYPE
+    // ==========================
+    else {
+        show_error('Tipe download tidak valid');
+    }
 }
+
 
     public function delete_surat($id)
     {
@@ -507,7 +614,9 @@ public function preview_template($id)
 
     // Load dan convert Word ke HTML untuk preview
     try {
+        libxml_use_internal_errors(true); // Suppress XML warnings
         $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
+        libxml_clear_errors();
         $temp_html = tempnam(sys_get_temp_dir(), 'preview_') . '.html';
         $phpWord->save($temp_html, 'HTML');
         $html_content = file_get_contents($temp_html);
@@ -528,70 +637,166 @@ public function preview_template($id)
 public function edit_template($id)
 {
     $this->load->model('Surat_model');
+    $this->load->model('Arsip_model');
     $surat = $this->Surat_model->get_by_id($id);
     
     if (!$surat) {
-        show_error('Template tidak ditemukan');
+        show_error('Template tidak ditemukan di database.');
     }
 
-    $file_path = FCPATH . 'uploads/template/' . $surat->file_template;
+    // Ambil arsip surat terbaru untuk template ini
+    $latest_arsip = $this->db->where('id_template', $id)->order_by('created_at', 'DESC')->limit(1)->get('arsip_surat')->row();
+    if (!$latest_arsip || empty($latest_arsip->filename)) {
+        $this->session->set_flashdata('error', 'Belum ada surat yang di-generate untuk template ini. Generate surat terlebih dahulu.');
+        redirect('admin/edit_surat/' . $id);
+        return;
+    }
+
+    $file_path = FCPATH . 'uploads/surat/' . $latest_arsip->filename;
+
+    // Periksa apakah folder ada, jika tidak buat
+    $upload_dir = dirname($file_path);
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0755, true);
+        $this->session->set_flashdata('message', 'Folder uploads/surat/ dibuat.');
+        redirect('admin/daftar_surat');
+        return;
+    }
+
     if (!file_exists($file_path)) {
-        show_error('File template tidak ditemukan');
+        show_error('File surat tidak ditemukan di: ' . htmlspecialchars($file_path) . '. Mungkin file telah dihapus.');
     }
 
-    // Jika ada POST (edit text), lakukan replace
+    // Jika ada POST (edit HTML), lakukan replace dengan WYSIWYG
     if ($this->input->post()) {
-        $old_text = $this->input->post('old_text');
-        $new_text = $this->input->post('new_text');
+        $edited_html = $this->input->post('edited_html');
 
-        if (!empty($old_text) && !empty($new_text)) {
+        if (!empty($edited_html)) {
             try {
-                // Baca XML dari docx
-                $zip = new ZipArchive();
-                $temp_file = $file_path . '.tmp';
-                copy($file_path, $temp_file);
-                
-                if ($zip->open($temp_file) === TRUE) {
-                    $xml = $zip->getFromName('word/document.xml');
-                    // Replace text (simple approach)
-                    $xml = str_replace($old_text, $new_text, $xml);
-                    $zip->addFromString('word/document.xml', $xml);
-                    $zip->close();
+                // Backup file lama
+                $backup_file = $file_path . '.bak';
+                if (file_exists($backup_file)) @unlink($backup_file);
+                copy($file_path, $backup_file);
 
-                    // Backup file lama
-                    $backup_file = $file_path . '.bak';
-                    if (file_exists($backup_file)) @unlink($backup_file);
-                    copy($file_path, $backup_file);
+                // Remove old file to avoid overwrite issues
+                if (file_exists($file_path)) @unlink($file_path);
 
-                    // Ganti dengan file baru
-                    copy($temp_file, $file_path);
-                    @unlink($temp_file);
+                // Use pandoc to convert HTML to DOCX with format preservation
+                $temp_html = tempnam(sys_get_temp_dir(), 'edit_html_') . '.html';
+                $temp_docx = tempnam(sys_get_temp_dir(), 'edit_docx_') . '.docx';
+                file_put_contents($temp_html, $edited_html);
 
-                    $this->session->set_flashdata('message', 'Template berhasil diperbarui!');
-                    redirect('admin/edit_template/' . $id);
+                $command = "C:\\laragon\\www\\web-desa-ci3\\pandoc\\pandoc-3.8.3\\pandoc.exe \"$temp_html\" -o \"$temp_docx\"";
+                exec($command, $output, $return_var);
+
+                if ($return_var === 0 && file_exists($temp_docx)) {
+                    copy($temp_docx, $file_path);
+                    $message = 'Surat berhasil diperbarui dengan format dipertahankan!';
+                } else {
+                    throw new Exception('Pandoc conversion failed. Output: ' . implode("\n", $output));
                 }
+
+                // Cleanup temp files
+                @unlink($temp_html);
+                @unlink($temp_docx);
+
+                // Also save HTML for preview
+                file_put_contents($file_path . '.html', $edited_html);
+
+                $this->session->set_flashdata('message', $message);
+                redirect('admin/edit_template/' . $id);
             } catch (\Exception $e) {
                 $this->session->set_flashdata('error', 'Gagal mengedit: ' . $e->getMessage());
             }
         }
     }
 
+    // For preview, use PhpWord to convert DOCX to HTML with better layout preservation
+    $html_file = $file_path . '.html';
+    if (file_exists($html_file)) {
+        $html_content = file_get_contents($html_file);
+    } else {
+        // Convert using PhpWord for accurate DOCX layout
+        try {
+            libxml_use_internal_errors(true);
+            $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
+            libxml_clear_errors();
+            $temp_html = tempnam(sys_get_temp_dir(), 'preview_') . '.html';
+            $phpWord->save($temp_html, 'HTML');
+            $html_content = file_get_contents($temp_html);
+            // Embed images as base64 to preserve layout
+            $html_content = $this->embedImagesInHtml($html_content, dirname($temp_html));
+            @unlink($temp_html);
+            // Save for future use
+            file_put_contents($html_file, $html_content);
+        } catch (\Exception $e) {
+            $html_content = '<p>Gagal memuat preview. File mungkin rusak: ' . htmlspecialchars($e->getMessage()) . '</p>';
+        }
+    }
+
+    $data['surat'] = $surat;
+    $data['html_content'] = $html_content;
+    $data['is_editing_generated'] = true; // flag untuk view
+
+    $this->load->view('template_admin/header');
+    $this->load->view('template_admin/sidebar');
+    $this->load->view('admin/surat/edit_template', $data);
+    $this->load->view('template_admin/footer');
+}
+
+public function preview_surat($arsip_id)
+{
+    $this->load->model('Arsip_model');
+    $arsip = $this->Arsip_model->get_by_id($arsip_id);
+    
+    if (!$arsip || empty($arsip->filename)) {
+        show_error('Arsip tidak ditemukan');
+    }
+
+    $file_path = FCPATH . 'uploads/surat/' . $arsip->filename;
+    if (!file_exists($file_path)) {
+        show_error('File surat tidak ditemukan');
+    }
+
     try {
+        libxml_use_internal_errors(true); // Suppress XML warnings
         $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
-        $temp_html = tempnam(sys_get_temp_dir(), 'edit_') . '.html';
+        libxml_clear_errors();
+        $temp_html = tempnam(sys_get_temp_dir(), 'preview_') . '.html';
         $phpWord->save($temp_html, 'HTML');
         $html_content = file_get_contents($temp_html);
         @unlink($temp_html);
 
-        $data['surat'] = $surat;
+        $data['arsip'] = $arsip;
         $data['html_content'] = $html_content;
 
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/surat/edit_template', $data);
+        $this->load->view('admin/surat/preview_surat', $data);
         $this->load->view('template_admin/footer');
     } catch (\Exception $e) {
-        show_error('Gagal membuka template: ' . $e->getMessage());
+        show_error('Gagal membuka preview: ' . $e->getMessage());
     }
+}
+
+/**
+ * Embed images in HTML as base64
+ */
+private function embedImagesInHtml($html, $temp_dir)
+{
+    // Find img tags with src
+    preg_match_all('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $html, $matches);
+    foreach ($matches[1] as $src) {
+        $image_path = $temp_dir . DIRECTORY_SEPARATOR . basename($src);
+        if (file_exists($image_path)) {
+            $image_data = file_get_contents($image_path);
+            $base64 = base64_encode($image_data);
+            $mime = mime_content_type($image_path);
+            $data_uri = 'data:' . $mime . ';base64,' . $base64;
+            $html = str_replace($src, $data_uri, $html);
+            @unlink($image_path); // Clean up
+        }
+    }
+    return $html;
 }
 }
