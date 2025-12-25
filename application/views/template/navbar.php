@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Logo -->
     <a class="navbar-brand" href="<?= site_url('/'); ?>">
-      <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
+      <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid" style="max-height: 65px;">
     </a>
 
     <!-- Hamburger Menu -->

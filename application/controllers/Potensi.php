@@ -35,7 +35,7 @@ class Potensi extends CI_Controller {
     public function store() {
         $this->form_validation->set_rules('nama', 'Nama Potensi', 'required|trim');
         $this->form_validation->set_rules('deskripsi', 'Deskripsi', 'required|trim');
-        $this->form_validation->set_rules('lokasi', 'Lokasi', 'required|trim');
+        $this->form_validation->set_rules('lokasi', 'Lokasi', 'trim');
 
         $kategori = $this->input->post('kategori');
 
@@ -100,7 +100,7 @@ class Potensi extends CI_Controller {
 
         $this->form_validation->set_rules('nama', 'Nama Potensi', 'required|trim');
         $this->form_validation->set_rules('deskripsi', 'Deskripsi', 'required|trim');
-        $this->form_validation->set_rules('lokasi', 'Lokasi', 'required|trim');
+        $this->form_validation->set_rules('lokasi', 'Lokasi', 'trim');
 
         $kategori = $this->input->post('kategori');
     

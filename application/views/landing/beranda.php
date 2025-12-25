@@ -1,3 +1,10 @@
+<style>
+  .info .info-box{
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+  }
+</style>
 
 <!-- Hero Slider  -->
 <section class="slider">
@@ -29,6 +36,42 @@
 </div>
 </section>
 <!-- End of Hero Slider  -->
+
+<!-- Info-->
+ <section class="info py-5" id="info">
+  <div class="container-fluid px-4 px-md-5">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="info-box text-center p-4 mb-4 mb-md-0 shadow-md text-white">
+          <i class="bi bi-people-fill fs-1 mb-3"></i>
+          <h4 class="fw-bold mb-2">Penduduk</h4>
+          <p class="fs-4">10.703 Jiwa</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-box text-center p-4 mb-4 mb-md-0 shadow-md text-white">
+          <i class="bi bi-people-fill fs-1 mb-3"></i>
+          <h4 class="fw-bold mb-2">Jumlah KK</h4>
+          <p class="fs-4">2.379 KK</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-box text-center p-4 mb-4 mb-md-0 shadow-md text-white">
+          <i class="bi bi-people-fill fs-1 mb-3"></i>
+          <h4 class="fw-bold mb-2">Perempuan</h4>
+          <p class="fs-4">5.953 Jiwa</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-box text-center p-4 mb-4 mb-md-0 shadow-md text-white">
+          <i class="bi bi-people-fill fs-1 mb-3"></i>
+          <h4 class="fw-bold mb-2">Laki-laki</h4>
+          <p class="fs-4">5.960 Jiwa</p>
+        </div>
+      </div>
+    </div>
+  </div>
+ </section>
 
 <!-- Berita -->
 <section class="berita py-5" id="berita">
