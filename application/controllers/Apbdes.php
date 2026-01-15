@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Apbdes_model $Apbdes_model
  * @property CI_Upload $upload
  */
-class Apbdes extends CI_Controller {
+class Apbdes extends Kades_Middleware {
 
     public function __construct() {
         parent::__construct();

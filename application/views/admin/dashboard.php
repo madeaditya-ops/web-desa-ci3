@@ -117,7 +117,7 @@
                         <li>
                             <div><small><?= htmlspecialchars($lab) ?></small></div>
                             <div><strong><?= $val ?></strong></div>
-                        </li>
+                        </li>AC
                         <?php endfor; ?>
                     </ul>
 

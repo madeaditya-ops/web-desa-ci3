@@ -62,7 +62,6 @@ $route['kadus'] = 'Kadus';
 $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
 
-
 $route['berita'] = 'Berita';
 $route['galeri'] = 'Galeri';
 $route['aparatur'] = 'Aparatur';

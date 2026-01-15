@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Dusun_model $Dusun_model
  */
-class Dusun extends CI_Controller {
+class Dusun extends Kades_Middleware {
 
     public function __construct() {
         parent::__construct();

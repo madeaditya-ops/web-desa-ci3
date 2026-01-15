@@ -18,7 +18,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 
 
 
-class Admin extends CI_Controller {
+class Admin extends Admin_Middleware {
 
     // core services (untuk IDE / Intelephense)
     /** @var \CI_Input */
@@ -100,7 +100,7 @@ class Admin extends CI_Controller {
     $data['dusun'] = $this->Dusun_model->get_all();
 
     if ($this->input->post()) {
-        $config['upload_path']   = './uploads/template/';
+        $config['upload_path']   = './uploads/template_surat/';
         $config['allowed_types'] = 'doc|docx';
         $config['max_size']      = 5000; // 5 MB
         $config['encrypt_name']  = TRUE;
@@ -151,7 +151,7 @@ public function edit_surat($id)
         show_404();
     }
 
-    $file_path = './uploads/template/' . $surat->file_template;
+    $file_path = './uploads/templpate_surat/' . $surat->file_template;
     $placeholders = [];
 
     // --- Ambil placeholder dari template docx ---

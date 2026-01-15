@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require FCPATH.'vendor/autoload.php';
 use PhpOffice\PhpWord\TemplateProcessor;
 
-class Kadus extends CI_Controller {
+class Kadus extends Kadus_Middleware {
 
     public function __construct()
     {
@@ -52,7 +52,7 @@ class Kadus extends CI_Controller {
             'November',
             'Desember'
         );
-        
+            
         // Memecah tanggal menjadi bagian-bagian
         $pecahkan = explode(' ', $tanggal_format);
         
@@ -60,7 +60,7 @@ class Kadus extends CI_Controller {
         return $pecahkan[0] . ' ' . $bulan[ (int)date('m', strtotime($tanggal)) ] . ' ' . $pecahkan[2];
     }
     // --- FUNGSI BARU UNTUK MENAMPILKAN FORM ---
-    public function gunakan($id_template)
+    public function form_surat($id_template)
     {
         $data['template'] = $this->Template_surat_model->get_by_id($id_template);
         if (!$data['template']) {
@@ -100,7 +100,7 @@ class Kadus extends CI_Controller {
 
             $tanggal_sekarang = date('Y-m-d'); 
             $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
-
+            $tahun = date('Y', strtotime($tanggal_sekarang));
 
             $templateProcessor = new TemplateProcessor($template_file);
 
@@ -108,6 +108,7 @@ class Kadus extends CI_Controller {
             $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
             $templateProcessor->setValue('dusun', $nama_dusun);
             $templateProcessor->setValue('kode_dusun', $kode_dusun);
+            $templateProcessor->setValue('tahun', $tahun);
             $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
             $templateProcessor->setValue('tgl_buat', $tanggal_surat); 
 
@@ -163,6 +164,7 @@ class Kadus extends CI_Controller {
             
             $tanggal_sekarang = date('Y-m-d'); 
             $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
+            $tahun = date('Y', strtotime($tanggal_sekarang));
 
 
             $templateProcessor = new TemplateProcessor($template_file);
@@ -171,11 +173,12 @@ class Kadus extends CI_Controller {
             $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
             $templateProcessor->setValue('dusun', $nama_dusun);
             $templateProcessor->setValue('kode_dusun', $kode_dusun);
+            $templateProcessor->setValue('tahun', $tahun);
             $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
             $templateProcessor->setValue('tgl_buat', $tanggal_surat);
             
             // Placeholder lain diisi titik-titik (tidak perlu diubah)
-            $titik = '............................................................................................................';
+            $titik = '.....................................................................................';
             $templateProcessor->setValue('kode_surat', '.......');
             $templateProcessor->setValue('no', '.....');
             $templateProcessor->setValue('nama', $titik);
@@ -188,6 +191,9 @@ class Kadus extends CI_Controller {
             $templateProcessor->setValue('tujuan', $titik);
             $templateProcessor->setValue('sts_kawin', $titik);
 
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
 
             // ... Sisa kode untuk download file (tidak perlu diubah) ...
             $filename = 'Blanko ' . $template->nama_surat . '.docx';
