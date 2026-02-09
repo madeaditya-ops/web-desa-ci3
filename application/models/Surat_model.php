@@ -22,6 +22,16 @@ class Surat_model extends CI_Model {
         return $this->db->get()->row();
     }
 
+    public function get_by_role($role = 'admin')
+    {
+        $this->db->select('template_surat.*, dusun.nama_dusun');
+        $this->db->from($this->table);
+        $this->db->join('dusun', 'template_surat.dusun_id = dusun.id_dusun', 'left');
+        $this->db->where('template_surat.level_akses', $role);
+        $this->db->order_by('template_surat.nama_surat', 'ASC');
+        return $this->db->get()->result();
+    }
+
     public function insert($data) {
         return $this->db->insert($this->table, $data);
     }

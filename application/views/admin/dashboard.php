@@ -17,7 +17,7 @@
         .card-quick .list-unstyled small { font-size: .82rem; color: #6c757d; }
         .card-quick .btn { padding: .35rem .6rem; font-size: .78rem; }
 
-        .small-muted { color: #6c757d; font-size: .9rem; }
+        .small-muted { color: white; font-size: .9rem; }
         .chart-legend { display:flex; gap:1rem; align-items:center; margin-top:.5rem; }
         .legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; margin-right:.45rem; }
     </style>
@@ -101,11 +101,11 @@
         </div>
 
         <!-- ringkasan cepat diperkecil -->
-        <div class="col-lg-3 mb-4">
+        <div class="col-lg-3 mb-2">
             <div class="card shadow-sm card-quick">
                 <div class="card-header"><strong>Ringkasan Cepat</strong></div>
-                <div class="card-body">
-                    <p class="small-muted mb-2">Distribusi Surat (7 hari)</p>
+                <div class="card-body ">
+                    <p class="">Distribusi Surat (7 hari)</p>
                     <ul class="list-unstyled mb-2">
                         <?php
                             $labels = $chart_labels ?? [];

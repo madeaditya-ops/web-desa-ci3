@@ -81,18 +81,47 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-  var map = L.map('map_lengkap').setView([-8.566260, 115.300647], 15);
+  var mapWilayah = L.map('map_lengkap').setView([-8.566260, 115.300647], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  }).addTo(mapWilayah);
 
   <?php foreach ($lokasi_banjar as $lokasi): ?>
-    var marker = L.marker([<?= $lokasi['lat'] ?>, <?= $lokasi['lng'] ?>]).addTo(map);
+    var marker = L.marker([<?= $lokasi['lat'] ?>, <?= $lokasi['lng'] ?>]).addTo(mapWilayah);
     var popupContent = `<strong><?= $lokasi['nama'] ?></strong>`;
     <?php if (!empty($lokasi['link'])): ?>
       popupContent += `<br><a href="<?= $lokasi['link'] ?>" target="_blank">📍 Lihat di Google Maps</a>`;
     <?php endif; ?>
     marker.bindPopup(popupContent);
   <?php endforeach; ?>
+</script>
+
+
+<script>
+fetch("<?= base_url('assets/geojson/kelurahan.geojson') ?>")
+  .then(response => response.json())
+  .then(data => {
+
+    var desaBlahbatuh = L.geoJSON(data, {
+      filter: function (feature) {
+        return feature.properties.nm_kelurahan === "Blahbatuh";
+      },
+      style: {
+        color: "#64B5F6",
+        weight: 2,
+        fillColor: "#64B5F6",
+        fillOpacity: 0.4
+      },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(
+          "<strong>Desa:</strong> " + feature.properties.nm_kelurahan
+        );
+      }
+    }).addTo(mapWilayah);
+
+    // Auto zoom ke wilayah desa
+    mapWilayah.fitBounds(desaBlahbatuh.getBounds());
+
+  });
 </script>

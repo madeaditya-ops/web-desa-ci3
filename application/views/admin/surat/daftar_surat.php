@@ -9,12 +9,6 @@
     <?php endif; ?>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Surat</h6>
-            <a href="<?= site_url('admin/upload_template') ?>" class="btn btn-primary btn-sm float-right">
-                <i class="fas fa-plus"></i> Tambah Template
-            </a>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -33,7 +27,7 @@
                         <td><?= $row->nama_surat ?></td>
                         <td>
                             <?php
-                                $file_path = 'uploads/template/' . $row->file_template;
+                                $file_path = 'uploads/template_surat/' . $row->file_template;
                                 $ext = pathinfo($row->file_template, PATHINFO_EXTENSION) ?: 'docx';
                                 // buat nama file download dari nama surat, aman untuk filesystem/URL
                                 $safe_name = preg_replace('/[^A-Za-z0-9_\-]+/', '_', trim($row->nama_surat));
@@ -54,8 +48,6 @@
                              <a href="<?= site_url('admin/edit_surat/'.$row->id_template) ?>" class="btn btn-success btn-sm">
                                     <i class="fas fa-edit"></i> Edit Surat
                                 </a>
-                            <a href="<?= site_url('admin/delete_surat/'.$row->id_template) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</a>
-                        </td>
                     </tr>
                     <?php endforeach ?>
                 </tbody>

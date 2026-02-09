@@ -48,7 +48,7 @@ class Auth extends CI_Controller {
         $this->session->set_userdata([
             'id_user'   => $user->id_user,
             'username'  => $user->username,
-            'nama'  => $user->nama,
+            'nama'      => $user->nama,
             'role'      => $user->role,
             'dusun_id'  => $user->dusun_id,
             'logged_in' => true

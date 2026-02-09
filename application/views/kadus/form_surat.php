@@ -32,6 +32,7 @@
                         <div class="form-group">
                             <label for="jenis_kelamin">Jenis Kelamin</label>
                             <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
                                 <option value="Laki-laki">Laki-laki</option>
                                 <option value="Perempuan">Perempuan</option>
                             </select>
@@ -40,7 +41,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="agama">Agama</label>
-                            <input type="text" class="form-control" id="agama" name="agama" value="Hindu" required>
+                            <select class="form-control" id="agama" name="agama" required>
+                                <option value="">-- Pilih Agama --</option>
+                                <option value="Hindu" selected>Hindu</option> <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Khonghucu">Khonghucu</option>
+                            </select>
+                            <small class="form-text text-muted">Pilih agama warga sesuai KTP.</small>
                         </div>
                         <div class="form-group">
                             <label for="pekerjaan">Pekerjaan</label>
@@ -49,6 +58,7 @@
                         <div class="form-group">
                             <label for="sts_kawin">Status Perkawinan</label>
                             <select class="form-control" id="sts_kawin" name="sts_kawin" required>
+                                 <option value="">-- Pilih Status --</option>
                                 <option value="Belum Kawin">Belum Kawin</option>
                                 <option value="Kawin">Kawin</option>
                                 <option value="Cerai Hidup">Cerai Hidup</option>
@@ -61,9 +71,22 @@
                         </div>
                         <hr>
                          <p class="font-weight-bold">Info Nomor Surat</p>
-                         <div class="form-group">
-                            <label for="kode_surat">Kode Surat (Contoh: 474)</label>
-                            <input type="text" class="form-control" id="kode_surat" name="kode_surat" required>
+                        <div class="form-group">
+                            <label for="kode_surat">Kode Surat (Pilih Jenis)</label>
+                            <select class="form-control" id="kode_surat" name="kode_surat" required>
+                                <option value="">-- Pilih Kode/Jenis Surat --</option>
+                                <option value="470">470 - SURAT KETERANGAN DOMISILI</option>
+                                <option value="472.36">472.36 - SURAT KETERANGAN AHLI WARIS</option>
+                                <option value="472.5">472.5 - SURAT KETERANGAN BELUM KAWIN-NIKAH</option>
+                                <option value="472.12">472.12 - SURAT KETERANGAN MENINGGAL</option>
+                                <option value="401">401 - SURAT KETERANGAN KURANG MAMPU</option>
+                                <option value="517">517 - SURAT KETERANGAN USAHA</option>
+                                <option value="472.22">472.22 - SURAT KETERANGAN KAWIN-NIKAH</option>
+                                <option value="470">470 - SURAT KETERANGAN DOMISILI PURA</option>
+                                <option value="471.5">471.5 - SURAT KETERANGAN ORANGNYA SATU SAMA</option>
+                                <option value="140">140 - SURAT KETERANGAN</option>
+                            </select>
+                            <small class="form-text text-muted">Pilih jenis surat untuk memasukkan kode secara otomatis.</small>
                         </div>
                          <div class="form-group">
                             <label for="no">Nomor Urut Surat</label>

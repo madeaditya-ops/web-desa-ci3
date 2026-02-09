@@ -84,9 +84,11 @@ class Admin extends Admin_Middleware {
 
     public function daftar_surat()
     {
-
         $this->load->model('Surat_model');
-       $data['surat'] = $this->Surat_model->get_all();
+
+        // Ambil hanya surat dengan level_akses = 'admin' menggunakan model method
+        $data['surat'] = $this->Surat_model->get_by_role('admin');
+
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('admin/surat/daftar_surat', $data);
@@ -151,7 +153,7 @@ public function edit_surat($id)
         show_404();
     }
 
-    $file_path = './uploads/templpate_surat/' . $surat->file_template;
+    $file_path = './uploads/template_surat/' . $surat->file_template;
     $placeholders = [];
 
     // --- Ambil placeholder dari template docx ---
@@ -489,4 +491,107 @@ public function arsip_download()
         redirect('admin/daftar_surat');
     }
     
+public function preview_template($id)
+{
+    $this->load->model('Surat_model');
+    $surat = $this->Surat_model->get_by_id($id);
+    
+    if (!$surat || empty($surat->file_template)) {
+        show_error('Template tidak ditemukan');
+    }
+
+    $file_path = FCPATH . 'uploads/template/' . $surat->file_template;
+    if (!file_exists($file_path)) {
+        show_error('File template tidak ditemukan');
+    }
+
+    // Load dan convert Word ke HTML untuk preview
+    try {
+        $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
+        $temp_html = tempnam(sys_get_temp_dir(), 'preview_') . '.html';
+        $phpWord->save($temp_html, 'HTML');
+        $html_content = file_get_contents($temp_html);
+        @unlink($temp_html);
+
+        $data['surat'] = $surat;
+        $data['html_content'] = $html_content;
+
+        $this->load->view('template_admin/header');
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('admin/surat/preview_template', $data);
+        $this->load->view('template_admin/footer');
+    } catch (\Exception $e) {
+        show_error('Gagal membuka template: ' . $e->getMessage());
+    }
+}
+
+public function edit_template($id)
+{
+    $this->load->model('Surat_model');
+    $surat = $this->Surat_model->get_by_id($id);
+    
+    if (!$surat) {
+        show_error('Template tidak ditemukan');
+    }
+
+    $file_path = FCPATH . 'uploads/template/' . $surat->file_template;
+    if (!file_exists($file_path)) {
+        show_error('File template tidak ditemukan');
+    }
+
+    // Jika ada POST (edit text), lakukan replace
+    if ($this->input->post()) {
+        $old_text = $this->input->post('old_text');
+        $new_text = $this->input->post('new_text');
+
+        if (!empty($old_text) && !empty($new_text)) {
+            try {
+                // Baca XML dari docx
+                $zip = new ZipArchive();
+                $temp_file = $file_path . '.tmp';
+                copy($file_path, $temp_file);
+                
+                if ($zip->open($temp_file) === TRUE) {
+                    $xml = $zip->getFromName('word/document.xml');
+                    // Replace text (simple approach)
+                    $xml = str_replace($old_text, $new_text, $xml);
+                    $zip->addFromString('word/document.xml', $xml);
+                    $zip->close();
+
+                    // Backup file lama
+                    $backup_file = $file_path . '.bak';
+                    if (file_exists($backup_file)) @unlink($backup_file);
+                    copy($file_path, $backup_file);
+
+                    // Ganti dengan file baru
+                    copy($temp_file, $file_path);
+                    @unlink($temp_file);
+
+                    $this->session->set_flashdata('message', 'Template berhasil diperbarui!');
+                    redirect('admin/edit_template/' . $id);
+                }
+            } catch (\Exception $e) {
+                $this->session->set_flashdata('error', 'Gagal mengedit: ' . $e->getMessage());
+            }
+        }
+    }
+
+    try {
+        $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
+        $temp_html = tempnam(sys_get_temp_dir(), 'edit_') . '.html';
+        $phpWord->save($temp_html, 'HTML');
+        $html_content = file_get_contents($temp_html);
+        @unlink($temp_html);
+
+        $data['surat'] = $surat;
+        $data['html_content'] = $html_content;
+
+        $this->load->view('template_admin/header');
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('admin/surat/edit_template', $data);
+        $this->load->view('template_admin/footer');
+    } catch (\Exception $e) {
+        show_error('Gagal membuka template: ' . $e->getMessage());
+    }
+}
 }
