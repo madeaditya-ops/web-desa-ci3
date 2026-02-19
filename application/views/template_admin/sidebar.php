@@ -177,9 +177,22 @@
 
     <?php if ($this->session->userdata('role') == 'kadus'): ?>
     <li class="nav-item active">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="<?= site_url('dashboard')?>">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <hr class="sidebar-divider">
+
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= site_url('kadus')?>">
             <i class="fas fa-file-alt"></i>
                 <span>Surat Dusun</span></a>
+    </li>
+        <li class="nav-item active">
+        <a class="nav-link" href="<?= site_url('kadus/arsip')?>">
+            <i class="fas fa-file-alt"></i>
+                <span>Arsip Surat</span></a>
     </li>
     <?php endif;?>
 
