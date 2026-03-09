@@ -15,22 +15,23 @@ class Surat_model extends CI_Model {
 
     public function get_by_id($id)
     {
-        $this->db->select('template_surat.*, dusun.nama_dusun');
+        $this->db->select('template_surat.id_template as id, template_surat.*, dusun.nama_dusun');
         $this->db->from($this->table);
         $this->db->join('dusun', 'template_surat.dusun_id = dusun.id_dusun', 'left');
         $this->db->where('template_surat.id_template', $id);
         return $this->db->get()->row();
     }
 
-    public function get_by_role($role = 'admin')
+   public function get_by_role($role = 'admin')
     {
-        $this->db->select('template_surat.*, dusun.nama_dusun');
+        $this->db->select('template_surat.id_template as id, template_surat.*, dusun.nama_dusun');
         $this->db->from($this->table);
         $this->db->join('dusun', 'template_surat.dusun_id = dusun.id_dusun', 'left');
         $this->db->where('template_surat.level_akses', $role);
-        $this->db->order_by('template_surat.nama_surat', 'ASC');
+        $this->db->order_by('template_surat.created_at', 'DESC'); // 🔥 TERBARU DI ATAS
         return $this->db->get()->result();
     }
+
 
     public function insert($data) {
         return $this->db->insert($this->table, $data);

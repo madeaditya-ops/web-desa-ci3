@@ -41,7 +41,7 @@
                                 </a>
                             </td> -->
                             <td class="text-center">
-                                <a href="<?= site_url('kadus/gunakan/'.$template->id_template) ?>" class="btn btn-success btn-sm">
+                                <a href="<?= site_url('kadus/form_surat/'.$template->id_template) ?>" class="btn btn-success btn-sm">
                                     <i class="fas fa-file-signature"></i> Buat Surat
                                 </a>
                                 <a href="<?= site_url('kadus/download_blanko/'.$template->id_template) ?>" class="btn btn-info btn-sm">

@@ -1,13 +1,20 @@
 <!-- Sidebar -->
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
+<?php
+$jumlah_notif_kadus = $this->db
+    ->where('tujuan_role', 'admin')
+    ->where('status', 'belum dibaca')
+    ->count_all_results('notifikasi');
+?>
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand bg-white d-flex align-items-center justify-content-center" href="<?=base_url('Landing')?>">
         <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
     </a>
 
+    
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
+    
 
     <?php if ($this->session->userdata('role') == 'kades'): ?>
     <!-- Nav Item - Dashboard -->
@@ -52,6 +59,23 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="<?= site_url('aparatur')?>">Data Aparatur</a>
                 <a class="collapse-item" href="<?= site_url('aparatur/create')?>">Tambah Data</a>
+            </div>
+        </div>
+    </li>
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsewarga"
+            aria-expanded="true" aria-controls="collapsewarga">
+            <i class="fas fa-users"></i>
+            <span>Warga</span>
+        </a>
+        <div id="collapsewarga" class="collapse" aria-labelledby="headingwarga"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('keluarga/index')?>">Data Keluarga</a>
+                <a class="collapse-item" href="<?= site_url('keluarga/tambah')?>">Tambah keluarga</a>
+                <a class="collapse-item" href="<?= site_url('warga/index')?>">Data Warga</a>
+                <a class="collapse-item" href="<?= site_url('warga/tambah')?>">Tambah Warga</a>
             </div>
         </div>
     </li>
@@ -165,21 +189,51 @@
     </li>
     <li class="nav-item active">
         <a class="nav-link" href="<?= base_url('admin/daftar_surat'); ?>">
-            <i class="fas fa-file-alt"></i>
+            <i class="fas fa-list"></i>
                 <span>Surat</span></a>
     </li>
     <li class="nav-item active">
         <a class="nav-link" href="<?= base_url('admin/arsip'); ?>">
-            <i class="fas fa-file-alt"></i>
+            <i class="fas fa-archive"></i>
                 <span>Arsip Surat</span></a>
+    </li>
+     <li class="nav-item active">
+           <a class="nav-link position-relative"
+       href="<?= site_url('admin/verifikasi_data') ?>">
+        <i class="fas fa-file"></i>
+        <span>Surat Kadus</span>
+
+        <?php if ($jumlah_notif_kadus > 0): ?>
+            <span class="badge badge-danger"
+                  style="position:absolute; top:5px; right:10px;">
+                <?= $jumlah_notif_kadus ?>
+            </span>
+        <?php endif; ?>
+    </a>
+        <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('admin/verifikasi_data')?>">Surat Masuk</a>
+                <a class="collapse-item" href="<?= site_url('admin/verifikasi_selesai')?>">Data Surat Selesai</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('admin/verifikasi_selesai'); ?>">
+            <i class="fas fa-archive"></i>
+                <span>Surat Selesai</span></a>
     </li>
     <?php endif;?>
 
     <?php if ($this->session->userdata('role') == 'kadus'): ?>
     <li class="nav-item active">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="<?= base_url('kadus'); ?>">
             <i class="fas fa-file-alt"></i>
                 <span>Surat Dusun</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="<?= base_url('kadus/arsip'); ?>">
+            <i class="fas fa-file-alt"></i>
+                <span>Arsip Surat Dusun</span></a>
     </li>
     <?php endif;?>
 
@@ -208,6 +262,7 @@
                 <i class="fa fa-bars"></i>
             </button>
 
+            
             <!-- Topbar Search -->
             <!-- <form
                 class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
@@ -224,6 +279,44 @@
 
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
+                        <?php
+                $jumlah_notif_admin = $this->db
+                    ->where('tujuan_role', 'admin')
+                    ->where('status', 'belum dibaca')
+                    ->count_all_results('notifikasi');
+                ?>
+
+                <li class="nav-item dropdown no-arrow mx-2">
+                    <a class="nav-link dropdown-toggle position-relative"
+                    href="#"
+                    id="notifDropdown"
+                    role="button"
+                    data-toggle="dropdown">
+
+                        <i class="fas fa-bell fa-fw"></i>
+
+                        <span id="notifBadge"
+                            class="badge badge-danger badge-counter"
+                            style="<?= $jumlah_notif_admin > 0 ? '' : 'display:none;' ?>">
+                            <?= $jumlah_notif_admin ?>
+                        </span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right shadow"
+                        style="width:300px;"
+                        id="notifDropdownMenu">
+
+                        <h6 class="dropdown-header">Notifikasi</h6>
+
+                        <div id="notifList">
+                            <div class="text-center small text-gray-500">
+                                Memuat...
+                            </div>
+                        </div>
+                    </div>
+
+                </li>
+
 
                 <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                 <li class="nav-item dropdown no-arrow d-sm-none">

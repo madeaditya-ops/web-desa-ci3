@@ -7,7 +7,8 @@
 
     <!-- Bootstraps 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
-    
+    <link rel="icon" type="image/png" href="<?= base_url('assets/image/logo_desa_blahbatuh.png'); ?>">
+
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 

@@ -1,205 +1,283 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-/**
- * @property CI_Session $session
- * @property CI_Input $input
- * @property Template_surat_model $Template_surat_model
- * @property Dusun_model $Dusun_model
- */
+require FCPATH . 'vendor/autoload.php';
 
-require FCPATH.'vendor/autoload.php';
 use PhpOffice\PhpWord\TemplateProcessor;
 
-class Kadus extends CI_Controller {
+class Kadus extends CI_Controller
+{
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Template_surat_model'); 
+        date_default_timezone_set('Asia/Jakarta');
+        $this->load->model('Template_surat_model');
         $this->load->model('Dusun_model');
         $this->load->library('session');
-        $this->load->helper('url');
     }
 
     public function index()
     {
-        $level_akses = $this->session->userdata('role'); 
+        $level_akses = $this->session->userdata('role');
         $data['templates'] = $this->Template_surat_model->get_by_level_akses($level_akses);
-
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('kadus/dashboard', $data);
         $this->load->view('template_admin/footer');
     }
-    
-       private function tanggal_indonesia($tanggal)
+
+    public function form_surat($id_template)
     {
-        // Konversi format tanggal ke 'd F Y' jika belum
-        $tanggal_format = date('d F Y', strtotime($tanggal));
-        
-        $bulan = array (
-            1 =>   'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember'
-        );
-        
-        // Memecah tanggal menjadi bagian-bagian
-        $pecahkan = explode(' ', $tanggal_format);
-        
-        // Format: tanggal [spasi] nama_bulan [spasi] tahun
-        return $pecahkan[0] . ' ' . $bulan[ (int)date('m', strtotime($tanggal)) ] . ' ' . $pecahkan[2];
-    }
-    // --- FUNGSI BARU UNTUK MENAMPILKAN FORM ---
-    public function gunakan($id_template)
-    {
+
         $data['template'] = $this->Template_surat_model->get_by_id($id_template);
-        if (!$data['template']) {
-            $this->session->set_flashdata('error', 'Template tidak ditemukan!');
-            redirect('kadus');
-        }
+        if (!$data['template']) redirect('kadus');
+
+        $data['surat_list'] = $this->Template_surat_model->get_surat_list();
+
+        // ambil dusun kadus yang login
+        $dusun_id = $this->session->userdata('dusun_id');
+
+        // ambil warga sesuai dusun kadus
+        $data['warga'] = $this->db
+            ->select('
+            warga.nama,
+            warga.no_nik,
+            warga.tempat_lahir,
+            warga.tanggal_lahir,
+            warga.pekerjaan,
+            jenis_kelamin.nama as jenis_kelamin,
+            agama.nama as agama,
+            status_perkawinan.nama as status_perkawinan
+        ')
+            ->from('warga')
+            ->join('keluarga', 'keluarga.id = warga.keluarga_id')
+            ->join('jenis_kelamin', 'jenis_kelamin.id = warga.jenis_kelamin_id', 'left')
+            ->join('agama', 'agama.id = warga.agama_id', 'left')
+            ->join('status_perkawinan', 'status_perkawinan.id = warga.status_perkawinan_id', 'left')
+            ->where('keluarga.id_dusun', $dusun_id) // filter banjar
+            ->order_by('warga.nama', 'ASC')
+            ->get()
+            ->result();
 
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/form_surat', $data); 
+        $this->load->view('kadus/form_surat', $data);
         $this->load->view('template_admin/footer');
     }
 
-    // --- FUNGSI BARU UNTUK PROSES PEMBUATAN SURAT ---
     public function proses_surat()
     {
         $id_template = $this->input->post('id_template');
         $template = $this->Template_surat_model->get_by_id($id_template);
-        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
+        $dusun_id = $this->session->userdata('dusun_id');
+        $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
 
-        if (!file_exists($template_file)) {
-            $this->session->set_flashdata('error', 'File template tidak ditemukan!');
-            redirect('kadus');
+        // 1. Siapkan Data untuk Word dan JSON
+        $post_data = $this->input->post();
+
+        $id_template_pengantar = $this->input->post('id_template'); // 131 (Surat dusun)
+        $id_template_tujuan    = $this->input->post('id_template_tujuan'); // 128/129/...
+        // Ambil nama dusun asli
+        $nama_dusun_asli = $dusun_data ? $dusun_data->nama_dusun : '';
+        $post_data['kop_dusun']  = strtoupper($nama_dusun_asli); // Untuk ${kop_surat} di KOP (KAPITAL)
+        $post_data['dusun']      = $nama_dusun_asli;             // Untuk ${dusun} di ISI (Normal)
+
+        $post_data['tgl_buat']   = $this->tanggal_indonesia(date('Y-m-d'));
+        $post_data['nama_kadus'] = strtoupper($this->session->userdata('nama'));
+        $post_data['kode_dusun'] = $dusun_data ? $dusun_data->kode_dusun : '';
+        $post_data['tahun']      = date('Y');
+        $alamat_lengkap = 'Br. ' .
+            ($post_data['dusun'] ?? '-') .
+            ' /Kec. Blahbatuh Kab. Gianyar';
+
+        $id_tujuan = $this->input->post('id_template_tujuan');
+
+        $kode_surat = $this->db
+            ->select('nomor_template_surat')
+            ->get_where('template_surat', ['id_template' => $id_tujuan])
+            ->row('nomor_template_surat');
+
+        $nomor_pengantar = $kode_surat . '/' . $post_data['no'] . '/KBD.' . $post_data['kode_dusun'];
+
+        // 2. LOGIKA GENERATE FILE (DI SIMPAN KE SERVER, BUKAN DOWNLOAD)
+        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
+        $new_filename = 'Draft_' . preg_replace('/[^A-Za-z0-9]/', '_', $post_data['nama']) . '_' . time() . '.docx';
+        $save_path = FCPATH . 'uploads/surat/' . $new_filename;
+
+        if (file_exists($template_file)) {
+            $templateProcessor = new TemplateProcessor($template_file);
+            $templateProcessor->setValue('kode_surat', $kode_surat);
+            foreach ($post_data as $key => $value) {
+                if (strpos($key, 'tgl') !== false && !empty($value) && $key != 'tgl_buat') {
+                    $value = date('d-m-Y', strtotime($value));
+                }
+                $templateProcessor->setValue($key, htmlspecialchars((string)$value));
+            }
+            $templateProcessor->saveAs($save_path); // Simpan file ke folder uploads/surat/
         }
 
-        try {
-            // 1. Ambil ID Dusun dan Nama Kadus dari session
-            $dusun_id = $this->session->userdata('dusun_id');
-            $nama_kadus = $this->session->userdata('nama');
+        // 3. Simpan ke Database
+        $this->db->trans_start();
 
-            // 2. Ambil detail data dusun dari database menggunakan model
-            $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
-            
-            // 3. Siapkan variabel (pastikan dusun_data ada untuk menghindari error)
-            $nama_dusun = $dusun_data ? $dusun_data->nama_dusun : 'Data Dusun Tidak Ditemukan';
-            $kode_dusun = $dusun_data ? $dusun_data->kode_dusun : 'ERR';
+        // ===============================
+        // 1️⃣ SIMPAN KE ARSIP KADUS
+        // ===============================
 
-            $tanggal_sekarang = date('Y-m-d'); 
-            $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
+        $data_arsip = [
+            'filename'              => $new_filename, // draft kadus
+            'file_admin'            => NULL, // nanti diisi admin
+            'id_template'           => $id_template,
+            'id_user'               => $this->session->userdata('id_user'),
+            'nomor_template_surat'  => $kode_surat,
+            'nomor_pengantar'       => $nomor_pengantar,
+            'nama'                  => $this->input->post('nama'),
+            'alamat_penerima'       => $alamat_lengkap,
+            'jenis_surat'           => $template->nama_surat,
+            'banjar'                => $nama_dusun_asli,
+            'kode_banjar'           => $post_data['kode_dusun'],
+            'status'                => 'menunggu',
+            'created_at'            => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->insert('arsip_surat', $data_arsip);
+        $id_arsip = $this->db->insert_id();
+
+        // ===============================
+        // 2️⃣ SIMPAN KE DATA_SURAT ADMIN
+        // ===============================
+
+        $data_admin = [
+            'id_template'     => $id_template_tujuan,
+            'arsip_id'        => $id_arsip,
+            'alamat_lengkap'  => $alamat_lengkap,
+            'nomor_pengantar' => $post_data['no'],
+            'tempat_lahir'    => $this->input->post('tempat_lahir'),
+            'tanggal_lahir'   => $this->input->post('tgl_lahir'),
+            'jenis_kelamin'   => $this->input->post('jenis_kelamin'),
+            'nama'            => $this->input->post('nama'),
+            'nik'             => $this->input->post('nik'),
+            'banjar'          => $nama_dusun_asli,
+            'kode_banjar'     => $post_data['kode_dusun'],
+            'status'          => 'menunggu',
+            'sts_kawin'       => $this->input->post('sts_kawin'),
+            'agama'           => $this->input->post('agama'),
+            'pekerjaan'       => $this->input->post('pekerjaan'),
+            'tujuan'          => $this->input->post('tujuan'),
+            'id_user'         => $this->session->userdata('id_user'),
+            'created_at'      => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->insert('data_surat', $data_admin);
 
 
-            $templateProcessor = new TemplateProcessor($template_file);
+        // ===============================
+        // 3️⃣ NOTIFIKASI ADMIN
+        // ===============================
 
-            // Mengisi placeholder dengan data yang sudah benar
-            $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
-            $templateProcessor->setValue('dusun', $nama_dusun);
-            $templateProcessor->setValue('kode_dusun', $kode_dusun);
-            $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
-            $templateProcessor->setValue('tgl_buat', $tanggal_surat); 
+        $this->db->insert('notifikasi', [
+            'tujuan_role' => 'admin',
+            'pesan'       => 'Ada pengajuan surat baru dari Kadus',
+            'link'        => site_url('admin/verifikasi_data'),
+            'status'      => 'belum dibaca',
+            'created_at'  => date('Y-m-d H:i:s')
+        ]);
 
-            // Mengisi placeholder dari form input (ini sudah benar, tidak perlu diubah)
-            $templateProcessor->setValue('kode_surat', $this->input->post('kode_surat'));
-            // ... sisa setValue dari form ...
-            $templateProcessor->setValue('no', $this->input->post('no'));
-            $templateProcessor->setValue('nama', $this->input->post('nama'));
-            $templateProcessor->setValue('nik', $this->input->post('nik'));
-            $templateProcessor->setValue('tempat_lahir', $this->input->post('tempat_lahir').', '.' ');
-            $templateProcessor->setValue('tgl_lahir', date('d-m-Y', strtotime($this->input->post('tgl_lahir'))));
-            $templateProcessor->setValue('jenis_kelamin', $this->input->post('jenis_kelamin'));
-            $templateProcessor->setValue('agama', $this->input->post('agama'));
-            $templateProcessor->setValue('pekerjaan', $this->input->post('pekerjaan'));
-            $templateProcessor->setValue('tujuan', $this->input->post('tujuan'));
-            $templateProcessor->setValue('sts_kawin', $this->input->post('sts_kawin'));
+        $this->db->trans_complete();
 
-            // ... Sisa kode untuk download file (tidak perlu diubah) ...
-            $filename = 'Surat Keterangan - ' . $this->input->post('nama') . '.docx';
-            $filename = preg_replace('/[\\/\?%*:|"<>\x00-\x1F\x7F]/', '_', $filename);
-            
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->session->set_flashdata('error', 'Gagal menyimpan surat.');
+        } else {
+            $this->session->set_flashdata('success', 'Surat berhasil dikirim ke Admin.');
+        }
+
+        redirect('kadus/arsip');
+    }
+
+    public function arsip()
+    {
+        $id_user = $this->session->userdata('id_user');
+        $this->db->select('arsip_surat.*, template_surat.nama_surat as judul');
+        $this->db->from('arsip_surat');
+        $this->db->join('template_surat', 'arsip_surat.id_template = template_surat.id_template', 'left');
+        $this->db->where('arsip_surat.id_user', $id_user);
+        $this->db->order_by('arsip_surat.created_at', 'DESC');
+        $data['arsip'] = $this->db->get()->result();
+
+        $this->load->view('template_admin/header');
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('kadus/arsip', $data);
+        $this->load->view('template_admin/footer');
+    }
+
+    public function download_arsip($id)
+    {
+        // Ambil data dari database berdasarkan ID
+        $arsip = $this->db->get_where('arsip_surat', ['id' => $id])->row();
+
+        // Validasi: Pastikan data ada dan kolom filename tidak kosong
+        if (!$arsip || empty($arsip->filename)) {
+            $this->session->set_flashdata('error', 'Nama file tidak ditemukan di database.');
+            redirect('kadus/arsip');
+        }
+
+        $file_path = FCPATH . 'uploads/surat/' . $arsip->filename;
+
+        // Validasi: Pastikan file fisik benar-benar ada di folder
+        if (file_exists($file_path) && !is_dir($file_path)) {
+            header('Content-Description: File Transfer');
             header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header('Cache-Control: max-age=0');
-            
-            $templateProcessor->saveAs('php://output');
+            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_path));
 
-        } catch (\Exception $e) {
-            $this->session->set_flashdata('error', 'Terjadi kesalahan saat membuat surat: ' . $e->getMessage());
-            redirect('kadus');
+            // Bersihkan buffer agar file tidak korup
+            ob_clean();
+            flush();
+            readfile($file_path);
+            exit;
+        } else {
+            $this->session->set_flashdata('error', 'File fisik tidak ditemukan di folder uploads/surat/');
+            redirect('kadus/arsip');
         }
     }
-    
-    // --- FUNGSI BARU UNTUK DOWNLOAD BLANKO ---
-    public function download_blanko($id_template)
+
+    private function tanggal_indonesia($tanggal)
     {
-        $template = $this->Template_surat_model->get_by_id($id_template);
-        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
+        $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $ts = strtotime($tanggal);
+        return date('j', $ts) . ' ' . $bulan[(int)date('n', $ts)] . ' ' . date('Y', $ts);
+    }
 
-        if (!file_exists($template_file)) {
-            $this->session->set_flashdata('error', 'File template tidak ditemukan!');
+
+    public function baca_notif($id)
+    {
+        $notif = $this->db->get_where('notifikasi', ['id' => $id])->row();
+
+        if (!$notif) {
             redirect('kadus');
         }
 
-        try {
-            // --- LAKUKAN PERUBAHAN YANG SAMA DI SINI ---
-            $dusun_id = $this->session->userdata('dusun_id');
-            $nama_kadus = $this->session->userdata('nama');
-            $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
-            
-            $nama_dusun = $dusun_data ? $dusun_data->nama_dusun : 'Data Dusun Tidak Ditemukan';
-            $kode_dusun = $dusun_data ? $dusun_data->kode_dusun : 'ERR';
-            
-            $tanggal_sekarang = date('Y-m-d'); 
-            $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
+        $this->db->where('id', $id)
+            ->update('notifikasi', ['status' => 'dibaca']);
 
+        redirect($notif->link ?? 'kadus');
+    }
 
-            $templateProcessor = new TemplateProcessor($template_file);
+    public function ajax_notifikasi()
+    {
+        $role = $this->session->userdata('role');
 
-            // Data yang diisi otomatis
-            $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
-            $templateProcessor->setValue('dusun', $nama_dusun);
-            $templateProcessor->setValue('kode_dusun', $kode_dusun);
-            $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
-            $templateProcessor->setValue('tgl_buat', $tanggal_surat);
-            
-            // Placeholder lain diisi titik-titik (tidak perlu diubah)
-            $titik = '............................................................................................................';
-            $templateProcessor->setValue('kode_surat', '.......');
-            $templateProcessor->setValue('no', '.....');
-            $templateProcessor->setValue('nama', $titik);
-            $templateProcessor->setValue('nik', $titik);
-            $templateProcessor->setValue('tempat_lahir', '');
-            $templateProcessor->setValue('tgl_lahir', $titik);
-            $templateProcessor->setValue('jenis_kelamin', $titik);
-            $templateProcessor->setValue('agama', $titik);
-            $templateProcessor->setValue('pekerjaan', $titik);
-            $templateProcessor->setValue('tujuan', $titik);
-            $templateProcessor->setValue('sts_kawin', $titik);
+        $data = $this->db
+            ->where('tujuan_role', $role)
+            ->order_by('created_at', 'DESC')
+            ->limit(5)
+            ->get('notifikasi')
+            ->result();
 
-
-            // ... Sisa kode untuk download file (tidak perlu diubah) ...
-            $filename = 'Blanko ' . $template->nama_surat . '.docx';
-            header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header('Cache-Control: max-age=0');
-            
-            $templateProcessor->saveAs('php://output');
-
-        } catch (Exception $e) {
-            $this->session->set_flashdata('error', 'Gagal membuat blanko: ' . $e->getMessage());
-            redirect('kadus');
-        }
+        echo json_encode($data);
     }
 }
