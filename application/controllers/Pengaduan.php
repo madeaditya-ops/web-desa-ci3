@@ -25,7 +25,7 @@ class Pengaduan extends CI_Controller {
     public function index()
     {
         $data['title'] = "Pengaduan Masyarakat Desa Blahbatuh";
-        // $data['siteKey'] = getenv('TURNSTILE_SITE_KEY');
+        $data['turnstile_site_key'] = $this->config->item('turnstile_site_key');
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/pengaduan');
@@ -224,7 +224,6 @@ class Pengaduan extends CI_Controller {
         }
 
         $secretKey = $this->config->item('turnstile_secret_key');
-        // $secretKey = getenv('TURNSTILE_SECRET_KEY');
 
 
         $postData = http_build_query([

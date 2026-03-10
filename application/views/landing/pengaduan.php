@@ -220,7 +220,7 @@
                         <!-- Captcha -->
                         <div class="turnstile-wrapper">
                             <div class="cf-turnstile"
-                                data-sitekey="0x4AAAAAACf9zQbP-7tUizOP"
+                                data-sitekey="<?= $turnstile_site_key ?>"
                                 data-theme="light"
                                 data-size="normal">
                             </div>

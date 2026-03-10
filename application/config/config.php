@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once FCPATH . 'vendor/autoload.php';
+if (file_exists(FCPATH . 'config.env')) {
+    $dotenv = Dotenv\Dotenv::createUnsafeImmutable(FCPATH, 'config.env');
+    $dotenv->load();
+}
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -225,7 +231,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -528,4 +534,7 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-$config['turnstile_secret_key'] = '0x4AAAAAACf9zcgNn0d5w3xvJg8slmyRqWk';
+$config['turnstile_site_key'] = getenv('TURNSTILE_SITE_KEY') ?: '';
+$config['turnstile_secret_key'] = getenv('TURNSTILE_SECRET_KEY') ?: '';
+
+

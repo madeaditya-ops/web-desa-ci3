@@ -314,8 +314,12 @@ switch (ENVIRONMENT)
  */
 require_once BASEPATH.'core/CodeIgniter.php';
 
-// require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-// $dotenv->load();
+if (file_exists(__DIR__ . '/config.env')) {
+    $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__, 'config.env');
+    $dotenv->load();
+}
+
+
 

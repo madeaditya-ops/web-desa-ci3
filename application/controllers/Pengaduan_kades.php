@@ -157,9 +157,11 @@ class Pengaduan_kades extends CI_Controller {
             if (file_exists($file_path)) $this->email->attach($file_path);
         }
 
-        if (!@$this->email->send()) {
-            log_message('error', 'Gagal kirim email ke ' . $pengaduan->email_pelapor . ' | Error: ' . $this->email->print_debugger());
+        if (!$this->email->send()) {
+            echo $this->email->print_debugger();
+            die(); // Hentikan proses untuk melihat error-nya
         }
+
 
         $this->email->clear(TRUE);
     }
