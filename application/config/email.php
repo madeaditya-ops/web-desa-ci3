@@ -6,9 +6,9 @@ $config['smtp_host']   = 'mail.desablahbatuh.site';
 // $config['smtp_host']   = 'ssl://mail.desablahbatuh.site';
 $config['smtp_user']   = 'no-reply@desablahbatuh.site';
 $config['smtp_pass']   = 'BlahbatuhHebat0909';
-// $config['smtp_port']   = 587;
-$config['smtp_port']   = 465;
-$config['smtp_timeout']= 30;
+$config['smtp_port']   = 587;
+// $config['smtp_port']   = 465;
+$config['smtp_timeout']= 10;
 $config['smtp_crypto'] = 'tls';
 $config['smtp_hostname'] = 'desablahbatuh.site';
 

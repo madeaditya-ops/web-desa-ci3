@@ -37,6 +37,12 @@ class Pengaduan_kades extends CI_Controller {
 
     public function detail($id_pengaduan)
     {
+        if ($this->session->flashdata('trigger_email') == $id_pengaduan) {
+        $this->session->keep_flashdata('success');
+        
+        @$this->sendEmailNotification($id_pengaduan);
+    }
+
         $data['pengaduan'] = $this->Pengaduan_model->get_by_id($id_pengaduan);
         $this->Pengaduan_model->read_single_notifikasi($id_pengaduan);
         $this->load->view('template_admin/header');
@@ -73,11 +79,8 @@ class Pengaduan_kades extends CI_Controller {
         }
         $this->Pengaduan_model->update($id, $data);
 
-        $this->sendEmailNotification($id);
-
-        $this->session->set_flashdata('success', $message); 
-
-        session_write_close();
+        $this->session->set_flashdata('success', $message);
+        $this->session->set_flashdata('trigger_email', $id); 
 
         redirect('pengaduan_kades/detail/'.$id);
     }
@@ -115,75 +118,52 @@ class Pengaduan_kades extends CI_Controller {
         }
     }
 
-        $this->Pengaduan_model->update($id, $data);
+        $this->Pengaduan_model->update($id, $data);     
 
-        $this->sendEmailNotification($id);
+        $this->session->set_flashdata('success', 'Pengaduan berhasil diselesaikan');
+        $this->session->set_flashdata('trigger_email', $id); 
 
-        $this->session->set_flashdata(
-            'success',
-            'Pengaduan berhasil diselesaikan'
-        );
-
-        session_write_close();
         redirect('pengaduan_kades/detail/'.$id);
     }
 
     private function sendEmailNotification($id)
     {
         $pengaduan = $this->Pengaduan_model->get_by_id($id);
+        if (!$pengaduan) return;
 
-        $subject = '';
-        $message = '';
+        $data_email = [
+            'nama_pelapor' => $pengaduan->nama_pelapor,
+            'deskripsi'    => $pengaduan->deskripsi,
+            'status'       => $pengaduan->status,
+            'keterangan'   => $pengaduan->keterangan_verifikasi
+        ];
 
-        if (empty($subject) || empty($message)) {
-            log_message('error', 'Email tidak dikirim karena Subjek/Pesan kosong untuk ID: ' . $id);
-            return;
-        }
-        
+        $subjects = [
+            'diproses' => 'Pengaduan Anda Sedang Diproses',
+            'ditolak'  => 'Pengaduan Anda Ditolak',
+            'selesai'  => 'Pengaduan Anda Telah Selesai'
+        ];
+        $subject = $subjects[$pengaduan->status] ?? 'Update Status Pengaduan';
+
+        $message = $this->load->view('email/pengaduan_status', $data_email, TRUE);
+
         $this->email->from('no-reply@desablahbatuh.site', 'Sistem Pengaduan Desa');
         $this->email->to($pengaduan->email_pelapor);
-        
-
-
-        if ($pengaduan->status == 'diproses') {
-            $subject = 'Pengaduan Anda Sedang Diproses';
-            $message = "
-                Yth. {$pengaduan->nama_pelapor},
-                \n\nPengaduan Anda terkait \"{$pengaduan->deskripsi}\" telah diverifikasi dan sedang dalam proses penanganan.
-                \n\nTerima kasih telah menggunakan layanan pengaduan desa.
-                \n\nHormat kami,\nKantor Desa Blahbatuh";
-        } elseif ($pengaduan->status == 'ditolak') {
-            $subject = 'Pengaduan Anda Ditolak';
-            $message = "
-                Yth. {$pengaduan->nama_pelapor},
-                \n\nPengaduan Anda terkait \"{$pengaduan->deskripsi}\" telah diverifikasi.
-                \n\nNamun, setelah dilakukan pemeriksaan, pengaduan tersebut tidak dapat diproses lebih lanjut dengan alasan berikut:
-                \n{$pengaduan->keterangan_verifikasi}
-                \n\nHormat kami,\nKantor Desa Blahbatuh";
-        } elseif ($pengaduan->status == 'selesai') {
-            $subject = 'Pengaduan Anda Telah Selesai';
-            $message = "
-                Yth. {$pengaduan->nama_pelapor},
-                \n\nPengaduan Anda terkait \"{$pengaduan->deskripsi}\" telah selesai ditindaklanjuti.
-                \n\nHormat kami,\nKantor Desa Blahbatuh";
-
-            if (!empty($pengaduan->foto_tindaklanjut)) {
-                $file_path = FCPATH.'uploads/pengaduan_tindaklanjut/'.$pengaduan->foto_tindaklanjut;
-                if (file_exists($file_path)) {
-                    $this->email->attach($file_path);
-                }
-            }
-        }
-
-
-
         $this->email->subject($subject);
         $this->email->message($message);
-        @$this->email->send(); 
 
+        if ($pengaduan->status == 'selesai' && !empty($pengaduan->foto_tindaklanjut)) {
+            $file_path = FCPATH.'uploads/pengaduan_tindaklanjut/'.$pengaduan->foto_tindaklanjut;
+            if (file_exists($file_path)) $this->email->attach($file_path);
+        }
+
+        if (!@$this->email->send()) {
+            log_message('error', 'Gagal kirim email ke ' . $pengaduan->email_pelapor . ' | Error: ' . $this->email->print_debugger());
+        }
 
         $this->email->clear(TRUE);
     }
+
 
 
 

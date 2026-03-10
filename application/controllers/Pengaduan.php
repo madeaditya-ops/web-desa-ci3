@@ -326,7 +326,7 @@ class Pengaduan extends CI_Controller {
         }
 
         $this->email->send(); 
-        // $this->email->clear(TRUE);
+        $this->email->clear(TRUE);
 
     }
 }
