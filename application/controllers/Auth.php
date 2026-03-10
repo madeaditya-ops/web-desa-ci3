@@ -26,12 +26,13 @@ class Auth extends CI_Controller {
         $user = $this->User_model->cek_login($username);
 
         if (!$user) {
-            $this->session->set_flashdata('error', 'Username salah!');
+            $this->session->set_flashdata('error', 'Username atau Password Salah!');
             redirect('auth');
         } else {
             if (password_verify($password, $user->password)) {
                 $this->session->set_userdata([
                     'id_user'   => $user->id,
+                    'nama'      => $user->nama,
                     'username'  => $user->username,
                     'role'      => $user->role,
                     'dusun_id'  => $user->dusun_id,
@@ -48,7 +49,7 @@ class Auth extends CI_Controller {
                     redirect('auth');
                 }
             } else {
-                $this->session->set_flashdata('error', 'Password salah!');
+                $this->session->set_flashdata('error', 'Username atau Password Salah!');
                 redirect('auth');
             }
         }

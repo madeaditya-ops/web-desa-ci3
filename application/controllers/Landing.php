@@ -8,7 +8,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Peraturan_model $Peraturan_model
  * @property Potensi_model $Potensi_model
  * @property Apbdes_model $Apbdes_model
+ * @property ApbdesGrafik_model $ApbdesGrafik_model
+ * @property Lembaga_model $Lembaga_model  
  * @property CI_Input $input
+ * @property CI_Pagination $pagination
+ * @property CI_Config $config
  */
 
 class Landing extends CI_Controller {
@@ -22,16 +26,94 @@ class Landing extends CI_Controller {
         $this->load->model('Peraturan_model');
         $this->load->model('Potensi_model');
         $this->load->model('Apbdes_model');
+        $this->load->model('ApbdesGrafik_model');
+        $this->load->model('Lembaga_model');
+        
     }
 
     public function index()
     {
+        
         $data['title'] = "Website Desa Blahbatuh";
         $data['berita'] = $this->Berita_model->get_latest_berita();
         $data['galeri'] = $this->Galeri_model->get_latest_galeri();
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/beranda', $data);
+        $this->load->view('template/footer');
+    }
+
+
+    public function berita_desa()
+    {
+        $this->load->library('pagination');
+
+        if ($this->input->get('page') === NULL) {
+            $_GET['page'] = '1';
+        }
+
+        $page = (ctype_digit($_GET['page'])) ? (int)$_GET['page'] : 1;
+
+        $limit  = 3;
+        $offset = ($page - 1) * $limit;
+
+        $config['base_url'] = site_url('landing/berita_desa');
+        $config['total_rows'] = $this->Berita_model->count_berita();
+        $config['per_page'] = $limit;
+        $config['use_page_numbers'] = TRUE;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page';
+        $config['reuse_query_string'] = TRUE;
+        $config['cur_page'] = $page;
+
+        // Bootstrap 5
+        $config['full_tag_open']  = '<ul class="pagination justify-content-center">';
+        $config['full_tag_close'] = '</ul>';
+        $config['cur_tag_open']   = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close']  = '</span></li>';
+        $config['num_tag_open']   = '<li class="page-item">';
+        $config['num_tag_close']  = '</li>';
+        $config['attributes']     = ['class' => 'page-link'];
+
+        $this->pagination->initialize($config);
+
+        $data['breadcrumb'] = [
+            ['title' => 'Beranda', 'url' => base_url()],
+            ['title' => 'Informasi Publik', 'url' => site_url('landing/berita_desa')],
+            ['title' => 'Berita Desa', 'url' => '']
+        ];
+
+        $data['title'] = "Berita Desa Blahbatuh";
+        $data['berita'] = $this->Berita_model->get_berita_pagination($limit, $offset);
+        $data['pagination'] = $this->pagination->create_links();
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/berita_desa', $data);
+        $this->load->view('template/footer');
+    }
+
+
+    public function galeri_foto()
+    {
+        $data['title'] = "Galeri Foto Desa Blahbatuh";
+        $data['galeri'] = $this->Galeri_model->get_all_latest_galeri();
+
+        // Breadcrumb
+        $data['breadcrumb'] = [
+            [
+                'title' => 'Beranda',
+                'url'   => base_url()
+            ],
+            [
+                'title' => 'Galeri Foto',
+                'url'   => '' // halaman aktif
+            ]
+        ];
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/galeri_foto', $data);
         $this->load->view('template/footer');
     }
 
@@ -62,11 +144,12 @@ class Landing extends CI_Controller {
         $this->load->view('landing/struktur_pemerintahan', $data);
         $this->load->view('template/footer');
     }
-        public function peta_wilayah()
+    public function peta_wilayah()
     {
         $this->load->helper('map');
         $data['lokasi_banjar'] = get_lokasi_banjar();
         $data['title'] = "Peta Wilayah";
+        $data['meta_description'] = "Peta wilayah Desa Blahbatuh yang menampilkan batas desa, lokasi dusun, dan informasi geografis wilayah administrasi desa.";
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/peta_wilayah', $data);
@@ -115,5 +198,105 @@ class Landing extends CI_Controller {
         $this->load->view('landing/apbdes', $data);
         $this->load->view('template/footer');
     }
+
+    // APBDes Grafik
+    public function apbdes_grafik()
+    {
+        $tahun = $this->input->get('tahun');
+        if (!$tahun) {
+            $tahun = date('Y');
+        }
+
+        $chart   = $this->ApbdesGrafik_model->get_chart_data($tahun);
+        $rincian = $this->ApbdesGrafik_model->get_rincian($tahun);
+        $rincian_realisasi = $this->ApbdesGrafik_model->get_rincian_realisasi($tahun);
+
+        $data = [
+            'title'       => "Grafik APBDes Blahbatuh",
+            'tahun'       => $tahun,
+            'pendapatan'  => $chart['pendapatan'],
+            'belanja'     => $chart['belanja'],
+            'realisasi'   => $chart['realisasi'],
+            'silpa'      => $this->ApbdesGrafik_model->get_silpa($tahun),
+            'rincian'     => $rincian,
+            'rincian_realisasi' => $rincian_realisasi,
+        ];
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/apbdes_grafik', $data);
+        $this->load->view('template/footer');
+    }
+
+    
+
+
+    public function detail_berita($id)
+    {
+        $berita = $this->Berita_model->get_by_id($id);
+
+        if (!$berita) show_404();
+
+        $data['berita'] = $berita;
+        $data['url'] = site_url('berita/detail/'.$id);
+
+        // Breadcrumb
+        $data['breadcrumb'] = [
+            [
+                'title' => 'Beranda',
+                'url'   => base_url()
+            ],
+            [
+                'title' => 'Informasi Publik',
+                'url'   => site_url('landing/berita_desa')
+            ],
+            [
+                'title' => 'Berita',
+                'url'   => '' 
+            ]
+        ];
+
+        
+        $this->load->view('template/header',);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/detail_berita', $data);
+        $this->load->view('template/footer');
+    }
+
+
+
+    public function lembaga($slug = null)
+    {
+        if ($slug === null) {
+
+            $data['title']   = "Lembaga Desa Blahbatuh";
+            $data['lembaga'] = $this->Lembaga_model->get_all_lembaga();
+
+            $this->load->view('template/header', $data);
+            $this->load->view('template/navbar');
+            $this->load->view('landing/lembaga', $data);
+            $this->load->view('template/footer');
+        } 
+        else {
+
+            $lembaga = $this->Lembaga_model->get_lembaga_by_slug($slug);
+
+            if (!$lembaga) {
+                show_404();
+            }
+
+            $data['title']   = $lembaga['nama']; //menyimpan nama lembaga saja
+            $data['meta']    = $lembaga; //menyimpan seluruh data lembaga
+            $data['anggota'] = $this->Lembaga_model->get_anggota_by_slug($slug);
+            $data['bidang']  = $this->Lembaga_model->get_bidang_by_slug($slug);
+
+            $this->load->view('template/header', $data);
+            $this->load->view('template/navbar');
+            $this->load->view('landing/detail_lembaga', $data);
+            $this->load->view('template/footer');
+        }
+    }
+
+
 
 }

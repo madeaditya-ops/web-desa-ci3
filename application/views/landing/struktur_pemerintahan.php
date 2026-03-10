@@ -1,3 +1,15 @@
+<style>
+    .struktur-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    margin: auto;
+  }
+
+</style>
+
+
 <section class="struktur_pemerintahan" id="struktur_pemerintahan">
   <div class="container-fluid">
     <div class="row bg-dark-subtle px-4 px-md-5 py-3">
@@ -13,7 +25,7 @@
     <div class="row">
       <div class="col">
         <div class="card rounded-0 border-0 my-3">
-          <img src="<?=base_url('assets/image/struktur_pemerintahan.jpg')?>" alt="Struktur Pemerintahan Desa" class="struktur-img">
+          <img src="<?=base_url('assets/image/struktur_pemdes.jpeg')?>" alt="Struktur Pemerintahan Desa" class="struktur-img">
         </div>
       </div>
     </div>

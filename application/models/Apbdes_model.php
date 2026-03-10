@@ -63,4 +63,8 @@ class Apbdes_model extends CI_Model {
 
     return $query->result();
     }
+
+    
+
+
 }

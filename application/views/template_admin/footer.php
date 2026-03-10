@@ -69,6 +69,20 @@
     $('#dataTable').DataTable(); // #dataTable adalah ID dari tabel Anda
     });
     </script>
+
+
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Notifikasi pengaduan -->
+     <?php if($this->session->userdata('role') == 'kades'): ?>
+        <script>
+        var BASE_URL = "<?= base_url(); ?>";
+        </script>
+
+        <script src="<?= base_url('assets/js/notifikasi_pengaduan.js')?>"></script>
+    <?php endif; ?> 
+
 </body>
 
 </html>

@@ -23,6 +23,9 @@
     <!-- Custom styles for this page -->
     <link href="<?= base_url('assets/admin/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
 
+    <!-- Sweet Alert -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body id="page-top">

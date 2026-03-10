@@ -46,6 +46,12 @@ a{
     background-color: var(--accent);
     border: none;
     color: #fff;
+
+    &:hover{
+        background: var(--light);
+        border:1px solid var(--accent);
+        color: var(--accent);
+    }
 }
 
 .badge1{
@@ -227,7 +233,7 @@ a{
 }
 
 .struktur-img {
-  width: 50%;
+  width: 100%;
   height: auto;
   object-fit: cover;
   display: block;
@@ -275,7 +281,7 @@ a{
   width: 200px;
   height: 250px;
   object-fit: cover;
-  border: 2px solid #ddd;
+  /* border: 2px solid #ddd; */
   margin-bottom: 10px;
 }
 

@@ -1,100 +1,3 @@
-<!-- <style>
-  @media (max-width: 991px) and (min-width: 577px) {
-  .navbar-brand img {
-    max-height: 65px;
-  }
-
-  .navbar-nav .nav-link {
-    font-size: 0.85rem;
-  }
-
-  .offcanvas {
-    width: 70% !important;
-  }
-}
-
-/* Mobile kecil (≤576px) */
-@media (max-width: 576px) {
-  .navbar {
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
-  }
-
-  .navbar-brand img {
-    max-height: 60px;
-  }
-
-  .navbar-nav .nav-link,
-  .dropdown-menu .dropdown-item {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.4rem;
-  }
-
-  .offcanvas {
-    width: 80% !important;
-  }
-
-  .navbar-nav .nav-item {
-    margin-bottom: 0.2rem;
-  }
-
-  .navbar-toggler {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* Extra small mobile (≤480px) */
-@media (max-width: 480px) {
-  .navbar-brand img {
-    max-height: 60px;
-  }
-
-  .navbar-nav .nav-link,
-  .dropdown-menu .dropdown-item {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.3rem;
-  }
-
-  .offcanvas {
-    width: 90% !important;
-  }
-
-  .navbar-nav .nav-item {
-    margin-bottom: 0.15rem;
-  }
-}
-
-/* Ultra small (iPhone 4 / 320px) */
-/* @media (max-width: 320px) {
-  .navbar-brand img {
-    max-height: 25px;
-  }
-
-  .navbar-nav .nav-link,
-  .dropdown-menu .dropdown-item {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.2rem;
-  }
-
-  .offcanvas {
-    width: 100% !important;
-  }
-
-  .navbar-nav {
-    flex-wrap: wrap;
-  }
-
-  .navbar-nav .nav-item {
-    margin-bottom: 0.1rem;
-  }
-
-  .navbar-toggler {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.75rem;
-  }
-} */
-</style> -->
 <style>
 .navbar{
     background-color: #fff;
@@ -245,8 +148,9 @@
   <div class="container">
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center" href="<?= site_url('/'); ?>">
-      <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid" >
+      <img src="<?= base_url('assets/image/logo_desa.svg' ? 'assets/image/logo_desa.png' : ''); ?>" alt="Logo Desa" class="img-fluid" >
     </a>
+    
 
     <!-- Hamburger Menu -->
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="humberger">
@@ -267,9 +171,10 @@
           <!-- Beranda -->
           <li class="nav-item">
             <a class="nav-link <?= ($this->router->class == 'Landing' ? 'active' : '') ?>" href="<?= site_url('/'); ?>">Beranda</a>
+            
           </li>
 
-          <!-- Profile Desa Dropdown -->
+        <!-- Profile Desa Dropdown -->
          <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle <?= (
                 in_array($this->uri->segment(2), 
@@ -283,13 +188,16 @@
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'visi_misi' ? 'active' : '') ?>" href="<?= site_url('landing/visi_misi'); ?>">Visi Misi</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'struktur_pemerintahan' ? 'active' : '') ?>" href="<?= site_url('landing/struktur_pemerintahan'); ?>">Struktur Pemerintahan</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peta_wilayah' ? 'active' : '') ?>" href="<?= site_url('landing/peta_wilayah'); ?>">Peta Wilayah</a></li>
+            <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'lembaga' ? 'active' : '') ?>" href="<?= site_url('landing/lembaga'); ?>">Lembaga</a></li>
           </ul>
         </li>
 
         
+
+        
           <!-- Potensi Desa -->
           <li class="nav-item">
-            <a class="nav-link <?= ($this->uri->segment(2) == 'potensi_desa' ? 'active' : '') ?>" href="<?= site_url('landing/potensi_desa'); ?>">Potensi Desa</a>
+            <a class="nav-link <?= ($this->uri->segment(2) == 'potensi_desa' ? 'active' : '') ?>" href="<?= site_url('landing/potensi_desa'); ?>">Potensi</a>
           </li>
 
           <!-- Informasi Publik Dropdown -->
@@ -302,6 +210,7 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peraturan_desa' ? 'active' : '') ?>" href="<?= site_url('landing/peraturan_desa'); ?>">Peraturan Desa</a></li>
               <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'apbdes' ? 'active' : '') ?>" href="<?= site_url('landing/apbdes'); ?>">APBDes</a></li>
+              <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'berita_desa' ? 'active' : '') ?>" href="<?= site_url('landing/berita_desa'); ?>">Berita Desa</a></li>
             </ul>
           </li>
 
@@ -312,6 +221,7 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item <?= ($this->uri->segment(1) == 'login' ? 'active' : '') ?>" href="<?= base_url('login'); ?>" target="_blank">Pengajuan Surat</a></li>
+              <li><a class="dropdown-item <?= ($this->uri->segment(1) == 'pengaduan' ? 'active' : '') ?>" href="<?= base_url('pengaduan'); ?>" >Pengaduan Masyarakat</a></li>
             </ul>
           </li>
         </ul>

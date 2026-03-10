@@ -1,5 +1,16 @@
+<style>
+    .badge-counter {
+    font-size: 0.9rem;   
+    padding: 0.3em 0.4em; 
+    }
+
+</style>
+
+
+
 <!-- Sidebar -->
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand bg-white d-flex align-items-center justify-content-center" href="<?=base_url('Landing')?>">
@@ -55,6 +66,21 @@
             </div>
         </div>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLembaga"
+            aria-expanded="true" aria-controls="collapseLembaga">
+            <i class="fas fa-user-tie"></i>
+            <span>Lembaga</span>
+        </a>
+        <div id="collapseLembaga" class="collapse" aria-labelledby="headingUtilities"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('lembaga')?>">Data Lembaga</a>
+                <a class="collapse-item" href="<?= site_url('lembaga/create')?>">Tambah Lembaga</a>
+            </div>
+        </div>
+    </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
@@ -84,6 +110,21 @@
             </div>
         </div>
     </li>
+
+    <!-- Pengaduan Menu -->
+         <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-file-alt"></i>
+            <span>Pengaduan</span>
+        </a>
+        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('pengaduan_kades')?>">Data Pengaduan</a>
+            </div>
+        </div>
+    </li>
+
     
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
@@ -190,8 +231,9 @@
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-    
 </ul>
+
+
 <!-- End of Sidebar -->
 
 <!-- Content Wrapper -->
@@ -207,20 +249,6 @@
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                 <i class="fa fa-bars"></i>
             </button>
-
-            <!-- Topbar Search -->
-            <!-- <form
-                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                        aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
-                            <i class="fas fa-search fa-sm"></i>
-                        </button>
-                    </div>
-                </div>
-            </form> -->
 
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
@@ -248,6 +276,24 @@
                         </form>
                     </div>
                 </li>
+
+                <!-- Notification Item - Alerts -->
+                <?php if($this->session->userdata('role') == 'kades') { ?>
+                    <li class="nav-item dropdown no-arrow mx-1">
+                    <a class="nav-link dropdown-toggle" href="#"
+                        id="alertsDropdown" role="button" data-toggle="dropdown">
+                        <i class="fas fa-bell fa-fw fa-lg"></i>
+                        <span class="badge badge-danger badge-counter" id="notif_pengaduan" style="display: none;"></span>
+                    </a>
+
+                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi">
+                        <span class="dropdown-item text-center small text-gray-500">
+                        Tidak ada notifikasi
+                        </span>
+                    </div>
+                </li>
+                <?php } ?>
+
 
                 <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -279,3 +325,4 @@
             </ul>
         </nav>
 <!-- End of Topbar -->
+

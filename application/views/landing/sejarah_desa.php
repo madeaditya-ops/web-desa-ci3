@@ -25,7 +25,7 @@
 
   <div class="container-fluid px-4 px-md-5 mt-5 mb-5">
   <!-- Gambar -->
-    <div id="carouselExample"
+    <!-- <div id="carouselExample"
       class="carousel slide float-md-start float-none me-md-4 mb-3 rounded overflow-hidden w-100"
       style="width:40%; max-width:400px;">
 
@@ -62,9 +62,15 @@
         <span class="visually-hidden">Next</span>
       </button>
 
+    </div> -->
+
+    <div class="d-flex float-md-start float-none rounded mb-3 me-md-4"
+         style="max-width:400px; width:100%; overflow:hidden;">
+        <img src="<?=base_url('assets/image/sejarah_desa.jpeg')?>"
+             alt="Sejarah Desa Blahbatuh"
+             class="img-fluid rounded"
+             style="max-width:400px; width:100%;">
     </div>
-
-
 
     <!-- Teks -->
       <div class="content-desa">

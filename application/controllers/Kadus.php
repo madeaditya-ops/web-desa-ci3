@@ -1,13 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-/**
- * @property CI_Session $session
- * @property CI_Input $input
- * @property Template_surat_model $Template_surat_model
- * @property Dusun_model $Dusun_model
- */
-
 require FCPATH.'vendor/autoload.php';
 use PhpOffice\PhpWord\TemplateProcessor;
 
@@ -32,34 +25,18 @@ class Kadus extends CI_Controller {
         $this->load->view('kadus/dashboard', $data);
         $this->load->view('template_admin/footer');
     }
-    
-       private function tanggal_indonesia($tanggal)
+
+    private function tanggal_indonesia($tanggal)
     {
-        // Konversi format tanggal ke 'd F Y' jika belum
-        $tanggal_format = date('d F Y', strtotime($tanggal));
-        
-        $bulan = array (
-            1 =>   'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember'
-        );
-        
-        // Memecah tanggal menjadi bagian-bagian
-        $pecahkan = explode(' ', $tanggal_format);
-        
-        // Format: tanggal [spasi] nama_bulan [spasi] tahun
-        return $pecahkan[0] . ' ' . $bulan[ (int)date('m', strtotime($tanggal)) ] . ' ' . $pecahkan[2];
+        $bulan = [
+            1 => 'Januari','Februari','Maret','April','Mei','Juni',
+                 'Juli','Agustus','September','Oktober','November','Desember'
+        ];
+
+        $exp = explode('-', $tanggal);
+        return $exp[2].' '.$bulan[(int)$exp[1]].' '.$exp[0];
     }
-    // --- FUNGSI BARU UNTUK MENAMPILKAN FORM ---
+
     public function gunakan($id_template)
     {
         $data['template'] = $this->Template_surat_model->get_by_id($id_template);
@@ -74,12 +51,11 @@ class Kadus extends CI_Controller {
         $this->load->view('template_admin/footer');
     }
 
-    // --- FUNGSI BARU UNTUK PROSES PEMBUATAN SURAT ---
     public function proses_surat()
     {
         $id_template = $this->input->post('id_template');
         $template = $this->Template_surat_model->get_by_id($id_template);
-        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
+        $template_file = FCPATH.'uploads/template_surat/'.$template->file_template;
 
         if (!file_exists($template_file)) {
             $this->session->set_flashdata('error', 'File template tidak ditemukan!');
@@ -87,65 +63,76 @@ class Kadus extends CI_Controller {
         }
 
         try {
-            // 1. Ambil ID Dusun dan Nama Kadus dari session
-            $dusun_id = $this->session->userdata('dusun_id');
-            $nama_kadus = $this->session->userdata('nama');
 
-            // 2. Ambil detail data dusun dari database menggunakan model
-            $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
-            
-            // 3. Siapkan variabel (pastikan dusun_data ada untuk menghindari error)
-            $nama_dusun = $dusun_data ? $dusun_data->nama_dusun : 'Data Dusun Tidak Ditemukan';
-            $kode_dusun = $dusun_data ? $dusun_data->kode_dusun : 'ERR';
+            $dusun_id   = $this->session->userdata('dusun_id');
+            $nama_kadus = $this->session->userdata('nama') ;
 
-            $tanggal_sekarang = date('Y-m-d'); 
-            $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
+            $dusun      = $this->Dusun_model->get_by_id($dusun_id);
 
+            $nama_dusun = $dusun ? $dusun->nama_dusun : '';
+            $kode_dusun = $dusun ? $dusun->kode_dusun : '';
+
+            $tanggal_surat = $this->tanggal_indonesia(date('Y-m-d'));
+
+            // ===== VALIDASI TANGGAL LAHIR =====
+            $tgl_input = $this->input->post('tgl_lahir');
+            $tgl_lahir = $tgl_input ? date('d-m-Y', strtotime($tgl_input)) : '';
+
+            // ===== GABUNG TTL (PALING AMAN UNTUK WORD) =====
+            $ttl = trim($this->input->post('tempat_lahir'));
+            if ($tgl_lahir) {
+                $ttl .= ', '.$tgl_lahir;
+            }
 
             $templateProcessor = new TemplateProcessor($template_file);
 
-            // Mengisi placeholder dengan data yang sudah benar
+            // ===== DATA OTOMATIS =====
             $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
             $templateProcessor->setValue('dusun', $nama_dusun);
             $templateProcessor->setValue('kode_dusun', $kode_dusun);
             $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
-            $templateProcessor->setValue('tgl_buat', $tanggal_surat); 
+            $templateProcessor->setValue('tgl_buat', $tanggal_surat);
 
-            // Mengisi placeholder dari form input (ini sudah benar, tidak perlu diubah)
+            // ===== DATA FORM =====
             $templateProcessor->setValue('kode_surat', $this->input->post('kode_surat'));
-            // ... sisa setValue dari form ...
             $templateProcessor->setValue('no', $this->input->post('no'));
             $templateProcessor->setValue('nama', $this->input->post('nama'));
             $templateProcessor->setValue('nik', $this->input->post('nik'));
-            $templateProcessor->setValue('tempat_lahir', $this->input->post('tempat_lahir').', '.' ');
-            $templateProcessor->setValue('tgl_lahir', date('d-m-Y', strtotime($this->input->post('tgl_lahir'))));
+            $templateProcessor->setValue('ttl', $ttl);
             $templateProcessor->setValue('jenis_kelamin', $this->input->post('jenis_kelamin'));
             $templateProcessor->setValue('agama', $this->input->post('agama'));
             $templateProcessor->setValue('pekerjaan', $this->input->post('pekerjaan'));
             $templateProcessor->setValue('tujuan', $this->input->post('tujuan'));
             $templateProcessor->setValue('sts_kawin', $this->input->post('sts_kawin'));
 
-            // ... Sisa kode untuk download file (tidak perlu diubah) ...
-            $filename = 'Surat Keterangan - ' . $this->input->post('nama') . '.docx';
-            $filename = preg_replace('/[\\/\?%*:|"<>\x00-\x1F\x7F]/', '_', $filename);
-            
+            // ===== BERSIHKAN OUTPUT BUFFER (KRITIS) =====
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
+
+            $filename = 'Surat Keterangan - '.$this->input->post('nama').'.docx';
+
+            // REGEX AMAN (FIX)
+            $filename = preg_replace('/[\/\\\\\?\%\*\:\|"<>\x00-\x1F\x7F]/', '_', $filename);
+
             header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
             header("Content-Disposition: attachment; filename=\"$filename\"");
             header('Cache-Control: max-age=0');
-            
-            $templateProcessor->saveAs('php://output');
 
-        } catch (\Exception $e) {
-            $this->session->set_flashdata('error', 'Terjadi kesalahan saat membuat surat: ' . $e->getMessage());
+            $templateProcessor->saveAs('php://output');
+            exit;
+
+
+        } catch (Exception $e) {
+            $this->session->set_flashdata('error', 'Terjadi kesalahan: '.$e->getMessage());
             redirect('kadus');
         }
     }
-    
-    // --- FUNGSI BARU UNTUK DOWNLOAD BLANKO ---
+
     public function download_blanko($id_template)
     {
         $template = $this->Template_surat_model->get_by_id($id_template);
-        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
+        $template_file = FCPATH.'uploads/template_surat/'.$template->file_template;
 
         if (!file_exists($template_file)) {
             $this->session->set_flashdata('error', 'File template tidak ditemukan!');
@@ -153,52 +140,49 @@ class Kadus extends CI_Controller {
         }
 
         try {
-            // --- LAKUKAN PERUBAHAN YANG SAMA DI SINI ---
-            $dusun_id = $this->session->userdata('dusun_id');
-            $nama_kadus = $this->session->userdata('nama');
-            $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
-            
-            $nama_dusun = $dusun_data ? $dusun_data->nama_dusun : 'Data Dusun Tidak Ditemukan';
-            $kode_dusun = $dusun_data ? $dusun_data->kode_dusun : 'ERR';
-            
-            $tanggal_sekarang = date('Y-m-d'); 
-            $tanggal_surat = $this->tanggal_indonesia($tanggal_sekarang);
 
+            $dusun_id   = $this->session->userdata('dusun_id');
+            $nama_kadus = $this->session->userdata('nama');
+            $dusun      = $this->Dusun_model->get_by_id($dusun_id);
+
+            $nama_dusun = $dusun ? $dusun->nama_dusun : '';
+            $kode_dusun = $dusun ? $dusun->kode_dusun : '';
+
+            $tanggal_surat = $this->tanggal_indonesia(date('Y-m-d'));
 
             $templateProcessor = new TemplateProcessor($template_file);
 
-            // Data yang diisi otomatis
             $templateProcessor->setValue('kop_dusun', strtoupper($nama_dusun));
             $templateProcessor->setValue('dusun', $nama_dusun);
             $templateProcessor->setValue('kode_dusun', $kode_dusun);
             $templateProcessor->setValue('nama_kadus', strtoupper($nama_kadus));
             $templateProcessor->setValue('tgl_buat', $tanggal_surat);
-            
-            // Placeholder lain diisi titik-titik (tidak perlu diubah)
-            $titik = '............................................................................................................';
-            $templateProcessor->setValue('kode_surat', '.......');
+
+            $titik = '.........................................................';
+
+            $templateProcessor->setValue('kode_surat', '.....');
             $templateProcessor->setValue('no', '.....');
             $templateProcessor->setValue('nama', $titik);
             $templateProcessor->setValue('nik', $titik);
-            $templateProcessor->setValue('tempat_lahir', '');
-            $templateProcessor->setValue('tgl_lahir', $titik);
+            $templateProcessor->setValue('ttl', $titik);
             $templateProcessor->setValue('jenis_kelamin', $titik);
             $templateProcessor->setValue('agama', $titik);
             $templateProcessor->setValue('pekerjaan', $titik);
             $templateProcessor->setValue('tujuan', $titik);
             $templateProcessor->setValue('sts_kawin', $titik);
 
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
 
-            // ... Sisa kode untuk download file (tidak perlu diubah) ...
-            $filename = 'Blanko ' . $template->nama_surat . '.docx';
             header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-            header("Content-Disposition: attachment; filename=\"$filename\"");
+            header("Content-Disposition: attachment; filename=\"Blanko {$template->nama_surat}.docx\"");
             header('Cache-Control: max-age=0');
-            
+
             $templateProcessor->saveAs('php://output');
 
         } catch (Exception $e) {
-            $this->session->set_flashdata('error', 'Gagal membuat blanko: ' . $e->getMessage());
+            $this->session->set_flashdata('error', 'Gagal membuat blanko: '.$e->getMessage());
             redirect('kadus');
         }
     }
