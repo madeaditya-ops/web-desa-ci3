@@ -1,4 +1,107 @@
+<style>
 
+.timeline {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+
+.timeline li {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 30px;
+}
+
+
+.timeline li::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 0;
+    width: 2px;
+    height: calc(100% + 30px); 
+    background: #e3e6f0;
+}
+
+
+.timeline li:last-child::before {
+    display: none;
+}
+
+
+.timeline .dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #e3e6f0;
+    border: 2px solid #e3e6f0;
+    z-index: 2;
+}
+
+
+.timeline .content {
+    font-size: 15px;
+    color: #858796;
+    line-height: 1.4;
+}
+
+
+.timeline li.active .dot {
+    background: #1cc88a;
+    border-color: #1cc88a;
+}
+
+.timeline li.active::before {
+    background: #1cc88a;
+}
+
+.timeline li.active .content {
+    color: #1cc88a;
+    font-weight: 600;
+}
+
+
+.timeline li.rejected .dot {
+    background: #e74a3b;
+    border-color: #e74a3b;
+}
+
+.timeline li.rejected::before {
+    background: #e74a3b;
+}
+
+.timeline li.rejected .content {
+    color: #e74a3b;
+    font-weight: 600;
+}
+
+
+.timeline small {
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+
+
+@media (max-width: 576px) {
+    .timeline li {
+        padding-left: 35px;
+    }
+
+    .timeline .dot {
+        width: 14px;
+        height: 14px;
+    }
+
+    .timeline li::before {
+        left: 7px;
+    }
+}
+</style>
 
 <div class="container-fluid">
 
@@ -99,25 +202,36 @@
             <!-- Timeline Status -->
             <div class="card shadow mb-4">
                 <div class="card-header">
-                    Progress Status
+                    <h6 class="m-0 font-weight-bold text-primary">Progress Status</h6>
                 </div>
                 <div class="card-body">
+                    <ul class="timeline">
+                        <li class="active">
+                            <div class="dot"></div>
+                            <div class="content">Pengaduan Dibuat</div>
+                        </li>
 
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item text-success">
-                            Pengaduan Dibuat
+                        <li class="<?= in_array($pengaduan->status, ['diproses','ditolak','selesai']) ? 'active' : '' ?>">
+                            <div class="dot"></div>
+                            <div class="content">
+                                Diverifikasi
+                                <?php if($pengaduan->status == 'ditolak'): ?>
+                                    <small class="text-danger d-block">Pengaduan Ditolak</small>
+                                <?php endif; ?>
+                            </div>
                         </li>
-                        <li class="list-group-item <?= ($status != 'pending') ? 'text-success' : '' ?>">
-                            Diverifikasi
+
+                        <li class="<?= in_array($pengaduan->status, ['diproses','selesai']) ? 'active' : '' ?>">
+                            <div class="dot"></div>
+                            <div class="content">Diproses</div>
                         </li>
-                        <li class="list-group-item <?= ($status == 'diproses' || $status == 'selesai') ? 'text-success' : '' ?>">
-                            Diproses
+
+                        <li class="<?= ($pengaduan->status == 'selesai') ? 'active' : '' ?>">
+                            <div class="dot"></div>
+                            <div class="content">Selesai</div>
                         </li>
-                        <li class="list-group-item <?= ($status == 'selesai') ? 'text-success' : '' ?>">
-                            Selesai
-                        </li>
+
                     </ul>
-
                 </div>
             </div>
 
