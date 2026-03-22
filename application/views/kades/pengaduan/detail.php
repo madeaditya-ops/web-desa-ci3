@@ -37,7 +37,7 @@
 
                     <table class="table table-borderless">
                         <tr>
-                            <th>Kode Pengaduan</th>
+                            <th>Id Pengaduan</th>
                             <td><?= $pengaduan->id_pengaduan ?? '-' ?></td>
                         </tr>
                         <tr>

@@ -121,6 +121,7 @@
         <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="<?= site_url('pengaduan_kades')?>">Data Pengaduan</a>
+                <a class="collapse-item" href="<?= site_url('pengaduan_kades/arsip')?>">Arsip Pengaduan</a>
             </div>
         </div>
     </li>

@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Daftar Pengaduan</h1>
-    <p class="mb-4">Manajemen pengaduan masyarakat yang masuk ke desa.</p>
+    <p class="mb-4">Manajemen data pengaduan masyarakat yang masuk ke desa.</p>
 
     <?php if($this->session->flashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -108,6 +108,7 @@
                     </div>
                 <?php endif; ?>
         <div class="card-body">
+
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-dark" id="dataTable">
                     <thead class="thead-light">

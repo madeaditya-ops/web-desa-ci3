@@ -114,9 +114,8 @@ class Pengaduan extends CI_Controller {
         $this->form_validation->set_rules(
             'email_pelapor',
             'Email',
-            'required|valid_email|max_length[100]',
+            'permit_empty|valid_email|max_length[100]',
             [
-                'required'    => 'Email wajib diisi.',
                 'valid_email' => 'Format email tidak valid.',
                 'max_length'  => 'Email maksimal 100 karakter.'
             ]
@@ -184,6 +183,7 @@ class Pengaduan extends CI_Controller {
         $file = $this->upload->data('file_name');
         $nama = $this->input->post('nama_pelapor', true);
         $email = $this->input->post('email_pelapor', true);
+        $email = $email ? strtolower($email) : '-';
         $deskripsi = $this->input->post('deskripsi', true);
 
         $data = [
@@ -194,7 +194,6 @@ class Pengaduan extends CI_Controller {
             'latitude'         => $lat,
             'longitude'        => $lng,
             'foto_bukti'       => $file,
-            'ip_address'       => $this->input->ip_address(),
             'created_at'       => date('Y-m-d H:i:s'),
             'is_read'       => 0
         ];
@@ -229,7 +228,6 @@ class Pengaduan extends CI_Controller {
         $postData = http_build_query([
             'secret'   => $secretKey,
             'response' => $turnstileResponse,
-            'remoteip' => $this->input->ip_address()
         ]);
 
         

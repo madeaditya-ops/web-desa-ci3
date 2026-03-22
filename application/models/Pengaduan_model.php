@@ -87,4 +87,20 @@ class Pengaduan_model extends CI_Model {
             ->id_pengaduan;
     }
 
+    public function get_arsip($start_date = null, $end_date = null)
+    {
+        $this->db
+            ->where('status', 'selesai')
+            ->order_by('created_at', 'DESC');
+
+        if ($start_date && $end_date) {
+            $this->db->where('DATE(created_at) >=', $start_date);
+            $this->db->where('DATE(created_at) <=', $end_date);
+        }
+
+        return $this->db
+            ->get('pengaduan')
+            ->result();
+    }
+
 }

@@ -2,13 +2,15 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * @property CI_Input $input
  * @property CI_Session $session
  * @property CI_Upload $upload
  * @property CI_Email $email
+ * @property CI_Input $input
  * @property Pengaduan_model $Pengaduan_model
  */
 
+
+use Dompdf\Dompdf;
 
 class Pengaduan_kades extends CI_Controller {
 
@@ -37,14 +39,15 @@ class Pengaduan_kades extends CI_Controller {
 
     public function detail($id_pengaduan)
     {
-        if ($this->session->flashdata('trigger_email') == $id_pengaduan) {
-        $this->session->keep_flashdata('success');
-        
-        @$this->sendEmailNotification($id_pengaduan);
-    }
-
         $data['pengaduan'] = $this->Pengaduan_model->get_by_id($id_pengaduan);
+
+        if ($this->session->flashdata('trigger_email') == $id_pengaduan) {
+            $this->session->keep_flashdata('success');
+            $this->sendEmailNotification($id_pengaduan);
+        }
+
         $this->Pengaduan_model->read_single_notifikasi($id_pengaduan);
+
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('kades/pengaduan/detail', $data);
@@ -131,6 +134,10 @@ class Pengaduan_kades extends CI_Controller {
         $pengaduan = $this->Pengaduan_model->get_by_id($id);
         if (!$pengaduan) return;
 
+        if(empty($pengaduan->email_pelapor)) {
+            return;
+        }
+
         $data_email = [
             'nama_pelapor' => $pengaduan->nama_pelapor,
             'deskripsi'    => $pengaduan->deskripsi,
@@ -166,6 +173,53 @@ class Pengaduan_kades extends CI_Controller {
         $this->email->clear(TRUE);
     }
 
+
+    public function arsip()
+    {
+        $start_date = $this->input->get('start_date');
+        $end_date = $this->input->get('end_date');
+        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+        $this->load->view('template_admin/header');
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('kades/pengaduan/arsip', $data);
+        $this->load->view('template_admin/footer');
+    }
+
+    public function export_excel()
+    {
+        $start_date = $this->input->get('start_date');
+        $end_date   = $this->input->get('end_date');
+
+        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+        $data['start_date'] = $start_date; 
+        $data['end_date']   = $end_date;   
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=arsip_pengaduan.xls");
+
+        $this->load->view('kades/pengaduan/arsip_excel', $data);
+    }
+
+    
+    public function export_pdf()
+    {
+        $start_date = $this->input->get('start_date');
+        $end_date   = $this->input->get('end_date');
+
+        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+        $data['start_date'] = $start_date;
+        $data['end_date']   = $end_date;
+
+        $html = $this->load->view('kades/pengaduan/arsip_pdf', $data, true);
+
+        require_once FCPATH . 'vendor/autoload.php';
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $filename = "arsip_pengaduan_".$start_date."_sd_".$end_date.".pdf";
+        $dompdf->stream($filename, ["Attachment" => true]);
+    }
 
 
 
