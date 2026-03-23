@@ -183,7 +183,7 @@ class Pengaduan extends CI_Controller {
         $file = $this->upload->data('file_name');
         $nama = $this->input->post('nama_pelapor', true);
         $email = $this->input->post('email_pelapor', true);
-        $email = $email ? strtolower($email) : '-';
+        $email = $email ? strtolower($email) : null;
         $deskripsi = $this->input->post('deskripsi', true);
 
         $data = [

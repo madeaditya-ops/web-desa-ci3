@@ -149,7 +149,7 @@
                         </tr>
                         <tr>
                             <th>Email</th>
-                            <td><?= $pengaduan->email_pelapor ?></td>
+                            <td><?= $pengaduan->email_pelapor ? strtolower($pengaduan->email_pelapor) : '-' ?></td>
                         </tr>
                         <tr>
                             <th>Tanggal</th>
