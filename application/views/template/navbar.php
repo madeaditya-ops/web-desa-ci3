@@ -68,7 +68,7 @@
               Pusat Layanan
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item <?= ($this->uri->segment(1) == 'login' ? 'active' : '') ?>" href="<?= base_url('login'); ?>" target="_blank">Pengajuan Surat</a></li>
+              <li><a class="dropdown-item <?= ($this->uri->segment(1) == 'pengajuan_surat' ? 'active' : '') ?>" href="<?= base_url('admin/layanan/layanan'); ?>" target="_blank">Pengajuan Surat</a></li>
             </ul>
           </li>
         </ul>

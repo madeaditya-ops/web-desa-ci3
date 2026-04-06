@@ -189,6 +189,8 @@ $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
 $config['directory_trigger'] = 'd';
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Allow $_GET array
@@ -497,7 +499,7 @@ $config['compress_output'] = FALSE;
 | helper' page of the user guide for information regarding date handling.
 |
 */
-$config['time_reference'] = 'local';
+$config['time_reference'] = 'Asia/Jakarta';
 
 /*
 |--------------------------------------------------------------------------

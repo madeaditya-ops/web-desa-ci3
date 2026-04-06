@@ -36,10 +36,10 @@
                             <td><?= htmlspecialchars($a->nomor_pengantar) ?></td>
                             <td><?= htmlspecialchars($a->judul) ?></td>
                             <td class="text-center">
-                                <?php if($a->status == 'pending'): ?>
-                                    <span class="badge badge-warning">Pending</span>
+                                <?php if($a->status == 'menunggu'): ?>
+                                    <span class="badge badge-warning">Menunggu</span>
                                 <?php else: ?>
-                                    <span class="badge badge-success">Approved</span>
+                                    <span class="badge badge-success">Disetujui</span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">

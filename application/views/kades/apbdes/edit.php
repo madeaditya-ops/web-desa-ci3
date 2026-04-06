@@ -63,4 +63,5 @@
         var nextSibling = e.target.nextElementSibling;
         nextSibling.innerText = fileName;
     });
-script>
+
+</script>

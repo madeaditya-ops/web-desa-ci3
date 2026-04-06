@@ -40,6 +40,12 @@ class Template_surat extends Kades_Middleware {
         // Validasi input
         $this->form_validation->set_rules('nama_surat', 'Nama Surat', 'required|trim');
         $this->form_validation->set_rules('level_akses', 'Level Akses', 'required');
+        $this->form_validation->set_rules(
+    'nomor_template_surat',
+    'Nomor Template Surat',
+    'required|trim'
+            );
+
 
         if (empty($_FILES['file_template']['name'])) {
             $this->session->set_flashdata('error', 'File template wajib diunggah!');
@@ -66,6 +72,7 @@ class Template_surat extends Kades_Middleware {
             $file_template = $this->upload->data('file_name');
 
             $data = [
+                'nomor_template_surat'  => $this->input->post('nomor_template_surat'),
                 'nama_surat'    => $this->input->post('nama_surat'),
                 'file_template' => $file_template,
                 'level_akses'   => $this->input->post('level_akses'),
@@ -96,6 +103,12 @@ class Template_surat extends Kades_Middleware {
 
         $this->form_validation->set_rules('nama_surat', 'Nama Surat', 'required|trim');
         $this->form_validation->set_rules('level_akses', 'Level Akses', 'required');
+        $this->form_validation->set_rules(
+                'nomor_template_surat',
+                'Nomor Template Surat',
+                'required|trim'
+            );
+
 
         if ($this->form_validation->run() == FALSE) {
             $this->edit($id);
@@ -122,6 +135,7 @@ class Template_surat extends Kades_Middleware {
             }
 
             $data = [
+                'nomor_template_surat'  => $this->input->post('nomor_template_surat'),
                 'nama_surat'    => $this->input->post('nama_surat'),
                 'file_template' => $file_template,
                 'level_akses'   => $this->input->post('level_akses'),

@@ -145,8 +145,8 @@
                 <input type="password" class="form-input" name="password" placeholder="Password" required>
             </div>
             <div class="button-group">
-                <button type="submit" class="btn btn-login">Login</button>
                 <a href="<?= base_url('landing'); ?>" class="btn btn-kembali" style="text-decoration: none; text-align: center;">Kembali</a>
+                 <button type="submit" class="btn btn-login">Login</button>
             </div>
         </form>
     </div>
