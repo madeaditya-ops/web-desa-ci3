@@ -32,7 +32,7 @@
                     <label for="role">Role</label>
                     <select name="role" id="role" class="form-control" required>
                         <option value="">-- Pilih Role --</option>
-                        <option value="kades" <?= set_select('role', 'kades'); ?>>Kades</option>
+                        <option value="superadmin" <?= set_select('role', 'superadmin'); ?>>Super Admin</option>
                         <option value="admin" <?= set_select('role', 'admin'); ?>>Admin</option>
                         <option value="kadus" <?= set_select('role', 'kadus'); ?>>Kadus</option>
                     </select>

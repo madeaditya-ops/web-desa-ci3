@@ -39,7 +39,7 @@ class Auth extends CI_Controller {
                     'logged_in' => true
                 ]);
 
-                if ($user->role == 'kades') {
+                if ($user->role == 'superadmin') {
                     redirect('dashboard');
                 } elseif ($user->role == 'admin') {
                     redirect('admin');

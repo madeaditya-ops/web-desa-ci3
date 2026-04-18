@@ -162,7 +162,7 @@
 
                             <!-- Email -->
                             <div class="form-group col-md-6">
-                                <label>Email</label>
+                                <label>Email <span class="text-secondary fw-light">(Optional)</span></label>
                                 <input type="email"
                                     name="email_pelapor"
                                     maxlength="100"

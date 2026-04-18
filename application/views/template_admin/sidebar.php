@@ -20,7 +20,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <?php if ($this->session->userdata('role') == 'kades'): ?>
+    <?php if ($this->session->userdata('role') == 'superadmin'): ?>
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" href="<?= site_url('dashboard')?>">
@@ -279,7 +279,7 @@
                 </li>
 
                 <!-- Notification Item - Alerts -->
-                <?php if($this->session->userdata('role') == 'kades') { ?>
+                <?php if($this->session->userdata('role') == 'superadmin') { ?>
                     <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdown" role="button" data-toggle="dropdown">

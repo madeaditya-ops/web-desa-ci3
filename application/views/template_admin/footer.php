@@ -75,7 +75,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Notifikasi pengaduan -->
-     <?php if($this->session->userdata('role') == 'kades'): ?>
+     <?php if($this->session->userdata('role') == 'superadmin'): ?>
         <script>
         var BASE_URL = "<?= base_url(); ?>";
         </script>

@@ -28,7 +28,7 @@
                     <label for="role">Role</label>
                     <select name="role" id="role" class="form-control" required>
                         <option value="">-- Pilih Role --</option>
-                        <option value="kades" <?= $user->role == 'kades' ? 'selected' : '' ?>>Kades</option>
+                        <option value="superadmin" <?= $user->role == 'superadmin' ? 'selected' : '' ?>>Super Admin</option>
                         <option value="admin" <?= $user->role == 'admin' ? 'selected' : '' ?>>Admin</option>
                         <option value="kadus" <?= $user->role == 'kadus' ? 'selected' : '' ?>>Kadus</option>
                     </select>

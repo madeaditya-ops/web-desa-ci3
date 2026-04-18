@@ -114,7 +114,7 @@ class Pengaduan extends CI_Controller {
         $this->form_validation->set_rules(
             'email_pelapor',
             'Email',
-            'permit_empty|valid_email|max_length[100]',
+            'valid_email|max_length[100]',
             [
                 'valid_email' => 'Format email tidak valid.',
                 'max_length'  => 'Email maksimal 100 karakter.'
