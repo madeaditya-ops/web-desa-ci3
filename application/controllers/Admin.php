@@ -557,7 +557,7 @@ class Admin extends CI_Controller
 
                             // Escape karakter khusus XML
                             $val = htmlspecialchars($val);
-                            // ✅ TARUH FORCE REPLACE DI SINI (setelah foreach placeholders, sebelum addFromString)
+                            // TARUH FORCE REPLACE DI SINI (setelah foreach placeholders, sebelum addFromString)
                             $np = $data_input['nomor_pengantar'] ?? '';
                             if ($np !== '') {
                                 $xml_clean = preg_replace('/\[\s*nomor\s*[_\s]*pengantar\s*\]/i', htmlspecialchars($np), $xml_clean);
@@ -670,29 +670,34 @@ class Admin extends CI_Controller
                 if ($jenis_surat_val === '') $jenis_surat_val = '';
 
                 // Simpan metadata arsip ke DB
-                if (!empty($data_surat) && !empty($data_surat->arsip_id)) {
+$id_admin = $this->session->userdata('id_user');
+$id_pengajuan = $this->input->post('id_pengajuan'); // Ambil ID yang kita titipkan di form tadi
 
-                    $this->db->where('id', $data_surat->arsip_id);
-                    $this->db->update('arsip_surat', [
-                        'file_admin'           => $new_filename,
-                        'id_user'              => $this->session->userdata('id_user'),
-                        'nomor_surat'          => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? null,
-                        'status'               => 'setuju'
-                    ]);
-                } else {
+$pengajuan = null;
+if (!empty($id_pengajuan)) {
+    $pengajuan = $this->db->get_where('data_surat', ['id' => $id_pengajuan])->row();
+}
 
-                    $this->db->insert('arsip_surat', [
-                        'file_admin'     => $new_filename,
-                        'id_user'        => $this->session->userdata('id_user'),
-                        'nomor_surat'    => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? null,
-                        'nomor_pengantar' => $nomor_pengantar,
-                        'nama'           => $data_input['nama'] ?? null,
-                        'alamat_penerima' => $alamat_penerima,
-                        'jenis_surat'    => $jenis_surat_val,
-                        'status'         => 'setuju',
-                        'created_at'     => date('Y-m-d H:i:s')
-                    ]);
-                }
+if ($pengajuan && $pengajuan->arsip_id) {
+    // UPDATE baris yang sudah ada (Arsip Kadus)
+    $this->db->where('id', $pengajuan->arsip_id);
+    $this->db->update('arsip_surat', [
+        'file_admin'  => $new_filename,
+        'id_admin'    => $id_admin,
+        'status'      => 'setuju'
+    ]);
+} else {
+    // ➕ INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
+    $this->db->insert('arsip_surat', [
+        'id_template'     => $id,
+        'file_admin'      => $new_filename,
+        'id_user'         => $id_admin, 
+        'id_admin'        => $id_admin, 
+        'nama'            => $data_input['nama'] ?? null,
+        'status'          => 'setuju',
+        'created_at'      => date('Y-m-d H:i:s')
+    ]);
+        }
 
 
                 if ($id_data) {
