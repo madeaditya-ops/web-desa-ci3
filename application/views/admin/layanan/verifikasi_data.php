@@ -72,7 +72,8 @@
                         <i class="fas fa-eye"></i>
                     </button>
 
-                    <a href="<?= site_url('admin/setujui/'.$p->id) ?>"
+
+                    <a href="<?= site_url('admin/edit_surat/' . $p->id_template . '/' . $p->id) ?>" 
                     class="btn btn-success btn-sm"
                     onclick="return confirm('Yakin menyetujui data ini?')">
                         <i class="fas fa-check"></i>

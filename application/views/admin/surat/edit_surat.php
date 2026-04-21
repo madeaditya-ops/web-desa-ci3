@@ -190,7 +190,7 @@
                         </div>
                     </div>
                 </div>
-                <form method="post" autocomplete="off">
+                <form method="post" autocomplete="off" action="<?= site_url('admin/edit_surat/' . $surat->id . '/' . ($id_pengajuan ?? '')) ?>">
                     <input type="hidden" name="id_pengajuan" value="<?= (isset($auto_warga) && $auto_warga != null) ? $auto_warga->id : '' ?>">
                     <?php $banjar_rendered = false; // flag agar select banjar/kode hanya satu ?>
                     <?php if (!empty($placeholders)): ?>

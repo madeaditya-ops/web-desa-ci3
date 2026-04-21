@@ -399,13 +399,6 @@ class Admin extends CI_Controller
             $data['auto_warga'] = null;
         }
 
-        if ($id_data && $data_surat) {
-            $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
-            // JANGAN taruh update status & notif di sini (zona GET)
-        } else {
-            $data['auto_warga'] = null;
-        }
-
         // Tetap kirim list warga untuk dropdown
         $data['data_warga'] = $this->db
             ->select('id, nama, nik, banjar, is_new_approved')
