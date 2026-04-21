@@ -399,7 +399,12 @@ class Admin extends CI_Controller
             $data['auto_warga'] = null;
         }
 
-
+        if ($id_data && $data_surat) {
+            $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
+            // JANGAN taruh update status & notif di sini (zona GET)
+        } else {
+            $data['auto_warga'] = null;
+        }
 
         // Tetap kirim list warga untuk dropdown
         $data['data_warga'] = $this->db
@@ -684,18 +689,22 @@ if ($pengajuan && $pengajuan->arsip_id) {
     $this->db->update('arsip_surat', [
         'file_admin'  => $new_filename,
         'id_admin'    => $id_admin,
+        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
         'status'      => 'setuju'
     ]);
 } else {
-    // ➕ INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
+    // INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
     $this->db->insert('arsip_surat', [
-        'id_template'     => $id,
-        'file_admin'      => $new_filename,
-        'id_user'         => $id_admin, 
-        'id_admin'        => $id_admin, 
-        'nama'            => $data_input['nama'] ?? null,
-        'status'          => 'setuju',
-        'created_at'      => date('Y-m-d H:i:s')
+        'file_admin'     => $new_filename,
+        'id_user'        => $this->session->userdata('id_user'),
+        'id_admin'    => $id_admin,
+        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
+        'nomor_pengantar' => $nomor_pengantar,
+        'nama'           => $data_input['nama'] ?? null,
+        'alamat_penerima' => $alamat_penerima,
+        'jenis_surat'    => $jenis_surat_val,
+        'status'         => 'setuju',
+        'created_at'     => date('Y-m-d H:i:s')
     ]);
         }
 
