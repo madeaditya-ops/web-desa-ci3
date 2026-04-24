@@ -38,8 +38,12 @@
                             <td class="text-center">
                                 <?php if($a->status == 'menunggu'): ?>
                                     <span class="badge badge-warning">Menunggu</span>
-                                <?php else: ?>
+                                <?php elseif($a->status == 'ditolak'): ?>
+                                    <span class="badge badge-danger">Ditolak</span>
+                                <?php elseif($a->status == 'setuju'): ?>
                                     <span class="badge badge-success">Disetujui</span>
+                                <?php else: ?>
+                                    <span class="badge badge-secondary"><?= ucfirst($a->status) ?></span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">

@@ -220,7 +220,7 @@
 
                             <td>
                                 <?php
-                                $noTpl = trim((string)($a->nomor_template_surat ?? '')); // dari JOIN
+                                $noTpl = trim((string)($a->nomor_template_surat ?? '')); 
                                 $noSrt = trim((string)($a->nomor_surat ?? ''));
 
                                 echo htmlspecialchars(
@@ -229,28 +229,22 @@
                                         : ($noSrt !== '' ? ($noSrt . '/P.Blh') : '-')
                                 );
                                 ?>
-                                </td>
+                            </td>
 
                             <td>
                                 <?php
-                                $noTpl = trim((string)($a->nomor_template_surat ?? ''));
-                                $noPg  = trim((string)($a->nomor_pengantar ?? '')); 
-                                $kd    = trim((string)($a->kode_banjar ?? ''));
+                                // Ambil data langsung dari kolom nomor_pengantar di database
+                                $noPg = trim((string)($a->nomor_pengantar ?? '')); 
 
-                                echo htmlspecialchars(
-                                    ($noTpl !== '/' && $noPg !== '')
-                                        ? ($noTpl . '' . $noPg . '' )
-                                        : ($noPg !== '' ? $noPg : '')
-                                );
-
-                                if (($noTpl === '' || $noPg === '') && $kd !== '') {
-                                    echo '/KBD.' . htmlspecialchars($kd);
+                                if ($noPg !== '') {
+                                    // Karena di DB sudah lengkap (470/1/KBD.Tsn), langsung echo saja
+                                    echo htmlspecialchars($noPg);
+                                } else {
+                                    // Jika benar-benar kosong, baru tampilkan default
+                                    echo '-';
                                 }
-                                
-                                
                                 ?>
-                                
-                                </td>
+                            </td>
 
 
                                 <td><?= htmlspecialchars($a->nama ?? '-') ?></td>
@@ -273,6 +267,7 @@
                                     }
                                     ?>
                                 </td>
+                                
                             <td class="text-center">
                                     <?php if (!empty($a->file_admin) && file_exists(FCPATH.'uploads/surat/'.$a->file_admin)): ?>
                                         <a href="<?= site_url('admin/preview_surat/'.$a->id) ?>" class="btn btn-sm btn-info" title="Preview">

@@ -356,7 +356,7 @@ class Admin extends CI_Controller
         ]);
     }
 
-    public function edit_surat($id)
+    public function edit_surat($id, $id_pengajuan = null)
     {
         $this->load->model('Dusun_model');
         $data['dusun'] = $this->Dusun_model->get_all();
@@ -373,32 +373,42 @@ class Admin extends CI_Controller
             show_404();
         }
 
-        $id_data = $this->session->flashdata('auto_fill_id');
-        $data_surat = $this->db
-            ->get_where('data_surat', ['id' => $id_data])
-            ->row();
-        if ($id_data) {
+        // $id_data = $this->session->flashdata('auto_fill_id');
+        // $data_surat = $this->db
+        //     ->get_where('data_surat', ['id' => $id_data])
+        //     ->row();
+        // if ($id_data) {
+        //     $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
+
+        //     $this->db->where('id', $id_data)
+        //         ->update('data_surat', ['status' => 'disetujui']);
+
+        //     $this->db->where('id', $data_surat->arsip_id)
+        //         ->update('arsip_surat', ['status' => 'disetujui']);
+
+        //     $this->db->insert('notifikasi', [
+        //         'tujuan_role' => 'kadus',
+        //         'pesan'       => 'Surat telah disetujui, mohon segera ke kantor desa',
+        //         'link'        => site_url('kadus/arsip'),
+        //         'status'      => 'belum dibaca',
+        //         'created_at'  => date('Y-m-d H:i:s')
+        //     ]);
+        // } else {
+        //     $data['auto_warga'] = null;
+        // }
+
+        $id_data = $id_pengajuan; 
+    
+        $data_surat = $this->db->get_where('data_surat', ['id' => $id_data])->row();
+        
+        if ($id_data && $data_surat) {
             $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
-            // 1️⃣ Final update jadi disetujui
-            $this->db->where('id', $id_data)
-                ->update('data_surat', ['status' => 'disetujui']);
-
-            // 2️⃣ Update arsip_surat
-            $this->db->where('id', $data_surat->arsip_id)
-                ->update('arsip_surat', ['status' => 'disetujui']);
-
-            // 3️⃣ Kirim notifikasi ke kadus
-            $this->db->insert('notifikasi', [
-                'tujuan_role' => 'kadus',
-                'pesan'       => 'Surat telah disetujui, mohon segera ke kantor desa',
-                'link'        => site_url('kadus/arsip'),
-                'status'      => 'belum dibaca',
-                'created_at'  => date('Y-m-d H:i:s')
-            ]);
+            // JANGAN taruh update status & notif di sini (zona GET)
         } else {
             $data['auto_warga'] = null;
         }
 
+        
         // Tetap kirim list warga untuk dropdown
         $data['data_warga'] = $this->db
             ->select('id, nama, nik, banjar, is_new_approved')
@@ -430,6 +440,7 @@ class Admin extends CI_Controller
         // --- Jika form disubmit ---
         if ($this->input->post()) {
             $data_input = $this->input->post();
+            $data_input['id_template'] = $id;
 
             // ===============================
             // A) AMBIL NILAI PLACEHOLDER [keterangan] DARI INPUT FORM
@@ -669,11 +680,11 @@ class Admin extends CI_Controller
 
                 // Simpan metadata arsip ke DB
 $id_admin = $this->session->userdata('id_user');
-$id_pengajuan = $this->input->post('id_pengajuan'); // Ambil ID yang kita titipkan di form tadi
+$id_pengajuan_post = $this->input->post('id_pengajuan'); // Ambil ID yang kita titipkan di form tadi
 
 $pengajuan = null;
-if (!empty($id_pengajuan)) {
-    $pengajuan = $this->db->get_where('data_surat', ['id' => $id_pengajuan])->row();
+if (!empty($id_pengajuan_post)) {
+    $pengajuan = $this->db->get_where('data_surat', ['id' => $id_pengajuan_post])->row();
 }
 
 if ($pengajuan && $pengajuan->arsip_id) {
@@ -685,12 +696,19 @@ if ($pengajuan && $pengajuan->arsip_id) {
         'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
         'status'      => 'setuju'
     ]);
+        $this->db->where('id', $id_pengajuan_post);
+        $this->db->update('data_surat', ['status' => 'approved']);
+
 } else {
     // INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
     $this->db->insert('arsip_surat', [
         'file_admin'     => $new_filename,
         'id_user'        => $this->session->userdata('id_user'),
-        'id_admin'    => $id_admin,
+        'id_admin'       => $id_admin,
+        'id_template'          => $idTemplate, 
+        'nomor_template_surat' => $nomorTemplate,
+        'kode_banjar' => $data_input['kode_banjar'] ?? '',
+        'banjar'      => $data_input['banjar'] ?? '',
         'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
         'nomor_pengantar' => $nomor_pengantar,
         'nama'           => $data_input['nama'] ?? null,
@@ -990,7 +1008,11 @@ if ($pengajuan && $pengajuan->arsip_id) {
 
 
         $this->load->model('Arsip_model');
-        $data['arsip'] = $this->Arsip_model->get_between($from, $to) ?: []; // Pastikan array
+        if (!empty($from) || !empty($to)) {
+            $data['arsip'] = $this->Arsip_model->getArsip($from, $to) ?: [];
+        } else {
+            $data['arsip'] = $this->Arsip_model->get_all() ?: [];
+        }
 
 
         $this->load->view('template_admin/header');

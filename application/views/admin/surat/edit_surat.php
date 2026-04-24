@@ -288,7 +288,7 @@
                                         <div class="<?= $col_class ?> mb-3">
                                                 <label for="kode_banjar" class="font-weight-bold">Banjar / Kode Banjar</label>
 
-                                                <select name="kode_banjar" id="kode_banjar" class="form-control">
+                                                <select name="kode_banjar" id="kode_banjar" class="form-control" required>
                                                     <option value="">-- Pilih Banjar --</option>
 
                                                     <?php foreach($dusun as $d): ?>
@@ -320,7 +320,7 @@
                                     </label>
 
                                     <?php if ($is_gender): ?>
-                                    <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control">
+                                    <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control" required>
                                             <option value="">-- Pilih Jenis Kelamin --</option>
                                             <option value="Laki-laki"
                                                 <?= (isset($auto_warga->$ph_key) && $auto_warga->$ph_key == 'Laki-laki') ? 'selected' : '' ?>>
@@ -334,7 +334,7 @@
 
 
                                     <?php elseif ($is_religion): ?>
-                                        <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control">
+                                        <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control" required>
                                             <option value="">-- Pilih Agama --</option>
                                             <option value="Islam" <?= set_select($ph_key, 'Islam') ?>>Islam</option>
                                             <option value="Kristen" <?= set_select($ph_key, 'Kristen') ?>>Kristen</option>
@@ -360,7 +360,7 @@
                                     ?>
                                     <select name="<?= htmlspecialchars($ph_key) ?>"
                                             id="<?= htmlspecialchars($ph_key) ?>"
-                                            class="form-control">
+                                            class="form-control" required>
 
                                         <option value="">-- Pilih Status Perkawinan --</option>
 
@@ -396,7 +396,7 @@
                                             class="form-control"
                                             name="<?= htmlspecialchars($ph_key) ?>"
                                             id="<?= htmlspecialchars($ph_key) ?>"
-                                            value="<?= set_value($ph_key) ?>">
+                                            value="<?= set_value($ph_key) ?>" required>
 
                                     <?php elseif ($is_number): ?>
                                         <input type="number"
@@ -404,7 +404,7 @@
                                             name="<?= htmlspecialchars($ph_key) ?>"
                                             id="<?= htmlspecialchars($ph_key) ?>"
                                             value="<?= set_value($ph_key) ?>"
-                                            placeholder="isi nomor surat dengan angka">
+                                            placeholder="isi nomor surat dengan angka" required>
 
                                 <?php elseif ($is_pengantar): ?>
 
@@ -421,7 +421,7 @@
                                                 name="<?= htmlspecialchars($ph_key) ?>"
                                                 id="<?= htmlspecialchars($ph_key) ?>"
                                                 value="<?= htmlspecialchars($current_value) ?>"
-                                                placeholder="isi nomor pengantar banjar dengan angka">
+                                                placeholder="isi nomor pengantar banjar dengan angka" required>
 
                                     <?php elseif ($is_nik): ?>
                                     <?php
@@ -438,7 +438,7 @@
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= htmlspecialchars($current_value) ?>"
-                                        placeholder="isi nomor nik dengan angka">
+                                        placeholder="isi nomor nik dengan angka" required>
 
 
                                     <?php elseif ($is_menikah): ?>
@@ -447,7 +447,7 @@
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi nama suami/istri yang bersangkutan">
+                                        placeholder="isi nama suami/istri yang bersangkutan" required>
 
                                     <?php elseif ($is_pewaris): ?>
                                     <input type="text"
@@ -455,7 +455,7 @@
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi nama pewaris yang bersangkutan">
+                                        placeholder="isi nama pewaris yang bersangkutan" required>
 
                                     <?php elseif ($is_keterangan): ?>
                                     <input type="text"
@@ -463,7 +463,7 @@
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi keterangan dengan huruf besar">
+                                        placeholder="isi keterangan dengan huruf besar" required>
 
 
                                     <?php elseif ($is_tujuan): ?>
@@ -472,7 +472,7 @@
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi tujuan untuk apa surat ini dibuat">
+                                        placeholder="isi tujuan untuk apa surat ini dibuat" required>
 
 
                                     <?php elseif ($is_textarea): ?>
@@ -480,7 +480,7 @@
                                                 name="<?= htmlspecialchars($ph_key) ?>"
                                                 id="<?= htmlspecialchars($ph_key) ?>"
                                                 rows="4"
-                                                placeholder="Isi <?= $display_label ?>"><?= set_value($ph_key) ?></textarea>
+                                                placeholder="Isi <?= $display_label ?>" required><?= set_value($ph_key) ?></textarea>
 
                                     <?php else: ?>
                                         <input type="text"
@@ -488,7 +488,7 @@
                                             name="<?= htmlspecialchars($ph_key) ?>"
                                             id="<?= htmlspecialchars($ph_key) ?>"
                                             value="<?= set_value($ph_key) ?>"
-                                            placeholder="Isi <?= $display_label ?>">
+                                            placeholder="Isi <?= $display_label ?>" required>
                                     <?php endif; ?>
                                 </div>
 

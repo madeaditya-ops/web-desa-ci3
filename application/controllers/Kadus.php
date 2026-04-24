@@ -119,10 +119,6 @@ class Kadus extends CI_Controller
         // 3. Simpan ke Database
         $this->db->trans_start();
 
-        // ===============================
-        // 1️⃣ SIMPAN KE ARSIP KADUS
-        // ===============================
-
         $data_arsip = [
             'filename'              => $new_filename, // draft kadus
             'file_admin'            => NULL, // nanti diisi admin
@@ -142,10 +138,7 @@ class Kadus extends CI_Controller
         $this->db->insert('arsip_surat', $data_arsip);
         $id_arsip = $this->db->insert_id();
 
-        // ===============================
-        // 2️⃣ SIMPAN KE DATA_SURAT ADMIN
-        // ===============================
-
+        // simpan ke admin untuk diverifikasi
         $data_admin = [
             'id_template'     => $id_template_tujuan,
             'arsip_id'        => $id_arsip,
@@ -169,11 +162,7 @@ class Kadus extends CI_Controller
 
         $this->db->insert('data_surat', $data_admin);
 
-
-        // ===============================
-        // 3️⃣ NOTIFIKASI ADMIN
-        // ===============================
-
+        // notif admin
         $this->db->insert('notifikasi', [
             'tujuan_role' => 'admin',
             'pesan'       => 'Ada pengajuan surat baru dari Kadus',
