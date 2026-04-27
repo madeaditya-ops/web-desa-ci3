@@ -108,7 +108,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Pengaduan</h1>
-        <a href="<?= site_url('pengaduan_kades') ?>" 
+        <a href="<?= site_url('PengaduanAdmin') ?>" 
            class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
@@ -158,6 +158,10 @@
                         <tr>
                             <th>Lokasi</th>
                             <td><?= $pengaduan->lokasi_pengaduan ?></td>
+                        </tr>
+                        <tr>
+                            <th>Kategori</th>
+                            <td><?= $pengaduan->nama_kategori ?></td>
                         </tr>
                         <tr>
                             <th>Status</th>
@@ -245,7 +249,7 @@
 
                     <div class="card-body">
 
-                        <form method="post" action="<?= site_url('pengaduan_kades/verifikasi/'.$pengaduan->id_pengaduan) ?>">
+                        <form method="post" action="<?= site_url('PengaduanAdmin/verifikasi/'.$pengaduan->id_pengaduan) ?>">
 
                             <button type="submit" name="aksi" value="proses" class="btn btn-primary btn-block mb-3">
                                 <i class="fas fa-check"></i> Setujui & Proses
@@ -286,7 +290,7 @@
 
                         <form method="post" 
                               enctype="multipart/form-data"
-                              action="<?= site_url('pengaduan_kades/selesai/'.$pengaduan->id_pengaduan) ?>">
+                              action="<?= site_url('PengaduanAdmin/selesai/'.$pengaduan->id_pengaduan) ?>">
 
                             <div class="form-group">
                                 <label>Upload Bukti Penyelesaian</label>

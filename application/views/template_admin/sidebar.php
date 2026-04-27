@@ -33,7 +33,7 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Menu
+        Landing Page
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
@@ -111,8 +111,31 @@
         </div>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-balance-scale"></i>
+            <span>Peraturan Desa</span>
+        </a>
+        <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('peraturan')?>">Data Peraturan</a>
+                <a class="collapse-item" href="<?= site_url('peraturan/create')?>">Tambah Data</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+
+    <!-- Heading -->
+    <div class="sidebar-heading mt-3">
+        Public Service
+    </div>
+
     <!-- Pengaduan Menu -->
-         <li class="nav-item">
+    <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-file-alt"></i>
@@ -120,8 +143,8 @@
         </a>
         <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('pengaduan_kades')?>">Data Pengaduan</a>
-                <a class="collapse-item" href="<?= site_url('pengaduan_kades/arsip')?>">Arsip Pengaduan</a>
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">Data Pengaduan</a>
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
             </div>
         </div>
     </li>
@@ -141,19 +164,7 @@
         </div>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-balance-scale"></i>
-            <span>Peraturan Desa</span>
-        </a>
-        <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('peraturan')?>">Data Peraturan</a>
-                <a class="collapse-item" href="<?= site_url('peraturan/create')?>">Tambah Data</a>
-            </div>
-        </div>
-    </li>
+
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAPBDES"

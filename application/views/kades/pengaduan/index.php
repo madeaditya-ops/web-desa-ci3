@@ -25,12 +25,14 @@
         <div class="col mb-2">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                        Pending
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?= $count_pending ?>
-                    </div>
+                    <a href="<?= site_url('PengaduanAdmin?status=pending') ?>" class="text-decoration-none">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_pending ?>
+                        </div>
+                    </a> 
                 </div>
             </div>
         </div>
@@ -38,12 +40,14 @@
         <div class="col mb-2">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Diproses
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?= $count_diproses ?>
-                    </div>
+                    <a href="<?= site_url('PengaduanAdmin?status=diproses') ?>" class="text-decoration-none">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Diproses
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_diproses ?>
+                        </div>                 
+                    </a>
                 </div>
             </div>
         </div>
@@ -51,12 +55,14 @@
         <div class="col mb-2">
             <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                        Ditolak
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?= $count_ditolak ?>
-                    </div>
+                    <a href="<?= site_url('PengaduanAdmin?status=ditolak') ?>" class="text-decoration-none">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Ditolak
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_ditolak ?>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -64,12 +70,14 @@
         <div class="col mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                        Selesai
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?= $count_selesai ?>
-                    </div>
+                    <a href="<?= site_url('PengaduanAdmin?status=selesai') ?>" class="text-decoration-none">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Selesai
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_selesai ?>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -77,12 +85,14 @@
         <div class="col mb-2">
             <div class="card border-left-dark shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
-                        Total 
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?= $total_pengaduan ?>
-                    </div>
+                    <a href="<?= site_url('PengaduanAdmin') ?>" class="text-decoration-none">
+                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                            Total 
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $total_pengaduan ?>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -95,7 +105,12 @@
     <!-- Tabel Pengaduan -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Pengaduan</h6>
+            <h6 class="m-0 font-weight-bold text-primary">
+                Data Pengaduan
+                <?php if(!empty($filter_status)): ?>
+                    - <?= ucfirst($filter_status) ?>
+                <?php endif; ?>
+            </h6>
         </div>
         <?php if ($this->session->flashdata('success')): ?>
                     <div class="alert alert-success" role="alert">
@@ -115,8 +130,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th>Nama Pelapor</th>
+                            <th>Kategori</th>
                             <th>Deskripsi Singkat</th>
-                            <th width="15%">Foto</th>
+                            <th width="10%">Foto</th>
                             <th width="15%">Tanggal</th>
                             <th width="10%">Status</th>
                             <th width="15%">Aksi</th>
@@ -134,6 +150,7 @@
                                     </span>
                                 <?php endif; ?>
                             </td>
+                            <td><?= $p->nama_kategori ?></td>
                             <td>
                                 <?= html_escape(mb_substr(strip_tags($p->deskripsi), 0, 70, 'UTF-8')); ?>
                                 <?= strlen($p->deskripsi) > 70 ? '...' : ''; ?>
@@ -158,7 +175,7 @@
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
-                                <a href="<?= site_url('pengaduan_kades/detail/'.$p->id_pengaduan) ?>"
+                                <a href="<?= site_url('PengaduanAdmin/detail/'.$p->id_pengaduan) ?>"
                                    class="btn btn-info btn-sm">
                                     <i class="fas fa-eye"></i> Detail
                                 </a>

@@ -26,6 +26,7 @@ class Pengaduan extends CI_Controller {
     {
         $data['title'] = "Pengaduan Masyarakat Desa Blahbatuh";
         $data['turnstile_site_key'] = $this->config->item('turnstile_site_key');
+        $data['kategori_pengaduan'] = $this->Pengaduan_model->get_kategori_pengaduan();
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/pengaduan');
@@ -121,6 +122,15 @@ class Pengaduan extends CI_Controller {
             ]
         );
         $this->form_validation->set_rules(
+            'kategori_pengaduan',
+            'Kategori Pengaduan',
+            'required|in_list[' . implode(',', array_column($this->Pengaduan_model->get_kategori_pengaduan(), 'id_kategori')) . ']',
+            [
+                'required' => 'Kategori pengaduan wajib dipilih.',
+                'in_list'  => 'Kategori pengaduan tidak valid.'
+            ]
+        );
+        $this->form_validation->set_rules(
             'deskripsi',
             'Deskripsi',
             'required|max_length[500]|callback_word_limit|callback_validasi_teks',
@@ -189,6 +199,7 @@ class Pengaduan extends CI_Controller {
         $data = [
             'nama_pelapor'  => ucwords(strtolower($nama)),
             'email_pelapor' => strtolower($email),
+            'id_kategori'   => $this->input->post('kategori_pengaduan', true),
             'deskripsi'     => ucfirst(strtolower($deskripsi)),
             'lokasi_pengaduan' => $this->input->post('lokasi_pengaduan', true),
             'latitude'         => $lat,

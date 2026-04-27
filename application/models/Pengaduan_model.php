@@ -4,16 +4,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Pengaduan_model extends CI_Model {
     public function get_all() {
         return $this->db
-            ->order_by('created_at', 'DESC')
-            ->get('pengaduan')
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori')
+            ->from('pengaduan')
+            ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->order_by('pengaduan.created_at', 'DESC')
+            ->get()
             ->result();
     }
 
     public function get_by_id($id) {
         $query = $this->db
-            ->get_where('pengaduan', array('id_pengaduan' => $id));
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori')
+            ->from('pengaduan')
+            ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->where('pengaduan.id_pengaduan', $id)
+            ->get();
+
         return $query->row();
     }
+
 
     public function insert($data) {
         return $this->db->insert('pengaduan', $data);
@@ -90,17 +99,85 @@ class Pengaduan_model extends CI_Model {
     public function get_arsip($start_date = null, $end_date = null)
     {
         $this->db
-            ->where('status', 'selesai')
-            ->order_by('created_at', 'DESC');
+            ->select('p.*, k.nama_kategori')
+            ->from('pengaduan p')
+            ->join('kategori_pengaduan k', 'k.id_kategori = p.id_kategori', 'left')
+            ->where('p.status', 'selesai')
+            ->order_by('p.created_at', 'DESC');
 
         if ($start_date && $end_date) {
-            $this->db->where('DATE(created_at) >=', $start_date);
-            $this->db->where('DATE(created_at) <=', $end_date);
+            $this->db->where('DATE(p.created_at) >=', $start_date);
+            $this->db->where('DATE(p.created_at) <=', $end_date);
         }
 
         return $this->db
-            ->get('pengaduan')
+            ->get()
             ->result();
+    }
+
+    // kategori_pengaduan
+    public function get_kategori_pengaduan() {
+        return $this->db
+            ->get('kategori_pengaduan')
+            ->result();
+    }
+
+    //pie chart kategori pengaduan
+    public function get_kategori_chart($tahun)
+    {
+        $this->db->select('k.nama_kategori, COUNT(p.id_pengaduan) as total');
+        $this->db->from('pengaduan p');
+        $this->db->join('kategori_pengaduan k', 'p.id_kategori = k.id_kategori', 'left');
+
+        $this->db->where('p.status !=', 'ditolak');
+        $this->db->where('YEAR(p.created_at)', $tahun);
+
+        $this->db->group_by('k.id_kategori');
+        $this->db->order_by('total', 'DESC');
+
+        return $this->db->get()->result();
+    }
+
+    //untuk filter table berdasarkan status
+    public function get_by_status($status)
+    {
+        return $this->db
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori')
+            ->from('pengaduan')
+            ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->where('pengaduan.status', $status)
+            ->order_by('created_at', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    public function get_rata_rata_waktu(){
+        $query = $this->db->query("
+            SELECT 
+                AVG(TIMESTAMPDIFF(DAY, created_at, finished_at)) AS rata_rata_waktu
+            FROM pengaduan
+            WHERE status = 'selesai'
+            AND finished_at IS NOT NULL
+        ");
+
+        $row = $query->row();
+        return $row ? ($row->rata_rata_waktu ?? 0) : 0;
+    }
+
+    public function get_pengaduan_per_bulan($tahun)
+    {
+        $query = $this->db->query("
+            SELECT 
+                MONTH(created_at) AS bulan,
+                COUNT(*) AS total
+            FROM pengaduan
+            WHERE YEAR(created_at) = ?
+            AND status != 'ditolak'
+            GROUP BY MONTH(created_at)
+            ORDER BY MONTH(created_at)
+        ", [$tahun]);
+
+        return $query->result();
     }
 
 }

@@ -12,25 +12,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use Dompdf\Dompdf;
 
-class Pengaduan_kades extends CI_Controller {
+class PengaduanAdmin extends CI_Controller {
 
     public function __construct()
     {
         parent::__construct();
         $this->load->model('Pengaduan_model');
         $this->load->library(['upload','email', 'session']);
+        date_default_timezone_set('Asia/Makassar');
 
     }
 
     
     public function index()
     {
-        $data['pengaduan'] = $this->Pengaduan_model->get_all();
+        $status = $this->input->get('status');
+         if ($status) {
+            $data['pengaduan'] = $this->Pengaduan_model->get_by_status($status);
+        } else {
+            $data['pengaduan'] = $this->Pengaduan_model->get_all();
+        }
+
+        //data statistik
         $data['count_pending'] = $this->Pengaduan_model->count_pending();
         $data['count_diproses'] = $this->Pengaduan_model->count_diproses();
         $data['count_ditolak'] = $this->Pengaduan_model->count_ditolak();
         $data['count_selesai'] = $this->Pengaduan_model->count_selesai();
         $data['total_pengaduan'] = $this->Pengaduan_model->total_pengaduan();
+
+        $data['filter_status'] = $status;
+
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('kades/pengaduan/index', $data);
@@ -78,14 +89,14 @@ class Pengaduan_kades extends CI_Controller {
 
         } else {
             $this->session->set_flashdata('error','Aksi tidak valid');
-            redirect('pengaduan_kades/detail/'.$id);
+            redirect('PengaduanAdmin/detail/'.$id);
         }
         $this->Pengaduan_model->update($id, $data);
 
         $this->session->set_flashdata('success', $message);
         $this->session->set_flashdata('trigger_email', $id); 
 
-        redirect('pengaduan_kades/detail/'.$id);
+        redirect('PengaduanAdmin/detail/'.$id);
     }
 
 
@@ -98,7 +109,8 @@ class Pengaduan_kades extends CI_Controller {
         }
         
         $data = [
-            'status' => 'selesai'
+            'status' => 'selesai',
+            'finished_at'       => date('Y-m-d H:i:s'),
         ];
         
         if (!empty($_FILES['foto_tindaklanjut']['name'])) {
@@ -126,7 +138,7 @@ class Pengaduan_kades extends CI_Controller {
         $this->session->set_flashdata('success', 'Pengaduan berhasil diselesaikan');
         $this->session->set_flashdata('trigger_email', $id); 
 
-        redirect('pengaduan_kades/detail/'.$id);
+        redirect('PengaduanAdmin/detail/'.$id);
     }
 
     private function sendEmailNotification($id)

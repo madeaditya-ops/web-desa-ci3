@@ -63,6 +63,7 @@
                 <th width="5%">No</th>
                 <th>ID</th>
                 <th>Nama</th>
+                <th>Kategori</th>
                 <th>Deskripsi</th>
                 <th>Tanggal</th>
                 <th>Lokasi</th>
@@ -73,7 +74,7 @@
         <tbody>
             <?php if (empty($pengaduan)) : ?>
                 <tr>
-                    <td colspan="7" class="text-center">Tidak ada data</td>
+                    <td colspan="8" class="text-center">Tidak ada data</td>
                 </tr>
             <?php else : ?>
                 <?php $no = 1; foreach ($pengaduan as $p): ?>
@@ -81,6 +82,7 @@
                     <td class="text-center"><?= $no++ ?></td>
                     <td><?= $p->id_pengaduan ?></td>
                     <td><?= $p->nama_pelapor ?></td>
+                    <td><?= $p->nama_kategori ?></td>
                     <td><?= $p->deskripsi ?></td>
                     <td class="text-center">
                         <?= date('d-m-Y', strtotime($p->created_at)) ?>
@@ -91,7 +93,7 @@
                 <?php endforeach; ?>
             <?php endif; ?>
             <tr>
-                <td colspan="6" class="text-right"><b>Total Pengaduan</b></td>
+                <td colspan="7" class="text-right"><b>Total Pengaduan</b></td>
                 <td class="text-center"><b><?= count($pengaduan) ?></b></td>
             </tr>
         </tbody>

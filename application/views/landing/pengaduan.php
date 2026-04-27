@@ -179,6 +179,23 @@
 
                         </div>
 
+                        <!-- Kategori Pengaduan -->
+                         <div class="form-group col-12 mb-3">
+                            <label for="kategori_pengaduan">Kategori Pengaduan</label>
+                            <select name="kategori_pengaduan" id="kategori_pengaduan" class="form-control <?= error_class('kategori_pengaduan') ?>">
+                                <option value="">Pilih Kategori</option>
+                                <?php foreach ($kategori_pengaduan as $kategori): ?>
+                                    <option value="<?= $kategori->id_kategori ?>"><?= $kategori->nama_kategori ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <?php if (error('kategori_pengaduan')): ?>
+                                <small class="text-danger">
+                                    <?= error('kategori_pengaduan') ?>
+                                </small>
+                            <?php endif; ?>
+                         </div>
+
                         <!-- Deskripsi -->
                         <div class="form-group col-12 mb-3">
                             <label for="deskripsi" class="fw-semibold">Deskripsi Laporan</label>

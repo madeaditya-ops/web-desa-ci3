@@ -1,76 +1,268 @@
 <section>
     <div class="container-fluid">
-            <style>
-        .kpi-card { border-radius: .75rem; overflow: hidden; color: #fff; }
-        .kpi-card .card-body { padding: 1.25rem; }
-        .kpi-icon { font-size: 2.25rem; opacity: .9; }
-        .kpi-value { font-size: 2.25rem; font-weight: 700; line-height: 1; }
-        .card-graph { border-radius: .75rem; }
 
-        /* ubah ukuran chart menjadi lebih kecil */
-        .card-graph .card-body { padding: 0.9rem; }
-        #suratChart { max-height: 120px !important; height: 90px !important; }
-
-        /* Ringkasan cepat - diperkecil */
-        .card-quick .card-header { font-size: 0.95rem; padding: .6rem .9rem; }
-        .card-quick .card-body { padding: .9rem; font-size: 0.88rem; }
-        .card-quick .list-unstyled li { padding: .25rem 0; display:flex; justify-content:space-between; align-items:center; }
-        .card-quick .list-unstyled small { font-size: .82rem; color: #6c757d; }
-        .card-quick .btn { padding: .35rem .6rem; font-size: .78rem; }
-
-        .small-muted { color: white; font-size: .9rem; }
-        .chart-legend { display:flex; gap:1rem; align-items:center; margin-top:.5rem; }
-        .legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; margin-right:.45rem; }
-    </style>
-    
         <div class="row mb-4">
-            <?php $avg7 = (isset($chart_data) && is_array($chart_data) && count($chart_data)) ? round(array_sum($chart_data) / count($chart_data), 2) : 0; ?>
-
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card kpi-card" style="background: linear-gradient(90deg,#4e73df,#224abe);">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small-muted">Total Surat Keluar</div>
-                            <div class="kpi-value"><?= number_format($total_surats ?? 0) ?></div>
-                            <div class="small-muted mt-1">Sejak awal pencatatan</div>
-                        </div>
-                        <div class="text-right">
-                            <i class="fas fa-file-alt kpi-icon"></i>
-                        </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <div class="small">Template Surat</div>
+                        <div class="h3 mb-0"><?= number_format($count_templates ?? 0) ?></div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card kpi-card" style="background: linear-gradient(90deg,#1cc88a,#17a673);">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small-muted">Surat Keluar Hari Ini</div>
-                            <div class="kpi-value"><?= number_format($today_count ?? 0) ?></div>
-                            <div class="small-muted mt-1">Aktivitas hari ini</div>
-                        </div>
-                        <div class="text-right">
-                            <i class="fas fa-calendar-day kpi-icon"></i>
-                        </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <div class="small">Potensi</div>
+                        <div class="h3 mb-0"><?= number_format($count_potensi ?? 0) ?></div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-12 mb-3">
-                <div class="card kpi-card" style="background: linear-gradient(90deg,#36b9cc,#188aad);">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small-muted">Rata-rata / Hari (7 hari)</div>
-                            <div class="kpi-value"><?= $avg7 ?></div>
-                            <div class="small-muted mt-1">Menggambarkan tren</div>
-                        </div>
-                        <div class="text-right">
-                            <i class="fas fa-chart-line kpi-icon"></i>
-                        </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <div class="small">Galeri</div>
+                        <div class="h3 mb-0"><?= number_format($count_galeri ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <div class="small">Peraturan</div>
+                        <div class="h3 mb-0"><?= number_format($count_peraturan ?? 0) ?></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-muted">APBDes</div>
+                        <div class="h4"><?= number_format($count_apbdes ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-muted">Berita</div>
+                        <div class="h4"><?= number_format($count_berita ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-muted">Aparatur</div>
+                        <div class="h4"><?= number_format($count_aparatur ?? 0) ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart & summary -->
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-header"><strong>Surat Dibuat (7 Hari Terakhir)</strong></div>
+                    <div class="card-body">
+                        <canvas id="arsipChart" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header"><strong>Ringkasan Arsip</strong></div>
+                    <div class="card-body">
+                        <p class="mb-2 small text-muted">Total Arsip</p>
+                        <h4><?= number_format($count_arsip ?? 0) ?></h4>
+                        <hr>
+                        <p class="small text-muted mb-1">Periode</p>
+                        <p class="mb-0">
+                            <?= htmlspecialchars($chart_labels[0] ?? '-') ?> 
+                            — <?= htmlspecialchars(end($chart_labels) ?? '-') ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+
+<!--  Pengaduan Section Start -->
+  <section id="pengaduan">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mt-3 mb-3">
+                    <div class="card-header">
+                        <h5>Distribusi Kategori Pengaduan Tahun <?= $tahun ?></h5>
+                    </div>
+                    <div class="card-body" style="height: 305px;">
+                        <canvas id="pieKategori"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card mt-3 mb-2">
+                    <div class="card-header">
+                        <strong>Rata rata waktu pengaduan selesai</strong>
+                    </div>
+                    <div class="card-body">
+                        <strong><?= format_hari_jam($rata_rata_waktu) ?></strong>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <strong>Pengaduan per Bulan (<?= $tahun_bar ?>)</strong>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="barPengaduan"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+  </section>
+ <!-- Pengaduan Section End -->
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Line Chart Surat -->
+<script>
+(function () {
+    const labels = <?= json_encode($chart_labels ?? []) ?>;
+    const data = <?= json_encode($chart_values ?? []) ?>;
+    const ctx = document.getElementById('arsipChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Surat',
+                data: data,
+                fill: true,
+                borderColor: 'rgba(54,162,235,1)',
+                backgroundColor: 'rgba(54,162,235,0.15)',
+                tension: 0.35,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { precision: 0 } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+})();
+</script>
+
+<!-- Pie Chart Kategori Pengaduan -->
+<script>
+(function () {
+    const pieLabels = <?= $pie_labels ?>;
+    const pieData   = <?= $pie_data ?>;
+    const pieColors = <?= $pie_colors ?>;
+
+    const canvas = document.getElementById('pieKategori');
+
+    // jika tidak ada data
+    if (!pieLabels || pieLabels.length === 0) {
+        canvas.outerHTML =
+            '<p class="text-center text-muted">Tidak ada data pengaduan tahun ini</p>';
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: pieLabels,
+            datasets: [{
+                data: pieData,
+                backgroundColor: pieColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.raw;
+                            const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+                            return context.label + ': ' + value + ' (' + percent + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+})();
+</script>
+
+<!-- Bar Chart Pengaduan per Bulan -->
+ <script>
+(function () {
+    const Barlabels = <?= $bar_labels ?>;
+    const dataValues = <?= $bar_data ?>;
+
+    const ctx = document.getElementById('barPengaduan').getContext('2d');
+
+        // jika tidak ada data
+    if (!Barlabels || Barlabels.length === 0) {
+        ctx.canvas.outerHTML =
+            '<p class="text-center text-muted">Tidak ada data pengaduan tahun ini</p>';
+        return;
+    }
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Barlabels,
+            datasets: [{
+                label: 'Jumlah Pengaduan',
+                data: dataValues,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+})();
+</script>

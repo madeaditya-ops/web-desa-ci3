@@ -28,7 +28,7 @@
         <div class="card-body">
         
         <div class="export">
-            <form method="get" action="<?= base_url('pengaduan_kades/arsip') ?>" class="mb-3">
+            <form method="get" action="<?= base_url('PengaduanAdmin/arsip') ?>" class="mb-3">
                 <div class="form-row">
                     <div class="col-md-3">
                         <label>Dari Tanggal</label>
@@ -44,14 +44,14 @@
 
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary mr-2">Filter</button>
-                        <a href="<?= base_url('pengaduan_kades/arsip') ?>" class="btn btn-secondary">Reset</a>
+                        <a href="<?= base_url('PengaduanAdmin/arsip') ?>" class="btn btn-secondary">Reset</a>
                     </div>
 
                     <div class="col-md-3 d-flex align-items-end justify-content-end">
-                        <a href="<?= base_url('pengaduan_kades/export_excel?start_date='.$this->input->get('start_date').'&end_date='.$this->input->get('end_date')) ?>" 
+                        <a href="<?= base_url('PengaduanAdmin/export_excel?start_date='.$this->input->get('start_date').'&end_date='.$this->input->get('end_date')) ?>" 
                         class="btn btn-sm py-2 px-3 btn-success mr-2"><i class="fas fa-file-excel mr-2"></i>Excel</a>
 
-                        <a href="<?= base_url('pengaduan_kades/export_pdf?start_date='.$this->input->get('start_date').'&end_date='.$this->input->get('end_date')) ?>" 
+                        <a href="<?= base_url('PengaduanAdmin/export_pdf?start_date='.$this->input->get('start_date').'&end_date='.$this->input->get('end_date')) ?>" 
                         class="btn btn-sm py-2 px-3 btn-danger"><i class="fas fa-file-pdf mr-2"></i>PDF</a>
                     </div>
                 </div>
