@@ -181,6 +181,14 @@
                                 ?>
                             </td>
                         </tr>
+                        <tr>
+                            <th>Diproses oleh: </th>
+                            <td>
+                                <?php if ($pengaduan->status != 'pending'): ?>
+                                    <?= $pengaduan->processed_by ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
                     </table>
 
                     <hr>

@@ -14,9 +14,10 @@ class Pengaduan_model extends CI_Model {
 
     public function get_by_id($id) {
         $query = $this->db
-            ->select('pengaduan.*, kategori_pengaduan.nama_kategori')
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori, users.nama as processed_by')
             ->from('pengaduan')
             ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->join('users', 'users.id_user = pengaduan.processed_by', 'left')
             ->where('pengaduan.id_pengaduan', $id)
             ->get();
 

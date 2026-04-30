@@ -72,17 +72,21 @@ class PengaduanAdmin extends CI_Controller {
             show_404();
         }
 
+        $admin_id = $this->session->userdata('id_user');
+
         $aksi = $this->input->post('aksi');
         if ($aksi == 'proses') {
             $data = [
                 'status' => 'diproses',
+                'processed_by' => $admin_id,
             ];
 
             $message = 'Pengaduan berhasil diverifikasi dan sedang diproses';
         } elseif ($aksi == 'tolak') {
             $data = [
                 'status' => 'ditolak',
-                'keterangan_verifikasi' => $this->input->post('keterangan_verifikasi')
+                'keterangan_verifikasi' => $this->input->post('keterangan_verifikasi'),
+                'processed_by' => $admin_id
             ];
 
             $message = 'Pengaduan berhasil ditolak';
