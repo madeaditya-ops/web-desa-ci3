@@ -103,8 +103,11 @@
 }
 </style>
 
-<div class="container-fluid">
+<?php 
+$role = $this->session->userdata('role');
+?>
 
+<div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Pengaduan</h1>
@@ -137,7 +140,6 @@
 
 
                 <div class="card-body">
-
                     <table class="table table-borderless">
                         <tr>
                             <th>Id Pengaduan</th>
@@ -148,8 +150,16 @@
                             <td><?= $pengaduan->nama_pelapor ?></td>
                         </tr>
                         <tr>
+                            <th>Dusun Pelapor</th>
+                            <td><?= $pengaduan->nama_dusun ?></td>
+                        </tr>
+                        <tr>
                             <th>Email</th>
                             <td><?= $pengaduan->email_pelapor ? strtolower($pengaduan->email_pelapor) : '-' ?></td>
+                        </tr>
+                        <tr>
+                            <th>No Telepon</th>
+                            <td><?= $pengaduan->no_telepon ? strtolower($pengaduan->no_telepon) : '-' ?></td>
                         </tr>
                         <tr>
                             <th>Tanggal</th>
@@ -182,10 +192,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Diproses oleh: </th>
+                            <th>Diverifikasi oleh: </th>
                             <td>
                                 <?php if ($pengaduan->status != 'pending'): ?>
-                                    <?= $pengaduan->processed_by ?>
+                                    <?= $pengaduan->verified_by ?>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -287,7 +297,7 @@
             <?php endif; ?>
 
             <!-- Jika Status Diproses -->
-            <?php if ($status == 'diproses') : ?>
+            <?php if ($status == 'diproses' && $role == 'kadus') : ?>
 
                 <div class="card shadow mb-4">
                     <div class="card-header bg-primary text-white">
@@ -301,7 +311,7 @@
                               action="<?= site_url('PengaduanAdmin/selesai/'.$pengaduan->id_pengaduan) ?>">
 
                             <div class="form-group">
-                                <label>Upload Bukti Penyelesaian</label>
+                                <label>Upload Bukti Penyelesaian (Opsional)</label>
                                 <input type="file" 
                                        name="foto_tindaklanjut" 
                                        class="form-control" >

@@ -26,19 +26,28 @@ class PengaduanAdmin extends CI_Controller {
     
     public function index()
     {
+        $role = $this->session->userdata('role');
         $status = $this->input->get('status');
-         if ($status) {
-            $data['pengaduan'] = $this->Pengaduan_model->get_by_status($status);
-        } else {
-            $data['pengaduan'] = $this->Pengaduan_model->get_all();
-        }
 
-        //data statistik
-        $data['count_pending'] = $this->Pengaduan_model->count_pending();
-        $data['count_diproses'] = $this->Pengaduan_model->count_diproses();
-        $data['count_ditolak'] = $this->Pengaduan_model->count_ditolak();
-        $data['count_selesai'] = $this->Pengaduan_model->count_selesai();
-        $data['total_pengaduan'] = $this->Pengaduan_model->total_pengaduan();
+        if ($role == 'superadmin'){
+            
+            if ($status) {
+                $data['pengaduan'] = $this->Pengaduan_model->get_by_status($status);
+            } else {
+                $data['pengaduan'] = $this->Pengaduan_model->get_all();
+            }
+
+            //data statistik
+            $data['count_pending'] = $this->Pengaduan_model->count_pending();
+            $data['count_diproses'] = $this->Pengaduan_model->count_diproses();
+            $data['count_ditolak'] = $this->Pengaduan_model->count_ditolak();
+            $data['count_selesai'] = $this->Pengaduan_model->count_selesai();
+            $data['total_pengaduan'] = $this->Pengaduan_model->total_pengaduan();
+
+        } elseif ($role == 'kadus'){
+            $id_dusun = $this->session->userdata('dusun_id');
+            $data['pengaduan'] = $this->Pengaduan_model->get_by_dusun($id_dusun);
+        }
 
         $data['filter_status'] = $status;
 
@@ -57,7 +66,15 @@ class PengaduanAdmin extends CI_Controller {
             $this->sendEmailNotification($id_pengaduan);
         }
 
-        $this->Pengaduan_model->read_single_notifikasi($id_pengaduan);
+        // $this->Pengaduan_model->read_single_notifikasi($id_pengaduan);
+
+        $role = $this->session->userdata('role');
+
+        if ($role == 'kadus') {
+            $this->Pengaduan_model->read_single_notifikasi_kadus($id_pengaduan);
+        } else {
+            $this->Pengaduan_model->read_single_notifikasi($id_pengaduan);
+        }
 
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
@@ -78,7 +95,8 @@ class PengaduanAdmin extends CI_Controller {
         if ($aksi == 'proses') {
             $data = [
                 'status' => 'diproses',
-                'processed_by' => $admin_id,
+                'verified_by' => $admin_id,
+                'is_read_kadus' => 0,
             ];
 
             $message = 'Pengaduan berhasil diverifikasi dan sedang diproses';
@@ -86,7 +104,8 @@ class PengaduanAdmin extends CI_Controller {
             $data = [
                 'status' => 'ditolak',
                 'keterangan_verifikasi' => $this->input->post('keterangan_verifikasi'),
-                'processed_by' => $admin_id
+                'verified_by' => $admin_id,
+                'is_read_kadus' => 1
             ];
 
             $message = 'Pengaduan berhasil ditolak';
@@ -107,6 +126,7 @@ class PengaduanAdmin extends CI_Controller {
 
     //Selesaikan Pengaduan
     public function selesai ($id) {
+        $id_kadus = $this->session->userdata('id_user');
         $pengaduan = $this->Pengaduan_model->get_by_id($id);
         if (!$pengaduan){
             show_404();
@@ -115,6 +135,7 @@ class PengaduanAdmin extends CI_Controller {
         $data = [
             'status' => 'selesai',
             'finished_at'       => date('Y-m-d H:i:s'),
+            'id_kadus'          => $id_kadus,
         ];
         
         if (!empty($_FILES['foto_tindaklanjut']['name'])) {

@@ -82,6 +82,15 @@
 
         <script src="<?= base_url('assets/js/notifikasi_pengaduan.js')?>"></script>
     <?php endif; ?> 
+    
+    <?php if($this->session->userdata('role') == 'kadus'): ?>
+       <script>
+       var BASE_URL = "<?= base_url(); ?>";
+       </script>
+
+       <script src="<?= base_url('assets/js/notifikasi_pengaduan_kadus.js')?>"></script>
+   <?php endif; ?> 
+
 
 </body>
 

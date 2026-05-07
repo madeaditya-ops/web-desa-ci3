@@ -141,7 +141,7 @@ class Dashboard extends CI_Controller {
 
 
 
-
+    //Notifikasi super admin
 
     public function get_notifikasi(){
 
@@ -169,5 +169,34 @@ class Dashboard extends CI_Controller {
             'status' => 'ok'
         ]);
     }
+
+
+    //Notifikasi kadus
+    public function get_notifikasi_kadus() {
+
+        $data = $this->Pengaduan_model->get_notifikasi_kadus();
+        $jumlah = $this->Pengaduan_model->count_notifikasi_kadus();
+        $last_id = $this->Pengaduan_model->get_last_pengaduan_id_kadus();
+
+        echo json_encode([
+            'jumlah' => $jumlah,
+            'data' => $data,
+            'last_id' => $last_id
+        ]);
+    }
+
+    public function read_notifikasi_kadus() {
+        $this->Pengaduan_model->read_notifikasi_kadus();
+    }
+
+    public function read_single_notifikasi_kadus($id_pengaduan) {
+        $this->Pengaduan_model->read_single_notifikasi_kadus($id_pengaduan);
+
+        echo json_encode([
+            'status' => 'ok'
+        ]);
+    }
+
+    
 
 }

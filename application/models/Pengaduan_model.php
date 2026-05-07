@@ -7,6 +7,7 @@ class Pengaduan_model extends CI_Model {
             ->select('pengaduan.*, kategori_pengaduan.nama_kategori')
             ->from('pengaduan')
             ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->join('dusun', 'dusun.id_dusun = pengaduan.id_dusun', 'left')
             ->order_by('pengaduan.created_at', 'DESC')
             ->get()
             ->result();
@@ -14,10 +15,11 @@ class Pengaduan_model extends CI_Model {
 
     public function get_by_id($id) {
         $query = $this->db
-            ->select('pengaduan.*, kategori_pengaduan.nama_kategori, users.nama as processed_by')
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori, users.nama as verified_by, dusun.nama_dusun')
             ->from('pengaduan')
             ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
-            ->join('users', 'users.id_user = pengaduan.processed_by', 'left')
+            ->join('users', 'users.id_user = pengaduan.verified_by', 'left')
+            ->join('dusun', 'dusun.id_dusun = pengaduan.id_dusun', 'left')
             ->where('pengaduan.id_pengaduan', $id)
             ->get();
 
@@ -181,4 +183,65 @@ class Pengaduan_model extends CI_Model {
         return $query->result();
     }
 
+    //ambil data dusun
+    public function get_dusun(){
+        return $this->db
+            ->get('dusun')
+            ->result();
+    }
+
+
+    public function get_by_dusun($id_dusun)
+    {
+        return $this->db
+            ->select('pengaduan.*, dusun.nama_dusun, kategori_pengaduan.nama_kategori')
+            ->from('pengaduan')
+            ->join('dusun', 'dusun.id_dusun = pengaduan.id_dusun', 'left')
+            ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
+            ->where('pengaduan.id_dusun', $id_dusun)
+            ->where('status !=', 'pending')
+            ->order_by('created_at', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    // Notifikasi kadus
+    public function get_notifikasi_kadus() {
+        return $this->db
+            ->where('status', 'diproses')
+            ->where('is_read_kadus', 0)
+            ->order_by('id_pengaduan', 'DESC')
+            ->limit(5)
+            ->get('pengaduan')
+            ->result();
+    }
+
+    public function count_notifikasi_kadus() {
+        return $this->db
+            ->where('status', 'diproses')
+            ->where('is_read_kadus', 0)
+            ->count_all_results('pengaduan');
+    }
+
+    public function read_notifikasi_kadus() {
+        $this->db->set('is_read_kadus', 1);
+        $this->db->where('status', 'diproses');
+        $this->db->where('is_read_kadus', 0);
+        $this->db->update('pengaduan');
+    }
+
+    public function read_single_notifikasi_kadus($id_pengaduan) {
+        $this->db->where('id_pengaduan', $id_pengaduan);
+        $this->db->update('pengaduan', ['is_read_kadus' => 1]);
+    }
+
+    public function get_last_pengaduan_id_kadus() {
+        return $this->db
+            ->select_max('id_pengaduan')
+            ->where('status', 'diproses')
+            ->where('is_read_kadus', 0)
+            ->get('pengaduan')
+            ->row()
+            ->id_pengaduan;
+    }
 }

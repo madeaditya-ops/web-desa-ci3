@@ -1,3 +1,5 @@
+<?php $role = $this->session->userdata('role'); ?>
+
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Daftar Pengaduan</h1>
     <p class="mb-4">Manajemen data pengaduan masyarakat yang masuk ke desa.</p>
@@ -20,6 +22,9 @@
         </div>
     <?php endif; ?>
 
+
+
+    <?php if ($role == 'superadmin'): ?>
     <!-- Statistik Pengaduan -->
     <div class="row row-cols-1 row-cols-md-5 mb-4 ">
         <div class="col mb-2">
@@ -97,8 +102,7 @@
             </div>
         </div>
     </div>
-
-
+    <?php endif; ?>
 
 
 
@@ -123,7 +127,6 @@
                     </div>
                 <?php endif; ?>
         <div class="card-body">
-
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-dark" id="dataTable">
                     <thead class="thead-light">
@@ -140,14 +143,22 @@
                     </thead>
                     <tbody>
                         <?php $no=1; foreach($pengaduan as $p): ?>
-                        <tr class="<?= $p->is_read == 0 ? 'table-primary text-dark' : '' ?>">
+                        <tr class="
+                            <?php 
+                                if ($role == 'superadmin' && $p->is_read == 0) {
+                                    echo 'table-primary text-dark';
+                                } elseif ($role == 'kadus' && $p->is_read_kadus == 0 && $p->status == 'diproses') {
+                                    echo 'table-warning text-dark';
+                                }
+                                ?>    
+                        ">
                             <td><?= $no++ ?></td>
                             <td>
                                 <?= html_escape($p->nama_pelapor); ?>
-                                <?php if($p->is_read == 0): ?>
-                                    <span class="badge badge-danger ml-2">
-                                        Baru
-                                    </span>
+                                <?php if($role == 'superadmin' && $p->is_read == 0): ?>
+                                <span class="badge badge-danger ml-2">Baru</span>
+                                <?php elseif($role == 'kadus' && $p->is_read_kadus == 0 && $p->status == 'diproses'): ?>
+                                    <span class="badge badge-warning ml-2">Perlu Diproses</span>
                                 <?php endif; ?>
                             </td>
                             <td><?= $p->nama_kategori ?></td>

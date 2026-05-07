@@ -141,11 +141,12 @@
                         <input type="hidden"
                         name="<?= $this->security->get_csrf_token_name(); ?>"
                         value="<?= $this->security->get_csrf_hash(); ?>">
+
                         
                         <div class="row g-3">
                             <!-- Nama -->
                             <div class="form-group col-md-6">
-                                <label>Nama Lengkap</label>
+                                <label><span class="text-danger">*</span> Nama Lengkap</label>
                                 <input type="text"
                                     name="nama_pelapor"
                                     maxlength="100"
@@ -160,16 +161,36 @@
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Dusun Pelapor -->
+                            <div class="form-group col-md-6">
+                                <label for="dusun_pelapor"><span class="text-danger">*</span> Dusun Pelapor </label>
+                                <select name="dusun_pelapor" id="dusun_pelapor" class="form-control <?= error_class('dusun_pelapor') ?>">
+                                    <option value="">Pilih Dusun</option>
+                                    <?php foreach ($dusun_pelapor as $dusun): ?>
+                                        <option value="<?= $dusun->id_dusun ?>"><?= $dusun->nama_dusun ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <?php if (error('dusun_pelapor')): ?>
+                                    <small class="text-danger">
+                                        <?= error('dusun_pelapor') ?>
+                                    </small>
+                                <?php endif; ?>
+                            </div>
+
+                        </div>
+                        
+
+                        <div class="row">
                             <!-- Email -->
                             <div class="form-group col-md-6">
-                                <label>Email <span class="text-secondary fw-light">(Optional)</span></label>
+                                <label>Email <span class="text-secondary fw-light">(Opsional)</span></label>
                                 <input type="email"
                                     name="email_pelapor"
                                     maxlength="100"
                                     class="form-control <?= error_class('email_pelapor') ?>"
                                     value="<?= old('email_pelapor') ?>"
                                     placeholder="Masukkan Email Anda">
-
+                                <small class="text-muted">Sertakan email untuk mendapat informasi progres laporan</small>
                                 <?php if (error('email_pelapor')): ?>
                                     <small class="text-danger">
                                         <?= error('email_pelapor') ?>
@@ -177,18 +198,29 @@
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Telepon -->
+                            <div class="form-group col-md-6">
+                                <label><span class="text-danger">*</span> No Telepon<span class="text-secondary fw-light"></span></label>
+                                <input type="text"
+                                    name="no_telepon"
+                                    maxlength="100"
+                                    class="form-control <?= error_class('no_telepon') ?>"
+                                    value="<?= old('no_telepon') ?>"
+                                    placeholder="Masukkan Telepon Anda">
+                            </div>
+
+                            
                         </div>
 
                         <!-- Kategori Pengaduan -->
-                         <div class="form-group col-12 mb-3">
-                            <label for="kategori_pengaduan">Kategori Pengaduan</label>
+                         <div class="form-group col-12">
+                            <label for="kategori_pengaduan"><span class="text-danger">*</span> Kategori Pengaduan</label>
                             <select name="kategori_pengaduan" id="kategori_pengaduan" class="form-control <?= error_class('kategori_pengaduan') ?>">
                                 <option value="">Pilih Kategori</option>
                                 <?php foreach ($kategori_pengaduan as $kategori): ?>
                                     <option value="<?= $kategori->id_kategori ?>"><?= $kategori->nama_kategori ?></option>
                                 <?php endforeach; ?>
                             </select>
-
                             <?php if (error('kategori_pengaduan')): ?>
                                 <small class="text-danger">
                                     <?= error('kategori_pengaduan') ?>
@@ -197,32 +229,34 @@
                          </div>
 
                         <!-- Deskripsi -->
-                        <div class="form-group col-12 mb-3">
-                            <label for="deskripsi" class="fw-semibold">Deskripsi Laporan</label>
-
+                        <div class="form-group col-12">
+                            <label for="deskripsi" class="fw-semibold"><span class="text-danger">*</span> Deskripsi Laporan</label>
                             <textarea name="deskripsi"
                                     id="deskripsi"
                                     rows="4"
                                     maxlength="500"
                                     class="form-control <?= error_class('deskripsi') ?>"
                                     placeholder="Jelaskan keluhan yang Anda hadapi"><?= old('deskripsi') ?></textarea>
-
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <small class="text-muted">Maksimal 500 karakter</small>
                                 <small id="charCounter" class="text-muted fw-semibold">0 / 500</small>
                             </div>
-
                             <?php if (error('deskripsi')): ?>
                                 <small class="text-danger">
                                     <?= error('deskripsi') ?>
                                 </small>
                             <?php endif; ?>
                         </div>
+
                         <!-- Foto -->
                         <div class="form-group col-12">
-                            <label>Upload Bukti Foto</label>
+                            <label><span class="text-danger">*</span> Upload Bukti Foto</label>
                             <input type="file" name="foto_bukti" class="form-control" accept="image/*" >
+                            <small class="text-muted">
+                                Mohon lampirkan bukti foto guna mempercepat proses verifikasi.
+                            </small>
                         </div>
+
                         <!-- Lokasi -->
                         <div class="form-group col-12">
                             <label>Lokasi</label>
@@ -234,6 +268,7 @@
                         </div>
                         <input type="hidden" name="latitude" id="latitude">
                         <input type="hidden" name="longitude" id="longitude">
+
                         <!-- Captcha -->
                         <div class="turnstile-wrapper">
                             <div class="cf-turnstile"
@@ -242,6 +277,7 @@
                                 data-size="normal">
                             </div>
                         </div>
+
                         <!-- Kirim -->
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit" class="btn btn-pengaduan" id="btnKirim">
@@ -249,7 +285,6 @@
                             </button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

@@ -234,6 +234,19 @@
             <i class="fas fa-file-alt"></i>
                 <span>Surat Dusun</span></a>
     </li>
+    <!-- Pengaduan Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-file-alt"></i>
+            <span>Pengaduan</span>
+        </a>
+        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">Data Pengaduan</a>
+            </div>
+        </div>
+    </li>
     <?php endif;?>
 
     <!-- Divider -->
@@ -299,6 +312,24 @@
                     </a>
 
                     <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi">
+                        <span class="dropdown-item text-center small text-gray-500">
+                        Tidak ada notifikasi
+                        </span>
+                    </div>
+                </li>
+                <?php } ?>
+
+
+                <!-- Notification Item - Alerts -->
+                <?php if($this->session->userdata('role') == 'kadus') { ?>
+                    <li class="nav-item dropdown no-arrow mx-1">
+                    <a class="nav-link dropdown-toggle" href="#"
+                        id="alertsDropdownKadus" role="button" data-toggle="dropdown">
+                        <i class="fas fa-bell fa-fw fa-lg"></i>
+                        <span class="badge badge-danger badge-counter" id="notif_pengaduan_kadus" style="display: none;"></span>
+                    </a>
+
+                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi_kadus">
                         <span class="dropdown-item text-center small text-gray-500">
                         Tidak ada notifikasi
                         </span>

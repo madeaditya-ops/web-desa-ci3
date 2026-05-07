@@ -27,6 +27,7 @@ class Pengaduan extends CI_Controller {
         $data['title'] = "Pengaduan Masyarakat Desa Blahbatuh";
         $data['turnstile_site_key'] = $this->config->item('turnstile_site_key');
         $data['kategori_pengaduan'] = $this->Pengaduan_model->get_kategori_pengaduan();
+        $data['dusun_pelapor'] = $this->Pengaduan_model->get_dusun();
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
         $this->load->view('landing/pengaduan');
@@ -121,6 +122,8 @@ class Pengaduan extends CI_Controller {
                 'max_length'  => 'Email maksimal 100 karakter.'
             ]
         );
+        $this->form_validation->set_rules('no_telepon','No Telepon','required');
+        $this->form_validation->set_rules('dusun_pelapor','Dusun Pelapor','required');
         $this->form_validation->set_rules(
             'kategori_pengaduan',
             'Kategori Pengaduan',
@@ -164,6 +167,17 @@ class Pengaduan extends CI_Controller {
             redirect('pengaduan');
         }
 
+        //Validasi Rate Limit
+        $ip = $this->input->ip_address();
+
+        if (!$this->check_rate_limit($ip, 3, 10)) {
+            $this->session->set_flashdata(
+                'error',
+                'Terlalu banyak pengaduan dari jaringan Anda. Silakan coba lagi dalam 10 menit.'
+            );
+            redirect('pengaduan');
+        }
+
   
         // VALIDASI LOKASI 
         $lat = (float) $this->input->post('latitude');
@@ -183,11 +197,20 @@ class Pengaduan extends CI_Controller {
             'encrypt_name'  => TRUE
         ];
 
-        $this->load->library('upload', $config);
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+        $foto_bukti = null; // default null
 
-        if (!$this->upload->do_upload('foto_bukti')) {
-            $this->session->set_flashdata('error', $this->upload->display_errors());
-            redirect('pengaduan');
+        if (!empty($_FILES['foto_bukti']['name'])) {
+            if ($this->upload->do_upload('foto_bukti')) {
+
+                $upload_data = $this->upload->data();
+                $foto_bukti = $upload_data['file_name'];
+
+            } else {
+                $this->session->set_flashdata('error', $this->upload->display_errors('', ''));
+                redirect('pengaduan');
+            }
         }
 
         $file = $this->upload->data('file_name');
@@ -199,13 +222,16 @@ class Pengaduan extends CI_Controller {
         $data = [
             'nama_pelapor'  => ucwords(strtolower($nama)),
             'email_pelapor' => strtolower($email),
+            'no_telepon'    => $this->input->post('no_telepon', true),
+            'id_dusun'      => $this->input->post('dusun_pelapor', true),
             'id_kategori'   => $this->input->post('kategori_pengaduan', true),
             'deskripsi'     => ucfirst(strtolower($deskripsi)),
             'lokasi_pengaduan' => $this->input->post('lokasi_pengaduan', true),
             'latitude'         => $lat,
             'longitude'        => $lng,
-            'foto_bukti'       => $file,
+            'foto_bukti'       => $foto_bukti,
             'created_at'       => date('Y-m-d H:i:s'),
+            'ip_address'       => $ip,
             'is_read'       => 0
         ];
 
@@ -266,6 +292,25 @@ class Pengaduan extends CI_Controller {
 
         return (isset($response->success) && $response->success === true);
     }
+
+
+
+
+    private function check_rate_limit($ip, $limit = 3, $interval = 10)
+    {
+        $time_limit = date('Y-m-d H:i:s', strtotime("-$interval minutes"));
+
+        $this->db->from('pengaduan');
+        $this->db->where('ip_address', $ip);
+        $this->db->where('created_at >=', $time_limit);
+
+        $count = $this->db->count_all_results();
+
+        return $count < $limit;
+    }
+
+
+
 
     private function validateLocation($lat, $lng)
     {
