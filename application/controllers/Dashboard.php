@@ -174,8 +174,10 @@ class Dashboard extends CI_Controller {
     //Notifikasi kadus
     public function get_notifikasi_kadus() {
 
-        $data = $this->Pengaduan_model->get_notifikasi_kadus();
-        $jumlah = $this->Pengaduan_model->count_notifikasi_kadus();
+        $id_dusun = $this->session->userdata('dusun_id');
+
+        $data = $this->Pengaduan_model->get_notifikasi_kadus($id_dusun);
+        $jumlah = $this->Pengaduan_model->count_notifikasi_kadus($id_dusun);
         $last_id = $this->Pengaduan_model->get_last_pengaduan_id_kadus();
 
         echo json_encode([

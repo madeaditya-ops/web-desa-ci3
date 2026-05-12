@@ -13,9 +13,9 @@ function load_notifikasi_kadus() {
 
 			// Badge jumlah notif
 			if (data.jumlah > 0) {
-				$("#notif_pengaduan_kadus").text(data.jumlah).show();
+				$(".notif_pengaduan_kadus").text(data.jumlah).show();
 			} else {
-				$("#notif_pengaduan_kadus").hide();
+				$(".notif_pengaduan_kadus").hide();
 			}
 
 			// Kalau dropdown lagi dibuka → tidak reload isi
@@ -34,7 +34,7 @@ function load_notifikasi_kadus() {
                         <div>
                             <div class="small text-gray-500">${item.created_at}</div>
                             <span class="font-weight-bold">
-                                Pengaduan siap ditindaklanjuti
+                                Pengaduan dari ${item.nama_pelapor}
                             </span>
                         </div>
                     </a>
@@ -89,7 +89,7 @@ function tampilkan_toast_kadus(data) {
 		toast: true,
 		position: "top-end",
 		icon: "info",
-		title: "Pengaduan siap ditindaklanjuti",
+		title: "Pengaduan baru dari " + data.nama_pelapor,
 		showConfirmButton: false,
 		timer: 4000,
 		timerProgressBar: true,
@@ -114,7 +114,7 @@ function tampilkan_toast_kadus(data) {
 }
 
 
-if ($("#notif_pengaduan_kadus").length > 0) {
+if ($(".notif_pengaduan_kadus").length > 0) {
 	load_notifikasi_kadus();
 	setInterval(load_notifikasi_kadus, 5000);
 }
@@ -122,14 +122,16 @@ if ($("#notif_pengaduan_kadus").length > 0) {
 
 
 $("#alertsDropdownKadus").on("click", function () {
-	$("#notif_pengaduan_kadus").hide().text(0);
-
 	$.ajax({
 		url: BASE_URL + "dashboard/read_notifikasi_kadus",
 		method: "POST",
+		success: function () {
+			$(".notif_pengaduan_kadus")
+				.hide()
+				.text(0);
+		}
 	});
 });
-
 
 $(document).on("click", ".notif-item-kadus", function (e) {
 	e.preventDefault();

@@ -1,21 +1,32 @@
-let last_notif_id = localStorage.getItem("last_notif_id")
-	? parseInt(localStorage.getItem("last_notif_id"))
-	: 0;
+let shown_notifs = JSON.parse(
+	localStorage.getItem("shown_notifs")
+) || [];
 
+
+// Load notifikasi
 function load_notifikasi() {
+
 	$.ajax({
 		url: BASE_URL + "dashboard/get_notifikasi",
 		method: "GET",
 		dataType: "json",
-
 		success: function (data) {
+			// Badge jumlah notifikasi
 			if (data.jumlah > 0) {
-				$("#notif_pengaduan").text(data.jumlah).show();
+				$(".notif_pengaduan")
+					.text(data.jumlah)
+					.show();
 			} else {
-				$("#notif_pengaduan").hide();
+
+				$(".notif_pengaduan")
+					.hide();
 			}
 
-			if ($("#alertsDropdown").attr("aria-expanded") === "true") {
+			// Jika dropdown sedang dibuka jangan refresh isi dropdown
+			if (
+				$("#alertsDropdown")
+					.attr("aria-expanded") === "true"
+			) {
 				return;
 			}
 
@@ -23,81 +34,172 @@ function load_notifikasi() {
 
 			if (data.data.length > 0) {
 				data.data.forEach(function (item) {
+					let pesan = "";
+					// let badge = "";
+
+					// Pengaduan baru
+					if (item.status == "pending") {
+						pesan =
+							`Pengaduan baru dari ${item.nama_pelapor}`;
+						// badge =
+						// 	`<span class="badge badge-primary badge-sm">
+						// 		Baru
+						// 	</span>`;
+					}
+					// Pengaduan selesai
+					else if (item.status == "selesai") {
+						pesan =
+							`Pengaduan diselesaikan oleh ${item.nama_kadus}`;
+						// badge =
+						// 	`<span class="badge badge-success">
+						// 		Selesai
+						// 	</span>`;
+					}
+					else {
+						return;
+					}
+
 					html += `
-                    <a class="dropdown-item d-flex align-items-center notif-item"
-                       data-id="${item.id_pengaduan}"
-                       href="javascript:void(0)">
-                        <div>
-                            <div class="small text-gray-500">${item.created_at}</div>
-                            <span class="font-weight-bold">
-                                Pengaduan dari ${item.nama_pelapor}
-                            </span>
-                        </div>
-                    </a>
-                    `;
+						<a class="dropdown-item d-flex align-items-center notif-item"
+						   data-id="${item.id_pengaduan}"
+						   href="javascript:void(0)">
+							<div class="w-100">
+								<div class="small text-gray-500 d-flex justify-content-between">
+									<span>${item.created_at}</span>
+									${badge}
+								</div>
+								<span class="font-weight-bold">
+									${pesan}
+								</span>
+							</div>
+						</a>
+					`;
 				});
 			} else {
-				html = `
-                <span class="dropdown-item text-center small text-gray-500">
-                    Tidak ada pengaduan
-                </span>
-                `;
-			}
 
+				html = `
+					<span class="dropdown-item text-center small text-gray-500">
+						Tidak ada notifikasi
+					</span>
+				`;
+			}
 			html += `
-            <a class="dropdown-item text-center small text-gray-500"
-               href="${BASE_URL}PengaduanAdmin">
-               Lihat semua pengaduan
-            </a>
-            `;
+				<a class="dropdown-item text-center small text-gray-500"
+				   href="${BASE_URL}PengaduanAdmin">
+					Lihat semua pengaduan
+				</a>
+			`;
 
 			$("#dropdown_notifikasi").html(html);
 
-			let max_id = parseInt(data.last_id) || 0;
+			// Ambil notif terbaru per status
+			let latest_pending = null;
+			let latest_selesai = null;
 
-			console.log("localStorage ID:", last_notif_id);
-			console.log("Database last ID:", max_id);
+			data.data.forEach(function (notif) {
 
-			// cek jika ada notif baru
-			if (max_id > last_notif_id) {
-				console.log("Notif baru!");
-
-				let notif_baru = data.data.find((item) => item.id_pengaduan == max_id);
-
-				if (notif_baru) {
-					tampilkan_toast(notif_baru);
+				// Notif pending terbaru
+				if (
+					notif.status == "pending" &&
+					!latest_pending
+				) {
+					latest_pending = notif;
 				}
 
-				last_notif_id = max_id;
+				// Notif selesai terbaru
+				if (
+					notif.status == "selesai" &&
+					!latest_selesai
+				) {
+					latest_selesai = notif;
+				}
+			});
 
-				localStorage.setItem("last_notif_id", max_id);
+			// List notif yang akan ditampilkan
+			let notif_to_show = [];
+
+			if (latest_pending) {
+				notif_to_show.push(latest_pending);
 			}
+
+			if (latest_selesai) {
+				notif_to_show.push(latest_selesai);
+			}
+
+			// Tampilkan toast satu per satu
+			notif_to_show.forEach(function (notif, index) {
+
+				let notif_key =
+					notif.id_pengaduan +
+					"_" +
+					notif.status;
+
+				// Jika belum pernah tampil
+				if (!shown_notifs.includes(notif_key)) {
+					setTimeout(() => {
+						tampilkan_toast(notif);
+					}, index * 3000);
+					shown_notifs.push(notif_key);
+				}
+			});
+		
+			localStorage.setItem(
+				"shown_notifs",
+				JSON.stringify(shown_notifs)
+			);
 		},
 	});
 }
 
+// Toast notifikasi
 function tampilkan_toast(data) {
-	let url_detail = BASE_URL + "PengaduanAdmin/detail/" + data.id_pengaduan;
+
+	let url_detail =
+		BASE_URL +
+		"PengaduanAdmin/detail/" +
+		data.id_pengaduan;
+
+	let title = "";
+	let icon = "info";
+
+	// Pengaduan baru
+	if (data.status == "pending") {
+		title =
+			"Pengaduan baru dari " +
+			data.nama_pelapor;
+		icon = "info";
+	}
+
+	// Pengaduan selesai
+	else if (data.status == "selesai") {
+		title =
+			"Pengaduan diselesaikan oleh " +
+			data.nama_kadus;
+		icon = "success";
+	}
 
 	Swal.fire({
 		toast: true,
 		position: "top-end",
-		icon: "info",
-		title: "Pengaduan baru dari " + data.nama_pelapor,
+		icon: icon,
+		title: title,
 		showConfirmButton: false,
 		timer: 4000,
 		timerProgressBar: true,
-
 		didOpen: (toast) => {
-			toast.style.cursor = "pointer";
 
+			toast.style.cursor = "pointer";
 			toast.addEventListener("click", function () {
 				$.ajax({
 					url:
-						BASE_URL + "dashboard/read_single_notifikasi/" + data.id_pengaduan,
+						BASE_URL +
+						"dashboard/read_single_notifikasi/" +
+						data.id_pengaduan,
+
 					method: "POST",
 					success: function () {
-						window.location.href = url_detail;
+						window.location.href =
+							url_detail;
 					},
 				});
 			});
@@ -105,33 +207,55 @@ function tampilkan_toast(data) {
 	});
 }
 
+
 load_notifikasi();
 
 setInterval(load_notifikasi, 5000);
 
 $("#alertsDropdown").on("click", function () {
-	$("#notif_pengaduan").hide().text(0);
-
+	$(".notif_pengaduan")
+		.hide()
+		.text(0);
 	$.ajax({
 		url: BASE_URL + "dashboard/read_notifikasi",
 		method: "POST",
 	});
 });
 
-$(document).on("click", ".notif-item", function (e) {
-	e.preventDefault();
+$(document).on(
+	"click",
+	".notif-item",
+	function (e) {
 
-	let id = $(this).data("id");
+		e.preventDefault();
+		let id = $(this).data("id");
+		$.ajax({
 
-	$.ajax({
-		url: BASE_URL + "dashboard/read_single_notifikasi/" + id,
-		method: "POST",
-		success: function () {
-			window.location.href = BASE_URL + "PengaduanAdmin/detail/" + id;
-		},
-	});
-});
+			url:
+				BASE_URL +
+				"dashboard/read_single_notifikasi/" +
+				id,
 
-$(document).on("click", 'a[href*="logout"]', function () {
-	localStorage.removeItem("last_notif_id");
-});
+			method: "POST",
+
+			success: function () {
+				window.location.href =
+					BASE_URL +
+					"PengaduanAdmin/detail/" +
+					id;
+			},
+		});
+	}
+);
+
+// Logout
+$(document).on(
+	"click",
+	'a[href*="logout"]',
+	function () {
+
+		localStorage.removeItem(
+			"shown_notifs"
+		);
+	}
+);

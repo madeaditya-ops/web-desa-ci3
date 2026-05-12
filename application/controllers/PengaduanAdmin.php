@@ -28,6 +28,7 @@ class PengaduanAdmin extends CI_Controller {
     {
         $role = $this->session->userdata('role');
         $status = $this->input->get('status');
+        $id_dusun = $this->session->userdata('dusun_id');
 
         if ($role == 'superadmin'){
             
@@ -45,8 +46,19 @@ class PengaduanAdmin extends CI_Controller {
             $data['total_pengaduan'] = $this->Pengaduan_model->total_pengaduan();
 
         } elseif ($role == 'kadus'){
-            $id_dusun = $this->session->userdata('dusun_id');
-            $data['pengaduan'] = $this->Pengaduan_model->get_by_dusun($id_dusun);
+
+            if ($status){
+                $data['pengaduan'] = $this->Pengaduan_model->get_by_status_kadus($status, $id_dusun);
+            } else{
+                $data['pengaduan'] = $this->Pengaduan_model->get_by_dusun($id_dusun);
+            }
+
+            //data statistik
+            $data['count_pending'] = $this->Pengaduan_model->count_pending_kadus($id_dusun);
+            $data['count_diproses'] = $this->Pengaduan_model->count_diproses_kadus($id_dusun);
+            $data['count_ditolak'] = $this->Pengaduan_model->count_ditolak_kadus($id_dusun);
+            $data['count_selesai'] = $this->Pengaduan_model->count_selesai_kadus($id_dusun);
+            $data['total_pengaduan'] = $this->Pengaduan_model->total_pengaduan_kadus($id_dusun);
         }
 
         $data['filter_status'] = $status;
@@ -89,14 +101,19 @@ class PengaduanAdmin extends CI_Controller {
             show_404();
         }
 
-        $admin_id = $this->session->userdata('id_user');
+        $user_id = $this->session->userdata('id_user');
+        $id_dusun_kadus = $this->session->userdata('dusun_id');
+
+        if ($pengaduan->id_dusun != $id_dusun_kadus) {
+            show_error('Anda tidak memiliki akses ke pengaduan ini', 403);
+        }
 
         $aksi = $this->input->post('aksi');
         if ($aksi == 'proses') {
             $data = [
                 'status' => 'diproses',
-                'verified_by' => $admin_id,
-                'is_read_kadus' => 0,
+                'verified_by' => $user_id,
+                // 'is_read' => 0,
             ];
 
             $message = 'Pengaduan berhasil diverifikasi dan sedang diproses';
@@ -104,8 +121,8 @@ class PengaduanAdmin extends CI_Controller {
             $data = [
                 'status' => 'ditolak',
                 'keterangan_verifikasi' => $this->input->post('keterangan_verifikasi'),
-                'verified_by' => $admin_id,
-                'is_read_kadus' => 1
+                'verified_by' => $user_id,
+                // 'is_read' => 0
             ];
 
             $message = 'Pengaduan berhasil ditolak';
@@ -127,15 +144,21 @@ class PengaduanAdmin extends CI_Controller {
     //Selesaikan Pengaduan
     public function selesai ($id) {
         $id_kadus = $this->session->userdata('id_user');
+        $id_dusun_kadus = $this->session->userdata('dusun_id');
         $pengaduan = $this->Pengaduan_model->get_by_id($id);
         if (!$pengaduan){
             show_404();
         }
         
+        if ($pengaduan->id_dusun != $id_dusun_kadus) {
+            show_error('Anda tidak memiliki akses ke pengaduan ini', 403);
+        }
+
         $data = [
             'status' => 'selesai',
             'finished_at'       => date('Y-m-d H:i:s'),
             'id_kadus'          => $id_kadus,
+            'is_read'           => 0,
         ];
         
         if (!empty($_FILES['foto_tindaklanjut']['name'])) {
@@ -259,7 +282,6 @@ class PengaduanAdmin extends CI_Controller {
     }
 
 
-
-
 }
+
 

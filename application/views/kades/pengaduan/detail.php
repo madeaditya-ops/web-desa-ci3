@@ -163,7 +163,7 @@ $role = $this->session->userdata('role');
                         </tr>
                         <tr>
                             <th>Tanggal</th>
-                            <td><?= date('d-m-Y', strtotime($pengaduan->created_at)) ?></td>
+                            <td><?= !empty($pengaduan->created_at) ? date('d M Y H:i', strtotime($pengaduan->created_at)) : '-' ?></td>
                         </tr>
                         <tr>
                             <th>Lokasi</th>
@@ -218,7 +218,7 @@ $role = $this->session->userdata('role');
             </div>
         </div>
 
-        <!-- PANEL VERIFIKASI -->
+                <!-- PANEL VERIFIKASI / MONITORING -->
         <div class="col-lg-4">
 
             <!-- Timeline Status -->
@@ -226,67 +226,170 @@ $role = $this->session->userdata('role');
                 <div class="card-header">
                     <h6 class="m-0 font-weight-bold text-primary">Progress Status</h6>
                 </div>
+
                 <div class="card-body">
                     <ul class="timeline">
+
+                        <!-- Dibuat -->
                         <li class="active">
                             <div class="dot"></div>
-                            <div class="content">Pengaduan Dibuat</div>
+                            <div class="content">
+                                Pengaduan Dibuat
+                                <small>
+                                    <?= !empty($pengaduan->created_at) ? date('d M Y H:i', strtotime($pengaduan->created_at)) : '-' ?>
+                                </small>
+                            </div>
                         </li>
 
-                        <li class="<?= in_array($pengaduan->status, ['diproses','ditolak','selesai']) ? 'active' : '' ?>">
+                        <!-- Diverifikasi -->
+                        <li class="
+                            <?=
+                            $pengaduan->status == 'ditolak'
+                                ? 'rejected'
+                                : (
+                                    in_array($pengaduan->status, ['diproses', 'selesai'])
+                                        ? 'active'
+                                        : ''
+                                )
+                            ?>
+                        ">
                             <div class="dot"></div>
+
                             <div class="content">
-                                Diverifikasi
-                                <?php if($pengaduan->status == 'ditolak'): ?>
-                                    <small class="text-danger d-block">Pengaduan Ditolak</small>
+                                Diverifikasi Kadus
+
+                                <?php if ($pengaduan->status == 'ditolak'): ?>
+                                    <small class="text-danger">
+                                        Pengaduan ditolak
+                                    </small>
                                 <?php endif; ?>
                             </div>
                         </li>
 
-                        <li class="<?= in_array($pengaduan->status, ['diproses','selesai']) ? 'active' : '' ?>">
+                        <!-- Diproses -->
+                        <li class="
+                            <?= in_array($pengaduan->status, ['diproses', 'selesai']) ? 'active' : '' ?>
+                        ">
                             <div class="dot"></div>
-                            <div class="content">Diproses</div>
+
+                            <div class="content">
+                                Diproses
+                            </div>
                         </li>
 
-                        <li class="<?= ($pengaduan->status == 'selesai') ? 'active' : '' ?>">
+                        <!-- Selesai -->
+                        <li class="
+                            <?= ($pengaduan->status == 'selesai') ? 'active' : '' ?>
+                        ">
                             <div class="dot"></div>
-                            <div class="content">Selesai</div>
+
+                            <div class="content">
+                                Selesai
+
+                                <?php if ($pengaduan->status == 'selesai' && !empty($pengaduan->finished_at)): ?>
+                                    <small>
+                                        <?= date('d M Y H:i', strtotime($pengaduan->finished_at)) ?>
+                                    </small>
+                                <?php endif; ?>
+                            </div>
                         </li>
 
                     </ul>
                 </div>
             </div>
 
-            <!-- Jika Status Pending -->
-            <?php if ($status == 'pending') : ?>
+
+            <!-- PANEL MONITORING SUPER ADMIN -->
+            <?php if ($role == 'superadmin') : ?>
 
                 <div class="card shadow mb-4">
+
+                    <div class="card-header bg-info text-white">
+                        Monitoring Pengaduan
+                    </div>
+
+                    <div class="card-body">
+
+                        <p class="mb-3">
+                            Super Admin hanya dapat memantau proses pengaduan.
+                        </p>
+
+                        <?php if ($status == 'pending'): ?>
+
+                            <div class="alert alert-warning mb-0">
+                                Menunggu verifikasi oleh Kadus.
+                            </div>
+
+                        <?php elseif ($status == 'diproses'): ?>
+
+                            <div class="alert alert-primary mb-0">
+                                Pengaduan sedang ditindaklanjuti oleh Kadus.
+                            </div>
+
+                        <?php elseif ($status == 'ditolak'): ?>
+
+                            <div class="alert alert-danger mb-0">
+                                Pengaduan ditolak oleh Kadus.
+                            </div>
+
+                        <?php elseif ($status == 'selesai'): ?>
+
+                            <div class="alert alert-success mb-0">
+                                Pengaduan telah diselesaikan.
+                            </div>
+
+                        <?php endif; ?>
+
+                    </div>
+                </div>
+
+            <?php endif; ?>
+
+
+            <!-- VERIFIKASI KADUS -->
+            <?php if ($status == 'pending' && $role == 'kadus') : ?>
+
+                <div class="card shadow mb-4">
+
                     <div class="card-header bg-warning text-dark">
                         Verifikasi Pengaduan
                     </div>
 
                     <div class="card-body">
 
-                        <form method="post" action="<?= site_url('PengaduanAdmin/verifikasi/'.$pengaduan->id_pengaduan) ?>">
+                        <form method="post"
+                            action="<?= site_url('PengaduanAdmin/verifikasi/'.$pengaduan->id_pengaduan) ?>">
 
-                            <button type="submit" name="aksi" value="proses" class="btn btn-primary btn-block mb-3">
-                                <i class="fas fa-check"></i> Setujui & Proses
+                            <button type="submit"
+                                    name="aksi"
+                                    value="proses"
+                                    class="btn btn-primary btn-block mb-3">
+
+                                <i class="fas fa-check"></i>
+                                Setujui & Proses
+
                             </button>
 
                             <hr>
 
                             <div class="form-group">
+
                                 <label>Catatan Penolakan</label>
-                                <textarea name="keterangan_verifikasi" 
-                                          class="form-control"
-                                          rows="3"></textarea>
+
+                                <textarea name="keterangan_verifikasi"
+                                        class="form-control"
+                                        rows="3"></textarea>
+
                             </div>
 
-                            <button type="submit" 
-                                    name="aksi" 
+                            <button type="submit"
+                                    name="aksi"
                                     value="tolak"
                                     class="btn btn-danger btn-block">
-                                <i class="fas fa-times"></i> Tolak Pengaduan
+
+                                <i class="fas fa-times"></i>
+                                Tolak Pengaduan
+
                             </button>
 
                         </form>
@@ -296,30 +399,39 @@ $role = $this->session->userdata('role');
 
             <?php endif; ?>
 
-            <!-- Jika Status Diproses -->
+
+            <!-- PENYELESAIAN OLEH KADUS -->
             <?php if ($status == 'diproses' && $role == 'kadus') : ?>
 
                 <div class="card shadow mb-4">
+
                     <div class="card-header bg-primary text-white">
                         Selesaikan Pengaduan
                     </div>
 
                     <div class="card-body">
 
-                        <form method="post" 
-                              enctype="multipart/form-data"
-                              action="<?= site_url('PengaduanAdmin/selesai/'.$pengaduan->id_pengaduan) ?>">
+                        <form method="post"
+                            enctype="multipart/form-data"
+                            action="<?= site_url('PengaduanAdmin/selesai/'.$pengaduan->id_pengaduan) ?>">
 
                             <div class="form-group">
-                                <label>Upload Bukti Penyelesaian (Opsional)</label>
-                                <input type="file" 
-                                       name="foto_tindaklanjut" 
-                                       class="form-control" >
+
+                                <label>Upload Bukti Penyelesaian</label>
+
+                                <input type="file"
+                                    name="foto_tindaklanjut"
+                                    class="form-control"
+                                >
+
                             </div>
 
-                            <button type="submit" 
+                            <button type="submit"
                                     class="btn btn-success btn-block">
-                                <i class="fas fa-check-circle"></i> Tandai Selesai
+
+                                <i class="fas fa-check-circle"></i>
+                                Tandai Selesai
+
                             </button>
 
                         </form>
@@ -329,24 +441,44 @@ $role = $this->session->userdata('role');
 
             <?php endif; ?>
 
-            <!-- Jika Ditolak -->
+
+            <!-- CATATAN PENOLAKAN -->
             <?php if ($status == 'ditolak') : ?>
+
                 <div class="card shadow mb-4">
+
                     <div class="card-header bg-danger text-white">
                         Catatan Penolakan
                     </div>
+
                     <div class="card-body">
+
                         <?= nl2br($pengaduan->keterangan_verifikasi) ?>
+
                     </div>
                 </div>
+
             <?php endif; ?>
 
+
+            <!-- FOTO TINDAK LANJUT -->
             <?php if (!empty($pengaduan->foto_tindaklanjut)) : ?>
-                <hr>
-                <h6 class="font-weight-bold">Foto Tindak Lanjut</h6>
-                <img src="<?= base_url('uploads/pengaduan_tindaklanjut/'.$pengaduan->foto_tindaklanjut) ?>" 
-                    class="img-fluid rounded shadow"
-                    style="max-height:400px;">
+
+                <div class="card shadow mb-4">
+
+                    <div class="card-header bg-success text-white">
+                        Bukti Penyelesaian
+                    </div>
+
+                    <div class="card-body text-center">
+
+                        <img src="<?= base_url('uploads/pengaduan_tindaklanjut/'.$pengaduan->foto_tindaklanjut) ?>"
+                            class="img-fluid rounded shadow"
+                            style="max-height:400px;">
+
+                    </div>
+                </div>
+
             <?php endif; ?>
 
         </div>

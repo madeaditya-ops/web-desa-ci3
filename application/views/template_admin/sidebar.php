@@ -140,6 +140,7 @@
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-file-alt"></i>
             <span>Pengaduan</span>
+            <span class="badge badge-danger notif_pengaduan"  style="display: none; font-size: 12px"></span>
         </a>
         <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -240,6 +241,7 @@
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-file-alt"></i>
             <span>Pengaduan</span>
+            <span class="badge badge-danger notif_pengaduan_kadus"  style="display: none; font-size: 12px;"></span>
         </a>
         <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -308,7 +310,7 @@
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdown" role="button" data-toggle="dropdown">
                         <i class="fas fa-bell fa-fw fa-lg"></i>
-                        <span class="badge badge-danger badge-counter" id="notif_pengaduan" style="display: none;"></span>
+                        <span class="badge badge-danger badge-counter notif_pengaduan"  style="display: none;"></span>
                     </a>
 
                     <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi">
@@ -326,7 +328,7 @@
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdownKadus" role="button" data-toggle="dropdown">
                         <i class="fas fa-bell fa-fw fa-lg"></i>
-                        <span class="badge badge-danger badge-counter" id="notif_pengaduan_kadus" style="display: none;"></span>
+                        <span class="badge badge-danger badge-counter notif_pengaduan_kadus"  style="display: none;"></span>
                     </a>
 
                     <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi_kadus">
