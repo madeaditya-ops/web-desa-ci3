@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>File APBDes (pdf/docx/xlsx)</label>
+                    <label>File APBDes (pdf/jpg/jpeg/png/webp)</label>
                     <div class="custom-file">
                         <input type="file" name="file_apbdes" class="custom-file-input" id="customFile">
                         <label class="custom-file-label" for="customFile">Pilih file...</label>

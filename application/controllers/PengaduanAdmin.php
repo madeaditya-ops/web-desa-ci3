@@ -112,7 +112,7 @@ class PengaduanAdmin extends CI_Controller {
         if ($aksi == 'proses') {
             $data = [
                 'status' => 'diproses',
-                'verified_by' => $user_id,
+                'id_kadus' => $user_id,
                 // 'is_read' => 0,
             ];
 
@@ -121,7 +121,7 @@ class PengaduanAdmin extends CI_Controller {
             $data = [
                 'status' => 'ditolak',
                 'keterangan_verifikasi' => $this->input->post('keterangan_verifikasi'),
-                'verified_by' => $user_id,
+                'id_kadus' => $user_id,
                 // 'is_read' => 0
             ];
 
@@ -236,9 +236,30 @@ class PengaduanAdmin extends CI_Controller {
 
     public function arsip()
     {
+        $data = [];
+        
         $start_date = $this->input->get('start_date');
         $end_date = $this->input->get('end_date');
-        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+
+        $role = $this->session->userdata('role');
+        $dusun_id = $this->session->userdata('dusun_id');
+
+        if ($role == 'superadmin') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date
+            );
+        } elseif ($role == 'kadus') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date,
+                $dusun_id
+            );
+        }else {
+            show_error('Akses ditolak');
+        }
+
+
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('kades/pengaduan/arsip', $data);
@@ -247,10 +268,29 @@ class PengaduanAdmin extends CI_Controller {
 
     public function export_excel()
     {
+        $data = [];
+
         $start_date = $this->input->get('start_date');
         $end_date   = $this->input->get('end_date');
 
-        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+        $role = $this->session->userdata('role');
+        $dusun_id = $this->session->userdata('dusun_id');
+
+        if ($role == 'superadmin') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date
+            );
+        } elseif ($role == 'kadus') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date,
+                $dusun_id
+            );
+        }else {
+            show_error('Akses ditolak');
+        }
+
         $data['start_date'] = $start_date; 
         $data['end_date']   = $end_date;   
 
@@ -263,10 +303,29 @@ class PengaduanAdmin extends CI_Controller {
     
     public function export_pdf()
     {
+        $data = [];
+
         $start_date = $this->input->get('start_date');
         $end_date   = $this->input->get('end_date');
 
-        $data['pengaduan'] = $this->Pengaduan_model->get_arsip($start_date, $end_date);
+        $role = $this->session->userdata('role');
+        $dusun_id = $this->session->userdata('dusun_id');
+
+        if ($role == 'superadmin') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date
+            );
+        } elseif ($role == 'kadus') {
+            $data['pengaduan'] = $this->Pengaduan_model->get_arsip(
+                $start_date, 
+                $end_date,
+                $dusun_id
+            );
+        }else {
+            show_error('Akses ditolak');
+        }
+
         $data['start_date'] = $start_date;
         $data['end_date']   = $end_date;
 

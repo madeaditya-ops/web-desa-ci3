@@ -15,10 +15,10 @@ class Pengaduan_model extends CI_Model {
 
     public function get_by_id($id) {
         $query = $this->db
-            ->select('pengaduan.*, kategori_pengaduan.nama_kategori, users.nama as verified_by, dusun.nama_dusun')
+            ->select('pengaduan.*, kategori_pengaduan.nama_kategori, users.nama as id_kadus, dusun.nama_dusun')
             ->from('pengaduan')
             ->join('kategori_pengaduan', 'kategori_pengaduan.id_kategori = pengaduan.id_kategori', 'left')
-            ->join('users', 'users.id_user = pengaduan.verified_by', 'left')
+            ->join('users', 'users.id_user = pengaduan.id_kadus', 'left')
             ->join('dusun', 'dusun.id_dusun = pengaduan.id_dusun', 'left')
             ->where('pengaduan.id_pengaduan', $id)
             ->get();
@@ -231,7 +231,7 @@ class Pengaduan_model extends CI_Model {
 
 
 
-    public function get_arsip($start_date = null, $end_date = null)
+    public function get_arsip($start_date = null, $end_date = null, $dusun_id = null)
     {
         $this->db
             ->select('p.*, k.nama_kategori')
@@ -239,6 +239,10 @@ class Pengaduan_model extends CI_Model {
             ->join('kategori_pengaduan k', 'k.id_kategori = p.id_kategori', 'left')
             ->where('p.status', 'selesai')
             ->order_by('p.created_at', 'DESC');
+
+        if ($dusun_id != null) {
+            $this->db->where('p.id_dusun', $dusun_id);
+        }
 
         if ($start_date && $end_date) {
             $this->db->where('DATE(p.created_at) >=', $start_date);

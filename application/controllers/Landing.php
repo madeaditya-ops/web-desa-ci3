@@ -8,7 +8,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Peraturan_model $Peraturan_model
  * @property Potensi_model $Potensi_model
  * @property Apbdes_model $Apbdes_model
- * @property ApbdesGrafik_model $ApbdesGrafik_model
  * @property Lembaga_model $Lembaga_model  
  * @property CI_Input $input
  * @property CI_Pagination $pagination
@@ -26,7 +25,6 @@ class Landing extends CI_Controller {
         $this->load->model('Peraturan_model');
         $this->load->model('Potensi_model');
         $this->load->model('Apbdes_model');
-        $this->load->model('ApbdesGrafik_model');
         $this->load->model('Lembaga_model');
         
     }
@@ -158,12 +156,6 @@ class Landing extends CI_Controller {
 
     public function potensi_desa()
     {
-        // $kategori = $this->input->get('kategori');
-        // if (!empty($kategori)) {
-        //     $data['potensi'] = $this->Potensi_model->get_by_kategori($kategori);
-        // } else {
-        //     $data['potensi'] = $this->Potensi_model->get_all();
-        // }
 
         $data['title'] = "Potensi Desa Blahbatuh";
         $data['potensi'] = $this->Potensi_model->get_all();
@@ -198,37 +190,6 @@ class Landing extends CI_Controller {
         $this->load->view('landing/apbdes', $data);
         $this->load->view('template/footer');
     }
-
-    // APBDes Grafik
-    public function apbdes_grafik()
-    {
-        $tahun = $this->input->get('tahun');
-        if (!$tahun) {
-            $tahun = date('Y');
-        }
-
-        $chart   = $this->ApbdesGrafik_model->get_chart_data($tahun);
-        $rincian = $this->ApbdesGrafik_model->get_rincian($tahun);
-        $rincian_realisasi = $this->ApbdesGrafik_model->get_rincian_realisasi($tahun);
-
-        $data = [
-            'title'       => "Grafik APBDes Blahbatuh",
-            'tahun'       => $tahun,
-            'pendapatan'  => $chart['pendapatan'],
-            'belanja'     => $chart['belanja'],
-            'realisasi'   => $chart['realisasi'],
-            'silpa'      => $this->ApbdesGrafik_model->get_silpa($tahun),
-            'rincian'     => $rincian,
-            'rincian_realisasi' => $rincian_realisasi,
-        ];
-
-        $this->load->view('template/header', $data);
-        $this->load->view('template/navbar');
-        $this->load->view('landing/apbdes_grafik', $data);
-        $this->load->view('template/footer');
-    }
-
-    
 
 
     public function detail_berita($id)

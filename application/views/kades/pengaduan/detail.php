@@ -195,7 +195,7 @@ $role = $this->session->userdata('role');
                             <th>Diverifikasi oleh: </th>
                             <td>
                                 <?php if ($pengaduan->status != 'pending'): ?>
-                                    <?= $pengaduan->verified_by ?>
+                                    <?= $pengaduan->id_kadus ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

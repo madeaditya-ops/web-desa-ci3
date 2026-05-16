@@ -52,7 +52,7 @@ class Apbdes extends CI_Controller {
         } else {
             // Konfigurasi upload
             $config['upload_path']   = './uploads/apbdes/';
-            $config['allowed_types'] = 'pdf|docx|xlsx'; // Izinkan PDF, Word, atau Excel
+            $config['allowed_types'] = 'pdf|jpg|jpeg|png|webp|svg'; // Izinkan PDF, Word, atau Excel
             $config['max_size']      = 2048; // 2MB
 
             // Buat direktori jika belum ada
@@ -108,7 +108,7 @@ class Apbdes extends CI_Controller {
         } else {
             // Konfigurasi upload
             $config['upload_path']   = './uploads/apbdes/';
-            $config['allowed_types'] = 'pdf|docx|xlsx';
+            $config['allowed_types'] = 'pdf|jpg|jpeg|png|webp|svg';
             $config['max_size']      = 2048;
 
             $this->upload->initialize($config);
