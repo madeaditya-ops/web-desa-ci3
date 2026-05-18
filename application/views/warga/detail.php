@@ -12,7 +12,7 @@
                 <div class="card-body text-center">
 
                     <img
-                        src="<?= base_url('uploads/foto_warga/' . $warga->foto) ?>"
+                        src="<?= base_url('uploads/foto_warga/defult.png' . $warga->foto) ?>"
                         class="img-fluid rounded mb-2"
                         width="100">
 
@@ -38,6 +38,20 @@
                         <p><i class="fas fa-map-marker-alt text-primary"></i>
                             <b> Tempat Lahir :</b> <?= $warga->tempat_lahir ?>
                         </p>
+                        <p>
+                            <i class="fas fa-user-clock text-primary"></i>
+                            <b>Umur :</b>
+                            <?php
+                            if ($warga->tanggal_lahir) {
+                                $tgl_lahir = new DateTime($warga->tanggal_lahir);
+                                $today = new DateTime();
+                                $umur = $today->diff($tgl_lahir)->y;
+                                echo $umur . ' Tahun';
+                            } else {
+                                echo '-';
+                            }
+                            ?>
+                        </p>
                         <p><i class="fas fa-venus-mars text-primary"></i>
                             <b>Jenis Kelamin :</b> <?= $warga->jenis_kelamin ?>
                         </p>
@@ -53,10 +67,17 @@
                         <p><i class="fas fa-briefcase text-primary"></i>
                             <b>Pekerjaan :</b> <?= $warga->pekerjaan ?>
                         </p>
-
+                        <a href="<?= base_url('warga/edit/' . $warga->id) ?>" class="btn btn-warning btn-icon-split">
+                            <span class="icon text-white-20">
+                                <i class="fas fa-edit"></i> Edit
+                            </span>
+                        </a>
+                         <a href="<?= base_url('keluarga/detail/' . $warga->keluarga_id) ?>" class="btn btn-secondary">Kembali ke keluarga</a>
+                         <a href="<?= base_url('warga') ?>" class="btn btn-danger">Kembali</a>
                     </div>
 
                 </div>
+
             </div>
         </div>
 
@@ -76,7 +97,7 @@
 
                     <div class="table-responsive">
 
-                         <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
 
                             <thead class="text-center">
 
@@ -162,7 +183,6 @@
                         </table>
 
                     </div>
-
                 </div>
             </div>
 

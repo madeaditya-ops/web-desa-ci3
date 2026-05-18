@@ -71,6 +71,124 @@
      });
  </script>
 
+<script>
+$(document).off('click', '.swal-confirm');
+
+$(document).on('click', '.swal-confirm', function(e) {
+
+    e.preventDefault();
+
+    let url   = $(this).attr('href');
+    let title = $(this).data('title') || 'Yakin?';
+    let text  = $(this).data('text') || 'Aksi ini akan diproses.';
+    let icon  = $(this).data('icon') || 'warning';
+    let confirmText = $(this).data('confirm') || 'Ya';
+
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: icon,
+
+        showCancelButton: true,
+
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+
+        confirmButtonText: confirmText,
+        cancelButtonText: 'Batal'
+
+    }).then((result) => {
+
+        if(result.isConfirmed){
+
+            window.location.href = url;
+
+        }
+
+    });
+
+});
+</script>
+
+<script>
+$(document).ready(function(){
+
+    $('.btn-setujui').click(function(){
+
+        let url = $(this).data('url');
+
+        Swal.fire({
+
+            title: 'Setujui Surat?',
+
+            text: 'Data surat akan diproses.',
+
+            icon: 'question',
+
+            showCancelButton: true,
+
+            confirmButtonColor: '#28a745',
+
+            cancelButtonColor: '#6c757d',
+
+            confirmButtonText: 'Ya, Setujui',
+
+            cancelButtonText: 'Batal'
+
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                window.location.href = url;
+
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+<script>
+$(document).ready(function(){
+
+    $('.btn-hapus').click(function(){
+
+        let url = $(this).data('url');
+
+        Swal.fire({
+
+            title: 'Hapus Pengajuan?',
+
+            text: "Data yang dihapus tidak bisa dikembalikan.",
+
+            icon: 'warning',
+
+            showCancelButton: true,
+
+            confirmButtonColor: '#d33',
+
+            cancelButtonColor: '#6c757d',
+
+            confirmButtonText: 'Ya, Hapus!',
+
+            cancelButtonText: 'Batal'
+
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                window.location.href = url;
+
+            }
+
+        });
+
+    });
+
+});
+</script>
 
 
  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -274,75 +392,72 @@
      });
  </script>
 
- <script>
-     $('#pilihWarga').on('select2:select', function(e) {
 
-         const option = e.params.data.element;
-         const id = e.params.data.id;
-
-         if ($(option).data('terbaru') == 1) {
-
-             // 1️⃣ Hilangkan badge di frontend
-             $(option).data('terbaru', 0);
-
-             // 2️⃣ Update tampilan Select2
-             $('#pilihWarga').trigger('change.select2');
-
-             // 3️⃣ RESET KE DATABASE
-             $.ajax({
-                 url: '<?= site_url("admin/reset_warga_terbaru/") ?>' + id,
-                 type: 'POST',
-                 dataType: 'json'
-             });
-         }
-     });
- </script>
 
 
  <script>
-     $(document).on('click', '.btn-detail', function(e) {
-         e.preventDefault();
+    $(document).on('click', '.btn-detail', function(e) {
+    e.preventDefault();
 
-         const id = $(this).data('id');
+    const id = $(this).data('id');
 
-         $('#detailContent').html(`
+    if (!id) {
+        alert("ID tidak ditemukan");
+        return;
+    }
+
+    $('#detailContent').html(`
         <tr>
             <td colspan="2" class="text-center text-muted">Memuat data...</td>
         </tr>
     `);
 
-         $('#btnSetujui').attr('href', '<?= site_url('admin/setujui/') ?>' + id);
-         $('#btnTolak').attr('href', '<?= site_url('admin/tolak/') ?>' + id);
+    $('#btnSetujui').attr('href', '<?= site_url('admin/setujui/') ?>' + id);
+    $('#btnTolak').attr('href', '<?= site_url('admin/tolak/') ?>' + id);
 
-         $('#modalDetail').modal({
-             backdrop: 'static',
-             keyboard: false
-         });
+    $('#modalDetail').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
 
-         $.getJSON('<?= site_url('admin/detail_verifikasi/') ?>' + id)
-             .done(function(res) {
-                 let html = '';
-                 Object.keys(res).forEach(key => {
-                     if (key === 'id') return;
-                     html += `
+    $.getJSON('<?= site_url('admin/detail_verifikasi/') ?>' + id)
+        .done(function(res) {
+
+            if (Object.keys(res).length === 0) {
+                $('#detailContent').html(`
                     <tr>
-                        <th width="30%">${key.replace(/_/g,' ').toUpperCase()}</th>
-                        <td>${res[key] ?? '-'}</td>
+                        <td colspan="2" class="text-center text-muted">
+                            Data tidak ditemukan
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+
+            let html = '';
+            Object.keys(res).forEach(key => {
+                if (key === 'id') return;
+
+                html += `
+                    <tr>
+                        <th width="30%">${key.replace(/_/g,' ')}</th>
+                        <td>${res[key] ? res[key] : '-'}</td>
                     </tr>
                 `;
-                 });
-                 $('#detailContent').html(html);
-             })
-             .fail(function() {
-                 $('#detailContent').html(`
+            });
+
+            $('#detailContent').html(html);
+        })
+        .fail(function() {
+            $('#detailContent').html(`
                 <tr>
                     <td colspan="2" class="text-danger text-center">
                         Gagal memuat data
                     </td>
                 </tr>
             `);
-             });
-     });
+        });
+});
  </script>
 
  <script>
@@ -667,263 +782,86 @@
      });
  </script>
 
- <script>
-     function loadRealtimeNotif() {
-         fetch("<?= site_url('admin/get_notifikasi_realtime') ?>")
-             .then(res => res.json())
-             .then(data => {
+<script>
+let lastNotifCount = 0;
 
-                 let badge = document.getElementById('notifBadge');
-                 let list = document.getElementById('notifList');
+function refreshNotifications() {
+    const role = "<?= $this->session->userdata('role') ?>";
+    const badge = document.getElementById("notifBadge");
+    const list = document.getElementById("notifList");
 
-                 if (!badge || !list) return;
+    if (!badge || !list) return;
 
-                 if (data.length > 0) {
-                     badge.innerText = data.length;
-                     badge.style.display = 'inline-block';
-                 } else {
-                     badge.style.display = 'none';
-                 }
+    let targetUrl = "";
+    
+    // PEMISAHAN JALUR DATA URL
+    if (role === 'admin') {
+        targetUrl = "<?= site_url('admin/get_notif_admin_realtime') ?>";
+    } else if (role === 'kadus') {
+        targetUrl = "<?= site_url('kadus/get_notif_kadus_realtime') ?>";
+    } else {
+        badge.style.display = "none";
+        return;
+    }
 
-                 list.innerHTML = '';
+    fetch(targetUrl)
+        .then(res => res.json())
+        .then(data => {
+            // Update Badge
+            if (data.jumlah > 0) {
+                badge.style.display = "inline-block";
+                badge.innerText = data.jumlah;
+            } else {
+                badge.style.display = "none";
+            }
 
-                 data.forEach(n => {
-                     list.innerHTML += `
-                    <a class="dropdown-item small text-gray-700" href="${n.link}">
-                        ${n.pesan}
-                    </a>
-                `;
-                 });
+            // Update List Dropdown
+            let html = "";
+            if (data.list && data.list.length > 0) {
+                data.list.forEach(item => {
+                    let content = "";
+                    let iconBg = "bg-primary";
+                    let link = (role === 'admin') ? "<?= site_url('admin/verifikasi_data') ?>" : "<?= site_url('kadus/arsip') ?>";
 
-                 if (data.length === 0) {
-                     list.innerHTML = `
-                    <span class="dropdown-item small text-muted">
-                        Tidak ada notifikasi
-                    </span>
-                `;
-                 }
+                    if (role === 'admin') {
+                        content = `<strong>${item.nama}</strong><br><small>Banjar: ${item.banjar}</small><br>
+                        <small>Kadus: ${item.dibuat_oleh}</small>`;
+                    } else if (role === 'kadus') {
+                        if (item.status === 'disetujui') {
+                            content = `Surat <strong>${item.nama}</strong> <span class="text-success">DISETUJUI</span><br><small>Silakan Ke Kantor Ambil Surat</small>`;
+                            iconBg = "bg-success";
+                        } else {
+                            content = `Surat <strong>${item.nama}</strong> <span class="text-danger">DITOLAK</span><br><small class="text-danger">Alasan: ${item.alasan_tolak || '-'}</small>`;
+                            iconBg = "bg-danger";
+                        }
+                    }
 
-             });
-     }
-
-     // 🔥 Polling tiap 5 detik
-     setInterval(loadRealtimeNotif, 5000);
-
-     // Jalankan saat pertama load
-     document.addEventListener("DOMContentLoaded", loadRealtimeNotif);
- </script>
-
- <script>
-     let lastNotifIds = [];
-
-     function loadRealtimeNotif() {
-         fetch("<?= site_url('admin/get_notifikasi_realtime') ?>")
-             .then(res => res.json())
-             .then(data => {
-
-                 let badge = document.getElementById('notifBadge');
-                 let list = document.getElementById('notifList');
-
-                 if (!badge || !list) return;
-
-                 let currentIds = data.map(n => n.id);
-
-                 // 🔥 Cek notif baru
-                 data.forEach(n => {
-                     if (!lastNotifIds.includes(n.id)) {
-
-                         // 💡 TOAST POPUP
-                         Swal.fire({
-                             toast: true,
-                             position: 'top-end',
-                             icon: 'info',
-                             title: n.pesan,
-                             showConfirmButton: false,
-                             timer: 4000,
-                             timerProgressBar: true
-                         });
-
-                     }
-                 });
-
-                 lastNotifIds = currentIds;
-
-                 // Update badge
-                 if (data.length > 0) {
-                     badge.innerText = data.length;
-                     badge.style.display = 'inline-block';
-                 } else {
-                     badge.style.display = 'none';
-                 }
-
-                 // Update dropdown
-                 list.innerHTML = '';
-
-                 data.forEach(n => {
-                     list.innerHTML += `
-                    <a class="dropdown-item small text-gray-700" href="${n.link}">
-                        ${n.pesan}
-                    </a>
-                `;
-                 });
-
-                 if (data.length === 0) {
-                     list.innerHTML = `
-                    <span class="dropdown-item small text-muted">
-                        Tidak ada notifikasi
-                    </span>
-                `;
-                 }
-             });
-     }
-
-     // Run pertama kali
-     document.addEventListener("DOMContentLoaded", function() {
-         loadRealtimeNotif();
-     });
-
-     // Poll tiap 5 detik
-     setInterval(loadRealtimeNotif, 5000);
- </script>
-
- <script>
-     let lastNotifId = 0;
-
-     function cekNotifikasiRealtime() {
-
-         fetch("<?= site_url('admin/cek_notifikasi_ajax') ?>")
-             .then(res => res.json())
-             .then(data => {
-
-                 if (data.length > 0) {
-
-                     // Badge jumlah
-                     document.getElementById("notifBadge").style.display = "inline-block";
-                     document.getElementById("notifBadge").innerText = data.length;
-
-                     let listHTML = '';
-
-                     data.forEach(n => {
-
-                         listHTML += `
-                    <a class="dropdown-item small">
-                        ${n.pesan}
-                    </a>
-                `;
-
-                         // 🔊 Bunyi hanya kalau notif baru
-                         if (n.id > lastNotifId) {
-                             document.getElementById("notifSound").play();
-                             showToast(n.pesan);
-                             lastNotifId = n.id;
-                         }
-
-                     });
-
-                     document.getElementById("notifList").innerHTML = listHTML;
-
-                 } else {
-
-                     document.getElementById("notifBadge").style.display = "none";
-                     document.getElementById("notifList").innerHTML =
-                         '<div class="text-center small text-gray-500">Tidak ada notifikasi</div>';
-                 }
-
-             });
-
-     }
-
-     // cek setiap 5 detik
-     setInterval(cekNotifikasiRealtime, 5000);
-     cekNotifikasiRealtime();
+                    html += `
+                        <a class="dropdown-item d-flex align-items-center" href="${link}">
+                            <div class="mr-3">
+                                <div class="icon-circle ${iconBg}">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500">${item.created_at}</div>
+                                <span>${content}</span>
+                            </div>
+                        </a>`;
+                });
+            } else {
+                html = '<div class="text-center small py-3 text-gray-500">Tidak ada pemberitahuan baru</div>';
+            }
+            list.innerHTML = html;
+        })
+        .catch(err => console.log("Notif Error: ", err));
+}
 
 
-     // ========================
-     // 💬 TOAST POPUP
-     // ========================
-
-     function showToast(message) {
-
-         let toast = document.createElement("div");
-
-         toast.className = "toast-notif";
-         toast.innerHTML = `
-        <strong>Notifikasi Baru</strong><br>
-        ${message}
-    `;
-
-         document.body.appendChild(toast);
-
-         setTimeout(() => {
-             toast.classList.add("show");
-         }, 100);
-
-         setTimeout(() => {
-             toast.classList.remove("show");
-             setTimeout(() => toast.remove(), 300);
-         }, 5000);
-     }
- </script>
-
-
-
- <script>
-     function loadNotifikasi() {
-         fetch("<?= site_url($this->session->userdata('role') . '/ajax_notifikasi') ?>")
-             .then(res => res.json())
-             .then(data => {
-
-                 let html = '';
-                 let unread = 0;
-
-                 if (data.length === 0) {
-                     html = '<div class="text-center small text-gray-500">Tidak ada notifikasi</div>';
-                 } else {
-                     data.forEach(n => {
-
-                         if (n.status === 'belum dibaca') unread++;
-
-                         html += `
-                    <a href="#" onclick="bacaNotif(${n.id})" class="dropdown-item ${n.status === 'belum dibaca' ? 'font-weight-bold' : ''}">
-                        ${n.pesan}
-                        <br>
-                        <small class="text-muted">${n.created_at}</small>
-                    </a>
-                `;
-                     });
-                 }
-
-                 document.getElementById('notifList').innerHTML = html;
-
-                 const badge = document.getElementById('notifBadge');
-
-                 if (unread > 0) {
-                     badge.style.display = '';
-                     badge.innerText = unread;
-                 } else {
-                     badge.style.display = 'none';
-                 }
-             });
-     }
-
-     function bacaNotif(id) {
-         fetch("<?= site_url($this->session->userdata('role') . '/ajax_baca_notif') ?>/" + id)
-             .then(res => res.json())
-             .then(res => {
-                 if (res.success) {
-                     loadNotifikasi();
-                     window.location.href = res.link;
-                 }
-             });
-     }
-
-     // Load pertama
-     loadNotifikasi();
-
-     // Realtime tiap 5 detik
-     setInterval(loadNotifikasi, 5000);
- </script>
-
+// Hanya jalankan satu interval ini saja
+setInterval(refreshNotifications, 1000);
+document.addEventListener("DOMContentLoaded", refreshNotifications);
+</script>
 
  <script>
      $(document).ready(function() {
@@ -960,6 +898,96 @@
 
      });
  </script>
+
+ 
+ <script>
+$(document).ready(function () {
+
+    $('#select_warga_admin').select2({
+        placeholder: "Cari Nama atau NIK",
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#select_warga_admin').on('change', function () {
+
+        let selected = $(this).find(':selected');
+
+        function setVal(ids, value) {
+            if (!value) return;
+
+            ids.forEach(id => {
+                let el = $('#' + id);
+                if (el.length) {
+                    el.val(value).trigger('change');
+                }
+            });
+        }
+
+        // =========================
+        // DATA UTAMA
+        // =========================
+        setVal(['nama'], selected.data('nama'));
+        setVal(['nik', 'nomor_nik', 'no_ktp'], selected.data('nik'));
+        setVal(['tempat_lahir'], selected.data('tempat'));
+        setVal(['tanggal_lahir', 'tgl_lahir'], selected.data('tgl'));
+        setVal(['pekerjaan'], selected.data('pekerjaan'));
+        setVal(['agama'], selected.data('agama'));
+        setVal(['jenis_kelamin', 'jk', 'gender'], selected.data('jk'));
+        setVal(['status_perkawinan', 'status', 'sts_kawin'], selected.data('status'));
+
+        // =========================
+        // 🔥 BANJAR (pakai id_dusun)
+        // =========================
+        let idDusun   = selected.data('id_dusun');
+        let namaBanjar = selected.data('banjar');
+        let kodeBanjar = selected.data('kode');
+
+        // set dropdown kode banjar (value = kode_dusun)
+        if (kodeBanjar) {
+            $('#kode_banjar').val(kodeBanjar).trigger('change');
+        }
+
+        // set hidden banjar
+        if (namaBanjar) {
+            $('#banjar').val(namaBanjar);
+        }
+
+    });
+
+});
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".btn-setujui");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            let url = this.getAttribute("href");
+
+            Swal.fire({
+                title: "Yakin?",
+                text: "Data akan disetujui!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Setujui!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+});
+</script>
+
 
  </body>
 

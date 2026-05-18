@@ -8,11 +8,20 @@ class Dashboard extends Kades_Middleware {
         parent::__construct();
         $this->load->database();
         $this->load->library('session');
+        $this->load->helper('url');
+         $this->load->model('Warga_model');
+         $this->load->model('Keluarga_model');
+         $this->load->model('Template_surat_model');
+         $this->load->model('Potensi_model');
+            $this->load->model('Galeri_model');
     }
 
     public function index()
     {
         $dusun_id = $this->session->userdata('dusun_id') ?: null;
+         $this->load->model('Warga_model');
+         $this->load->model('Keluarga_model');
+            $this->load->model('Template_surat_model');
 
         // helper untuk hitung tabel dengan opsi filter dusun jika field ada
         $countTable = function($table, $dusun_id = null) {
@@ -27,7 +36,9 @@ class Dashboard extends Kades_Middleware {
         };
 
         // Hitung data utama
-        $data['count_templates'] = $countTable('template_surat', $dusun_id);
+        $data['count_templates'] = $countTable('template_surat');
+        $data['count_warga']     = $countTable('warga', $dusun_id);
+        $data['count_keluarga']  = $countTable('keluarga', $dusun_id);
         $data['count_potensi']   = $countTable('potensi', $dusun_id);
         $data['count_galeri']    = $countTable('galeri', $dusun_id);
         $data['count_peraturan'] = $countTable('peraturan', $dusun_id);

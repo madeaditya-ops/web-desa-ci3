@@ -25,15 +25,21 @@
                     <input type="date" name="tanggal_surat" class="form-control" required>
                 </div>
                     <div class="form-group">
-                        <label>Nomor Surat</label>
+                        <label>Nomor Surat Kantor</label>
+                        <input type="text" name="nomor_template_surat" class="form-control" required
+                            placeholder="isi dengan contoh 11">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor Surat Keluar</label>
                         <input type="text" name="nomor_surat" class="form-control" required
-                            placeholder="isi dengan contoh 470/11">
+                            placeholder="isi dengan contoh 11">
                     </div>
 
                     <div class="form-group">
                         <label>Nomor Pengantar</label>
                         <input type="text" name="nomor_pengantar" class="form-control"
-                            placeholder="isi pengantar dengan 470/22" required>
+                            placeholder="isi pengantar dengan 22" required>
                     </div>
 
                     <div class="form-group">
@@ -64,7 +70,7 @@
                     </div>
                     <div class="form-group">
                         <label>Jenis Surat</label>
-                        <input type="text" name="jenis_surat" class="form-control"
+                        <input type="text" name="jenis_surat_tujuan" class="form-control"
                             placeholder="Contoh: Surat Keterangan Domisili" required>
                     </div>
 

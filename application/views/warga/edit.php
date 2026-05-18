@@ -2,7 +2,7 @@
     <h1 class="h3 mb-4">Edit Warga</h1>
 
     <!-- Flash Messages -->
-    <?php if($this->session->flashdata('success')): ?>
+    <?php if ($this->session->flashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= $this->session->flashdata('success') ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -11,7 +11,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if($this->session->flashdata('error')): ?>
+    <?php if ($this->session->flashdata('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= $this->session->flashdata('error') ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -23,12 +23,12 @@
     <div class="card shadow">
         <div class="card-body">
 
-            <form action="<?= base_url('warga/update/'.$warga->id) ?>" method="post">
+            <form action="<?= base_url('warga/update/' . $warga->id) ?>" method="post">
 
                 <div class="form-group">
                     <label>No KK</label>
                     <select name="keluarga_id" class="form-control">
-                        <?php foreach($keluarga as $k): ?>
+                        <?php foreach ($keluarga as $k): ?>
                             <option value="<?= $k->id ?>" <?= $warga->keluarga_id == $k->id ? 'selected' : '' ?>>
                                 <?= $k->no_kk ?>
                             </option>
@@ -50,7 +50,7 @@
                     <label>Hubungan Dalam KK</label>
                     <select name="hubungan_id" class="form-control" required>
                         <option value="">-- Pilih Hubungan --</option>
-                        <?php foreach($hubungan as $h): ?>
+                        <?php foreach ($hubungan as $h): ?>
                             <option value="<?= $h->id ?>" <?= ($warga->hubungan_id == $h->id) ? 'selected' : '' ?>>
                                 <?= $h->nama ?>
                             </option>
@@ -62,7 +62,7 @@
                     <label>Jenis Kelamin</label>
                     <select name="jenis_kelamin_id" class="form-control" required>
                         <option value="">-- Pilih Jenis Kelamin --</option>
-                        <?php foreach($jenis_kelamin as $jk): ?>
+                        <?php foreach ($jenis_kelamin as $jk): ?>
                             <option value="<?= $jk->id ?>" <?= ($warga->jenis_kelamin_id == $jk->id) ? 'selected' : '' ?>>
                                 <?= $jk->nama ?>
                             </option>
@@ -74,7 +74,7 @@
                     <label>Agama</label>
                     <select name="agama_id" class="form-control" required>
                         <option value="">-- Pilih Agama --</option>
-                        <?php foreach($agama as $a): ?>
+                        <?php foreach ($agama as $a): ?>
                             <option value="<?= $a->id ?>" <?= ($warga->agama_id == $a->id) ? 'selected' : '' ?>>
                                 <?= $a->nama ?>
                             </option>
@@ -86,7 +86,7 @@
                     <label>Status Perkawinan</label>
                     <select name="status_perkawinan_id" class="form-control" required>
                         <option value="">-- Pilih Status --</option>
-                        <?php foreach($status_perkawinan as $sp): ?>
+                        <?php foreach ($status_perkawinan as $sp): ?>
                             <option value="<?= $sp->id ?>" <?= ($warga->status_perkawinan_id == $sp->id) ? 'selected' : '' ?>>
                                 <?= $sp->nama ?>
                             </option>
@@ -98,7 +98,7 @@
                     <label>Kewarganegaraan</label>
                     <select name="kewarganegaraan_id" class="form-control" required>
                         <option value="">-- Pilih Kewarganegaraan --</option>
-                        <?php foreach($kewarganegaraan as $kw): ?>
+                        <?php foreach ($kewarganegaraan as $kw): ?>
                             <option value="<?= $kw->id ?>" <?= ($warga->kewarganegaraan_id == $kw->id) ? 'selected' : '' ?>>
                                 <?= $kw->nama ?>
                             </option>
@@ -110,7 +110,7 @@
                     <label>Pendidikan</label>
                     <select name="pendidikan_id" class="form-control" required>
                         <option value="">-- Pilih Pendidikan --</option>
-                        <?php foreach($pendidikan as $p): ?>
+                        <?php foreach ($pendidikan as $p): ?>
                             <option value="<?= $p->id ?>" <?= ($warga->pendidikan_id == $p->id) ? 'selected' : '' ?>>
                                 <?= $p->nama ?>
                             </option>
@@ -135,6 +135,18 @@
 
                 <div class="form-group">
                     <label>Keterangan</label>
+                    <select name="id_keterangan" class="form-control">
+                        <option value="">-- Pilih Keterangan --</option>
+                        <?php foreach ($keterangan_list as $k): ?>
+                            <option value="<?= $k->id_keterangan ?>" <?= ($warga->id_keterangan == $k->id_keterangan) ? 'selected' : '' ?>>
+                                <?= $k->nama_keterangan ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Catatan Tambahan</label>
                     <textarea name="keterangan" class="form-control" rows="3"><?= $warga->keterangan ?></textarea>
                 </div>
 

@@ -44,6 +44,7 @@
                         <th>Hubungan</th>
                         <th>JK</th>
                         <th>Tanggal Lahir</th>
+                        <th>Umur</th>
                         <th>Aksi</th>
                     </tr>
 
@@ -66,7 +67,7 @@
 
                                 <?php else: ?>
 
-                                    <img src="<?= base_url('uploads/foto_warga/default.png') ?>" width="60">
+                                    <img src="<?= base_url('uploads/foto_warga/defult.png') ?>" width="60">
 
                                 <?php endif ?>
 
@@ -82,9 +83,27 @@
 
                             <td><?= $a->tanggal_lahir ?></td>
 
+                            <td>
+                                 <p>
+                            <?php
+                            if ($a->tanggal_lahir) {
+                                $tgl_lahir = new DateTime($a ->tanggal_lahir);
+                                $today = new DateTime();
+                                $umur = $today->diff($tgl_lahir)->y;
+                                echo $umur . ' Tahun';
+                            } else {
+                                echo '-';
+                            }
+                            ?>
+                        </p>
+                            </td>
+
                             <td class="text-center">
 
-                            
+                              <a href="<?= site_url('warga/detail/' . $a->id) ?>"
+                  class="btn btn-info btn-sm">
+                  <i class=""></i> Detail
+                </a>
 
                                 <a href="<?= base_url('keluarga/edit_foto/' . $a->id) ?>"
                                     class="btn btn-warning btn-sm">

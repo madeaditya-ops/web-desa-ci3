@@ -11,7 +11,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property Arsip_model $Arsip_model
  * @property Data_surat_model $Data_surat_model
  * @property Data_surat_pending_model $Data_surat_pending_model
- * 
+ * @property Master_data_model $Master_data_model
  */
 
 use PhpOffice\PhpWord\IOFactory;
@@ -54,9 +54,10 @@ class Admin extends CI_Controller
         $this->load->model('Surat_model');
         $this->load->model('Layanan_model');
         $this->load->model('Data_surat_model');
-        $this->load->model('Data_surat_pending_model');
         $this->load->model('Dusun_model');
         $this->load->model('Arsip_model');
+        $this->load->model('Warga_model');
+        $this->load->model('Keluarga_model');
         $this->load->model('Template_surat_model');
         $this->load->library('upload');
     }
@@ -87,6 +88,11 @@ class Admin extends CI_Controller
         $data['today_count']  = $today_count;
         $data['chart_labels'] = $labels;
         $data['chart_data']   = $data_chart;
+
+        $distribution = $this->Arsip_model->counts_by_jenis();
+        $data['distribution_labels'] = array_keys($distribution);
+        $data['distribution_data']   = array_values($distribution);
+        $data['distribution_total']  = array_sum($distribution);
 
         // muat view dashboard (pastikan view menggunakan variabel ini)
         $this->load->view('template_admin/header', $data);
@@ -169,19 +175,16 @@ class Admin extends CI_Controller
     public function verifikasi_data()
     {
         $data['menunggu'] = $this->db
-            ->where('status', 'menunggu')
-            ->order_by('created_at', 'DESC')
-            ->get('data_surat')
+            ->select('
+        data_surat.*,
+        users.nama as dibuat_oleh
+    ')
+            ->from('data_surat')
+            ->join('users', 'users.id_user = data_surat.id_user', 'left')
+            ->where('data_surat.status', 'menunggu')
+            ->order_by('data_surat.created_at', 'DESC')
+            ->get()
             ->result();
-
-        $this->db->where('tujuan_role', 'admin')
-            ->where('status', 'belum dibaca')
-            ->update('notifikasi', ['status' => 'dibaca']);
-
-        $this->db->where('tujuan_role', 'admin')
-            ->where('status', 'belum dibaca')
-            ->update('notifikasi', ['status' => 'dibaca']);
-
 
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
@@ -190,105 +193,42 @@ class Admin extends CI_Controller
     }
 
 
-    public function notifikasi()
+
+    public function get_notif_admin_realtime()
     {
-        $data['notifikasi'] = $this->db
-            ->where('tujuan_role', 'admin')
-            ->order_by('id', 'DESC')
-            ->get('notifikasi')
-            ->result();
-
-        $this->db
-            ->where('tujuan_role', 'admin')
-            ->where('status', 'belum dibaca')
-            ->update('notifikasi', ['status' => 'dibaca']);
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/notifikasi', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-
-    public function cek_notifikasi_ajax()
-    {
-        $notif = $this->db
-            ->where('tujuan_role', 'admin')
-            ->where('status', 'belum dibaca')
-            ->order_by('id', 'DESC')
-            ->get('notifikasi')
-            ->result();
-
-        echo json_encode($notif);
-    }
-
-    public function baca_notifikasi($id)
-    {
-        $this->db->where('id', $id)
-            ->update('notifikasi', ['status' => 'dibaca']);
-
-        redirect($_SERVER['HTTP_REFERER']);
-    }
-
-    public function get_notifikasi_realtime()
-    {
-        $role = $this->session->userdata('role');
-
-        $notifikasi = $this->db
-            ->where('tujuan_role', $role)
-            ->where('status', 'belum dibaca')
-            ->order_by('created_at', 'DESC')
-            ->limit(10)
-            ->get('notifikasi')
-            ->result();
-
-        echo json_encode($notifikasi);
-    }
-
-    public function setujui($id)
-    {
-        $this->db->trans_start();
-
-        $data = $this->db->get_where('data_surat', ['id' => $id])->row();
-
-        if (!$data) {
-            show_404();
+        // KUNCI KEAMANAN: Jika bukan admin, hentikan proses!
+        if ($this->session->userdata('role') !== 'admin') {
+            echo json_encode(['jumlah' => 0, 'list' => []]);
+            exit;
         }
 
-        // kirim notif hanya ke kadus yang membuat surat
-        $this->db->insert('notifikasi', [
-            'tujuan_role'     => 'kadus',
-            'tujuan_user_id'  => $data->id_user, // 🔥 INI KUNCI NYA
-            'pesan'           => 'Surat telah disetujui, mohon segera ke kantor desa',
-            'link'            => site_url('kadus/arsip'),
-            'status'          => 'belum dibaca',
-            'created_at'      => date('Y-m-d H:i:s')
+        $this->db->select('data_surat.id, data_surat.nama, data_surat.banjar, data_surat.created_at');
+        $this->db->from('data_surat');
+        $this->db->join('users', 'users.id_user = data_surat.id_user');
+        $this->db->where('data_surat.status', 'menunggu');
+        $this->db->where('users.role', 'kadus');
+        $this->db->order_by('data_surat.created_at', 'DESC');
+        $query = $this->db->get();
+
+        echo json_encode([
+            'jumlah' => $query->num_rows(),
+            'list'   => $query->result()
         ]);
-
-        // 1️⃣ Update data_surat → diproses
-        $this->db->where('id', $id)
-            ->update('data_surat', ['status' => 'diproses']);
-
-        // 2️⃣ Update arsip_surat → diproses
-        if (!empty($data->arsip_id)) {
-            $this->db->where('id', $data->arsip_id)
-                ->update('arsip_surat', ['status' => 'diproses']);
-        }
-
-        $this->db->trans_complete();
-
-        // 3️⃣ Simpan id untuk autofill edit_surat
-        $this->session->set_flashdata('auto_fill_id', $id);
-
-        redirect('admin/edit_surat/' . $data->id_template);
     }
+
 
 
     public function verifikasi_selesai()
     {
         $data['selesai'] = $this->db
-            ->order_by('created_at', 'DESC')
-            ->get('data_surat')
+            ->select('data_surat.*, 
+                  arsip_surat.status_ambil, 
+                  arsip_surat.tanggal_ambil, 
+                  arsip_surat.diambil_oleh')
+            ->from('data_surat')
+            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id', 'left')
+            ->order_by('data_surat.created_at', 'DESC')
+            ->get()
             ->result();
 
         $this->load->view('template_admin/header');
@@ -297,43 +237,57 @@ class Admin extends CI_Controller
         $this->load->view('template_admin/footer');
     }
 
-    public function reset_warga_terbaru($id)
+    public function detail_verifikasi($id)
     {
-        if (!$id) {
-            echo json_encode(['status' => false]);
-            return;
+        $data = $this->db->get_where('data_surat', ['id' => $id])->row_array();
+
+        if ($data) {
+            echo json_encode($data);
+        } else {
+            echo json_encode([]);
         }
-
-        $this->db->where('id', $id);
-        $this->db->set('is_new_approved', 0);
-        $this->db->update('data_surat');
-
-        echo json_encode(['status' => true]);
     }
+
 
 
     public function tolak($id)
     {
-        $data = $this->db->get_where('data_surat', ['id' => $id])->row();
+        $alasan = $this->input->post('alasan');
+
+        $data = $this->db
+            ->get_where('data_surat', [
+                'id' => $id
+            ])
+            ->row();
 
         if (!$data) show_404();
 
         // update data_surat
-        $this->db->where('id', $id)
-            ->update('data_surat', ['status' => 'ditolak']);
+        $this->db->where('id', $id);
 
-        // update arsip_surat
-        $this->db->where('id', $data->arsip_id)
-            ->update('arsip_surat', ['status' => 'ditolak']);
+        $this->db->update('data_surat', [
 
-        // notifikasi kadus
-        $this->db->insert('notifikasi', [
-            'tujuan_role' => 'kadus',
-            'pesan'       => 'Pengajuan surat Anda ditolak oleh Admin',
-            'link'        => site_url('kadus/arsip'),
-            'status'      => 'belum dibaca',
-            'created_at'  => date('Y-m-d H:i:s')
+            'status' => 'ditolak',
+
+            'alasan_tolak' => $alasan,
+
+            'new_approved' => 1
+
         ]);
+
+        // update arsip
+        $this->db
+            ->where('data_surat_id', $id)
+            ->update('arsip_surat', [
+
+                'status' => 'ditolak'
+
+            ]);
+
+        $this->session->set_flashdata(
+            'success',
+            'Surat berhasil ditolak.'
+        );
 
         redirect('admin/verifikasi_data');
     }
@@ -356,6 +310,8 @@ class Admin extends CI_Controller
         ]);
     }
 
+
+
     public function edit_surat($id, $id_pengajuan = null)
     {
         $this->load->model('Dusun_model');
@@ -373,11 +329,10 @@ class Admin extends CI_Controller
             show_404();
         }
 
-        // ubah1
-        $id_data = $id_pengajuan; 
-    
+        $id_data = $id_pengajuan;
+
         $data_surat = $this->db->get_where('data_surat', ['id' => $id_data])->row();
-        
+
         if ($id_data && $data_surat) {
             $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
             // JANGAN taruh update status & notif di sini (zona GET)
@@ -385,10 +340,17 @@ class Admin extends CI_Controller
             $data['auto_warga'] = null;
         }
 
-        
+        $this->load->model('Master_data_model');
+
+        // master data dropdown
+        $data['list_jk'] = $this->Master_data_model->get_jenis_kelamin();
+        $data['status_kawin_list'] = $this->Master_data_model->get_status_perkawinan();
+        $data['list_agama'] = $this->Master_data_model->get_agama();
+
+
         // Tetap kirim list warga untuk dropdown
         $data['data_warga'] = $this->db
-            ->select('id, nama, nik, banjar, is_new_approved')
+            ->select('id, nama, nik, banjar, new_approved')
             ->from('data_surat')
             ->order_by('created_at', 'DESC')
             ->get()
@@ -418,7 +380,19 @@ class Admin extends CI_Controller
         if ($this->input->post()) {
             $data_input = $this->input->post();
             $data_input['id_template'] = $id;
+            $ket = trim((string)($data_input['keterangan'] ?? ''));
+            $no_nasional = trim((string)($data_input['no_nasional'] ?? ''));
 
+            if ($ket === '' && !empty($auto_warga->keterangan)) {
+                $ket = $auto_warga->keterangan;
+            }
+
+            if ($no_nasional === '' && !empty($auto_warga->no_nasional)) {
+                $no_nasional = $auto_warga->no_nasional;
+            }
+
+            $data_input['keterangan']  = $ket;
+            $data_input['no_nasional'] = $no_nasional;
             // ===============================
             // A) AMBIL NILAI PLACEHOLDER [keterangan] DARI INPUT FORM
             // ===============================
@@ -466,6 +440,8 @@ class Admin extends CI_Controller
                             // Alias khusus untuk beberapa field
                             $aliases = [
                                 'jenis_kelamin'     => ['jenis_kelamin', 'jenis kelamin', 'gender', 'jk', 'sex', 'kelamin'],
+                                'keterangan'  => ['keterangan', 'ket', 'keterangan_surat'],
+                                'no_nasional' => ['no_nasional', 'nomor_nasional', 'nomor_surat_nasional'],
                                 // ✅ INI YANG BENAR UNTUK PLACEHOLDER [no_pengantar]
                                 'nomor_pengantar'    => ['no_pengantar', 'no pengantar', 'nomor_pengantar', 'nomor pengantar'],
                                 'tujuan_surat'      => ['tujuan_surat', 'tujuan surat', 'kepada', 'tujuan'],
@@ -491,11 +467,16 @@ class Admin extends CI_Controller
 
                             // ✅ KHUSUS NOMOR PENGANTAR
                             if ($ph_key === 'nomor_pengantar' || $ph_key === 'no_pengantar') {
-                                $val = $nomor_pengantar ?? '';
-                            }
 
-                            // khusus kode banjar
-                            if (in_array($ph_key, ['kode', 'kode_dusun', 'kode_banjar'])) {
+                                $val = $nomor_pengantar ?? '';
+                            } elseif ($ph_key === 'keterangan') {
+
+                                $val = strtoupper($ket ?? '');
+                            } elseif ($ph_key === 'no_nasional' || $ph_key === 'nomor_nasional') {
+
+                                $val = $no_nasional;
+                            } elseif (in_array($ph_key, ['kode', 'kode_dusun', 'kode_banjar'])) {
+
                                 $val = $data_input['kode_banjar'] ?? '';
                             }
                             // key utama
@@ -548,6 +529,30 @@ class Admin extends CI_Controller
                             if ($np !== '') {
                                 $xml_clean = preg_replace('/\[\s*nomor\s*[_\s]*pengantar\s*\]/i', htmlspecialchars($np), $xml_clean);
                                 $xml_clean = preg_replace('/\[\s*no\s*[_\s]*pengantar\s*\]/i', htmlspecialchars($np), $xml_clean);
+                            }
+
+                            // 🔥 FORCE REPLACE [keterangan]
+                            if (!empty($ket)) {
+                                $xml_clean = preg_replace(
+                                    '/\[\s*keterangan\s*\]/i',
+                                    htmlspecialchars(strtoupper($ket)),
+                                    $xml_clean
+                                );
+                            }
+
+                            // 🔥 FORCE REPLACE [no_nasional]
+                            if (!empty($no_nasional)) {
+                                $xml_clean = preg_replace(
+                                    '/\[\s*no\s*[_\s]*nasional\s*\]/i',
+                                    htmlspecialchars($no_nasional),
+                                    $xml_clean
+                                );
+
+                                $xml_clean = preg_replace(
+                                    '/\[\s*nomor\s*[_\s]*nasional\s*\]/i',
+                                    htmlspecialchars($no_nasional),
+                                    $xml_clean
+                                );
                             }
 
                             // Ganti di dalam <w:t> bila ada, jika tidak ada coba ganti langsung [placeholder]
@@ -634,96 +639,109 @@ class Admin extends CI_Controller
                 ($data_input['keterangan'] ?? '-');
 
 
-                // Bentuk nomor pengantar gabungan
-                $nomor_pengantar = ($nomorTemplate ?? '') . '/' .
-                    ($data_input['nomor_template_surat'] ?? '') . '' .
-                    ($data_input['nomor_pengantar'] ?? '') . '/KBD.' .
-                    ($data_input['kode_banjar'] ?? '');
+
 
 
                 // ===============================
-                // AMBIL NILAI UNTUK JENIS SURAT DARI PLACEHOLDER [keterangan]
+                // GABUNGKAN NAMA TEMPLATE + KETERANGAN
                 // ===============================
-                $jenis_surat_val = '';
+
+                // nama surat template
+                $jenis_surat_val = trim((string)$template->nama_surat);
+
+                // ambil placeholder keterangan
+                $keterangan = '';
+
                 if (!empty($data_input['keterangan'])) {
-                    $jenis_surat_val = $data_input['keterangan'];
+
+                    $keterangan = $data_input['keterangan'];
                 } elseif (!empty($data_input['[keterangan]'])) {
-                    $jenis_surat_val = $data_input['[keterangan]'];
+
+                    $keterangan = $data_input['[keterangan]'];
                 } elseif (!empty($data_input['jenis_surat'])) {
-                    $jenis_surat_val = $data_input['jenis_surat'];
+
+                    $keterangan = $data_input['jenis_surat'];
                 }
-                $jenis_surat_val = trim((string)$jenis_surat_val);
-                if ($jenis_surat_val === '') $jenis_surat_val = '';
 
+                $keterangan = trim((string)$keterangan);
+
+                // gabungkan
+                if ($keterangan !== '') {
+                    $jenis_surat_val .= ' ' . strtoupper($keterangan);
+                }
                 // Simpan metadata arsip ke DB
-$id_admin = $this->session->userdata('id_user');
-$id_pengajuan_post = $this->input->post('id_pengajuan'); // Ambil ID yang kita titipkan di form tadi
+                $id_admin = $this->session->userdata('id_user');
+                $id_pengajuan_post = $this->input->post('id_pengajuan'); // Ambil ID yang kita titipkan di form tadi
 
-$pengajuan = null;
-if (!empty($id_pengajuan_post)) {
-    $pengajuan = $this->db->get_where('data_surat', ['id' => $id_pengajuan_post])->row();
-}
+                $arsip = null;
 
-if ($pengajuan && $pengajuan->arsip_id) {
-    // UPDATE baris yang sudah ada (Arsip Kadus)
-    $this->db->where('id', $pengajuan->arsip_id);
-    $this->db->update('arsip_surat', [
-        'file_admin'  => $new_filename,
-        'id_admin'    => $id_admin,
-        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
-        'jenis_surat' => $jenis_surat_val,
-        'status'      => 'setuju'
-    ]);
-        $this->db->where('id', $id_pengajuan_post);
-        $this->db->update('data_surat', ['status' => 'approved']);
+                if (!empty($id_pengajuan_post)) {
 
-} else {
-    // INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
-    $this->db->insert('arsip_surat', [
-        'file_admin'           => $new_filename,
-        'id_user'              => $this->session->userdata('id_user'),
-        'id_admin'             => $id_admin,
-        'id_template'          => $idTemplate, 
-        'nomor_template_surat' => $nomorTemplate,
-        'kode_banjar'          => $data_input['kode_banjar'] ?? '',
-        'banjar'               => $data_input['banjar'] ?? '',
-        'nomor_surat'          => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
-        'nomor_pengantar'      => $nomor_pengantar,
-        'nama'                 => $data_input['nama'] ?? null,
-        'alamat_penerima'      => $alamat_penerima,
-        'jenis_surat'          => $jenis_surat_val,
-        'status'               => 'setuju',
-        'created_at'           => date('Y-m-d H:i:s')
-    ]); 
-        }
+                    // ambil arsip berdasarkan data_surat_id
+                    $arsip = $this->db
+                        ->get_where('arsip_surat', [
+                            'data_surat_id' => $id_pengajuan_post
+                        ])
+                        ->row();
+                }
 
+                if ($arsip) {
+                    // UPDATE baris yang sudah ada (Arsip Kadus)
+                    $this->db->where('id', $arsip->id);
+                    $this->db->update('arsip_surat', [
+                        'file_admin'  => $new_filename,
+                        'id_admin'    => $id_admin,
+                        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
+                        'status'      => 'disetujui'
+                    ]);
+                    $this->db->where('id', $id_pengajuan_post);
+                    $this->db->update('data_surat', ['status' => 'disetujui']);
+                } else {
+                    // INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
+                    $this->db->insert('arsip_surat', [
+                        'file_admin'     => $new_filename,
+                        'id_user'        => $this->session->userdata('id_user'),
+                        'id_admin'       => $id_admin,
+                        'id_template'          => $idTemplate,
+                        'nomor_template_surat' => $nomorTemplate,
+                        'kode_banjar' => $data_input['kode_banjar'] ?? '',
+                        'banjar'      => $data_input['banjar'] ?? '',
+                        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
+                        'nomor_pengantar' => $nomor_pengantar,
+                        'nama'           => $data_input['nama'] ?? null,
+                        'alamat_penerima' => $alamat_penerima,
+                        'jenis_surat'    => $jenis_surat_val,
+                        'no_nasional'    => $data_input['no_nasional'] ?? null,
+                        'status'         => 'disetujui',
+                        'created_at'     => date('Y-m-d H:i:s')
+                    ]);
+                }
+
+
+                $id_data = $this->input->post('id_pengajuan') ?? $id_pengajuan;
 
                 if ($id_data) {
 
-                    // Ambil data_surat
-                    $data_surat = $this->db->get_where('data_surat', ['id' => $id_data])->row();
+                    $data_surat = $this->db
+                        ->get_where('data_surat', ['id' => $id_data])
+                        ->row();
 
                     if ($data_surat) {
 
-                        // 1️⃣ update data_surat
+                        // update data_surat
                         $this->db->where('id', $id_data)
-                            ->update('data_surat', ['status' => 'disetujui']);
+                            ->update('data_surat', [
+                                'status' => 'disetujui',
+                                'new_approved' => 1
+                            ]);
 
-                        // 2️⃣ update arsip_surat pakai arsip_id
-                        $this->db->where('id', $data_surat->arsip_id)
-                            ->update('arsip_surat', ['status' => 'disetujui']);
-
-                        // 3️⃣ kirim notifikasi ke kadus
-                        $this->db->insert('notifikasi', [
-                            'tujuan_role' => 'kadus',
-                            'pesan'       => 'Surat Anda telah disetujui dan selesai dibuat',
-                            'link'        => site_url('kadus/arsip'),
-                            'status'      => 'belum dibaca',
-                            'created_at'  => date('Y-m-d H:i:s')
-                        ]);
+                        // update arsip_surat berdasarkan relasi baru
+                        $this->db->where('data_surat_id', $id_data)
+                            ->update('arsip_surat', [
+                                'status' => 'disetujui'
+                            ]);
                     }
                 }
-
                 $this->session->set_flashdata('success_file', $new_filename);
                 $this->session->set_flashdata('nama_penerima', $data_input['nama'] ?? '');
                 $this->session->set_flashdata('no_wa_warga', $data_input['no_wa'] ?? '');
@@ -738,6 +756,7 @@ if ($pengajuan && $pengajuan->arsip_id) {
 
         $data['surat'] = $surat;
         $data['placeholders'] = $placeholders;
+        $data['warga'] = $this->Warga_model->get_all_warga_admin();
 
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
@@ -745,41 +764,6 @@ if ($pengajuan && $pengajuan->arsip_id) {
         $this->load->view('template_admin/footer');
     }
 
-    private function insert_ttd_from_placeholder($docxPath, $map)
-    {
-        if (!file_exists($docxPath)) return false;
-
-        $zip = new ZipArchive;
-        if ($zip->open($docxPath) !== TRUE) return false;
-
-        $xml = $zip->getFromName('word/document.xml');
-
-        foreach ($map as $placeholder => $imagePath) {
-
-            if (!file_exists($imagePath)) continue;
-
-            if (preg_match('/\[' . preg_quote($placeholder, '/') . '\]/', $xml)) {
-
-                // hapus placeholder teks
-                $xml = preg_replace(
-                    '/<w:t[^>]*>\[' . preg_quote($placeholder, '/') . '\]<\/w:t>/',
-                    '<w:t></w:t>',
-                    $xml
-                );
-
-                // sisipkan gambar Word (inline)
-                $imageName = 'media/' . basename($imagePath);
-                $zip->addFile($imagePath, 'word/' . $imageName);
-
-                // NOTE: rels & drawing disederhanakan (aman karena hanya generate)
-            }
-        }
-
-        $zip->addFromString('word/document.xml', $xml);
-        $zip->close();
-
-        return true;
-    }
 
 
     private function format_tgl_lahir($timestamp)
@@ -1000,6 +984,7 @@ if ($pengajuan && $pengajuan->arsip_id) {
     }
 
 
+
     public function arsip_download()
     {
         $from = $this->input->post('from');
@@ -1007,30 +992,69 @@ if ($pengajuan && $pengajuan->arsip_id) {
         $type = $this->input->post('type');
         $nama_surat = $this->input->post('nama_surat');
 
-
         // ==========================
         // QUERY DATA ARSIP
         // ==========================
-        $this->db->select('arsip_surat.*, template_surat.nama_surat, template_surat.nomor_template_surat');
+        $this->db->select('
+            arsip_surat.*,
+
+            template_asal.nama_surat AS nama_surat,
+            template_asal.nomor_template_surat AS nomor_template_db,
+            template_asal.jenis_template AS jenis_template_asal,
+
+            template_tujuan.nama_surat AS nama_surat_tujuan,
+            template_tujuan.nomor_template_surat AS nomor_template_tujuan,
+            template_tujuan.jenis_template AS jenis_template_tujuan,
+
+            data_surat.no_nasional AS no_nasional_data,
+            data_surat.keterangan AS keterangan_data,
+
+            users.role
+        ');
+
         $this->db->from('arsip_surat');
+
         $this->db->join(
-            'template_surat',
-            'arsip_surat.id_template = template_surat.id_template',
+            'template_surat AS template_asal',
+            'template_asal.id_template = arsip_surat.id_template',
             'left'
         );
+
+        $this->db->join(
+            'template_surat AS template_tujuan',
+            'template_tujuan.id_template = arsip_surat.id_template_tujuan',
+            'left'
+        );
+
+        $this->db->join(
+            'data_surat',
+            'data_surat.id = arsip_surat.data_surat_id',
+            'left'
+        );
+
         $this->db->join(
             'users',
             'arsip_surat.id_user = users.id_user',
             'left'
         );
+        // ==========================
+        // QUERY sts perkawinan
+        // ==========================
 
-        // Filter hanya surat dari Admin
-        $this->db->where('users.role', 'admin');
 
         if (!empty($nama_surat)) {
-            $this->db->where('template_surat.nama_surat', $nama_surat);
-        }
+            $this->db->group_start();
 
+            // Surat tujuan (manual input / tujuan)
+            $this->db->where('arsip_surat.jenis_surat_tujuan', $nama_surat);
+
+            // Surat manual admin (ambil dari template)
+            $this->db->or_where('template_surat.nama_surat', $nama_surat);
+            $this->db->or_where('template_asal.nama_surat', $nama_surat);
+            $this->db->or_where('template_tujuan.nama_surat', $nama_surat);
+            $this->db->or_where('data_surat.keterangan', $nama_surat);
+            $this->db->group_end();
+        }
 
         if (!empty($from)) {
             $this->db->where('DATE(arsip_surat.created_at) >=', $from);
@@ -1049,20 +1073,24 @@ if ($pengajuan && $pengajuan->arsip_id) {
             $arsip = [];
         }
 
+        // ==========================
+        // SORT BERDASARKAN TANGGAL FINAL (PRIORITAS tanggal_surat)
+        // ==========================
+        usort($arsip, function ($a, $b) {
+            $tglA = !empty($a->tanggal_surat) ? strtotime($a->tanggal_surat) : strtotime($a->created_at);
+            $tglB = !empty($b->tanggal_surat) ? strtotime($b->tanggal_surat) : strtotime($b->created_at);
+            return $tglA <=> $tglB; // ASC
+        });
 
         // ==========================
         // EXPORT CSV
         // ==========================
         if ($type === 'csv') {
-
             $filename = 'laporan_arsip_' . date('Ymd_His') . '.csv';
-
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
-
             $out = fopen('php://output', 'w');
             fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM UTF-8
-
             fputcsv($out, [
                 'No Urut Surat',
                 'Tgl Surat',
@@ -1072,37 +1100,33 @@ if ($pengajuan && $pengajuan->arsip_id) {
                 'Alamat Penerima',
                 'Jenis Surat'
             ]);
-
             $no = 1;
             foreach ($arsip as $r) {
+                $tanggal = !empty($r->tanggal_surat) ? date('d-m-Y', strtotime($r->tanggal_surat)) : date('d-m-Y', strtotime($r->created_at));
+                $nomor_surat = $this->format_nomor_surat($r);
+                $nomor_pengantar = $this->format_nomor_pengantar($r);
                 fputcsv($out, [
                     $no++,
-                    $r->created_at ?? '-',
-                    $r->nomor_surat ?? '-',
-                    '-',
+                    $tanggal,
+                    $nomor_surat,
+                    $nomor_pengantar,
                     $r->nama ?? '-',
-                    '-',
-                    $r->nama_surat ?? '-'
+                    $r->alamat_penerima ?? '-',
+                    (!empty($r->jenis_surat) && !empty($r->nama_surat)) ? ($r->nama_surat . ' ' . $r->jenis_surat) : (!empty($r->jenis_surat) ? $r->jenis_surat : (!empty($r->nama_surat) ? $r->nama_surat : '-'))
                 ]);
             }
-
             fclose($out);
             exit;
         }
-
 
         // ==========================
         // EXPORT PDF
         // ==========================
         elseif ($type === 'pdf') {
-
-            // ==========================
             // HELPER FORMAT TANGGAL (LOCAL)
-            // ==========================
             function format_tanggal_indo($tanggal)
             {
                 if (empty($tanggal)) return '-';
-
                 $bulan = [
                     '01' => 'Januari',
                     '02' => 'Februari',
@@ -1117,332 +1141,130 @@ if ($pengajuan && $pengajuan->arsip_id) {
                     '11' => 'November',
                     '12' => 'Desember'
                 ];
-
                 $exp = explode('-', $tanggal);
                 if (count($exp) !== 3) return $tanggal;
-
                 return $exp[2] . ' ' . $bulan[$exp[1]] . ' ' . $exp[0];
             }
 
-
-
-            // load library dompdf (manual, tanpa composer)
             require_once APPPATH . 'third_party/dompdf/autoload.inc.php';
-
             $dompdf = new \Dompdf\Dompdf();
             $dompdf->setPaper('A4', 'portrait');
 
-            // ==========================
-            // HTML PDF
-            // ==========================
             $html = '
-    <html>
-    <head>
-        <style>
-            body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
-            h3 { text-align:center; margin-bottom:10px; }
-            table { width:100%; border-collapse: collapse; }
-            th, td { border:1px solid #000; padding:5px; }
-            th { background:#f0f0f0; text-align:center; }
-        </style>
-    </head>
-    <body>
-
-    <h3>REKAPAN ARSIP SURAT</h3>
-    <p>
-         Periode: ' .
-                format_tanggal_indo($from) . ' s/d ' .
-                format_tanggal_indo($to) . '
-    </p>
-
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Tanggal Surat</th>
-                <th>Nomor Surat</th>
-                <th>Nomor Pengantar</th>
-                <th>Nama Penerima</th>
-                <th>Alamat</th>
-                <th>Jenis Surat</th>
-            </tr>
-        </thead>
-        <tbody>';
-
-            // ==========================
-            // AMBIL DATA ARSIP
-            // ==========================
-            $from       = $this->input->post('from');
-            $to         = $this->input->post('to');
-            $namaSurat  = $this->input->post('nama_surat');
-
-            $arsip = $this->Arsip_model->get_between($from, $to, $namaSurat);
-
-
-            // ==========================
-            // SORT BERDASARKAN TANGGAL FINAL
-            // ==========================
-            usort($arsip, function ($a, $b) {
-
-                $tglA = !empty($a->tanggal_surat)
-                    ? strtotime($a->tanggal_surat)
-                    : strtotime($a->created_at);
-
-                $tglB = !empty($b->tanggal_surat)
-                    ? strtotime($b->tanggal_surat)
-                    : strtotime($b->created_at);
-
-                return $tglA <=> $tglB; // ASC (paling lama dulu)
-            });
-
-            // ==========================
-            // BARU BUAT PDF
-            // ==========================
-            $no = 1;
-            foreach ($arsip as $a) {
-                // build <tr> PDF
-            }
+                <html>
+                <head>
+                    <style>
+                        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
+                        h3 { text-align:center; margin-bottom:10px; }
+                        table { width:100%; border-collapse: collapse; }
+                        th, td { border:1px solid #000; padding:5px; }
+                        th { background:#f0f0f0; text-align:center; }
+                    </style>
+                </head>
+                <body>
+                <h3>REKAPAN ARSIP SURAT</h3>
+                <p>Periode: ' . format_tanggal_indo($from) . ' s/d ' . format_tanggal_indo($to) . '</p>
+                <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal Surat</th>
+                        <th>Nomor Surat</th>
+                        <th>Nomor Pengantar</th>
+                        <th>Nama Penerima</th>
+                        <th>Alamat</th>
+                        <th>Jenis Surat</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
             $no = 1;
             foreach ($arsip as $a) {
+                $tanggal = !empty($a->tanggal_surat) ? date('d-m-Y', strtotime($a->tanggal_surat)) : date('d-m-Y', strtotime($a->created_at));
+                $nomor_surat = $this->format_nomor_surat($a);
+                $nomor_pengantar = $this->format_nomor_pengantar($a);
                 $html .= '
-        <tr>
-            <td align="center">' . $no++ . '</td>
-           <td>' . (
-                    !empty($a->tanggal_surat)
-                    ? date('d-m-Y', strtotime($a->tanggal_surat))
-                    : date('d-m-Y', strtotime($a->created_at))
-                ) . '</td>
+                <tr>
+                    <td align="center">' . $no++ . '</td>
+                    <td>' . $tanggal . '</td>
+                    <td>' . htmlspecialchars($nomor_surat) . '</td>
+                    <td>' . htmlspecialchars($nomor_pengantar) . '</td>
+                    <td>' . htmlspecialchars($a->nama ?? '-') . '</td>
+                    <td>' . htmlspecialchars($a->alamat_penerima ?? '-') . '</td>
+                <td>' . htmlspecialchars($this->format_jenis_surat_admin($a)) . '</td>
+                </tr>';
+                    }
 
-          <td>' . htmlspecialchars(
-                    (function ($a) {
-                        $tpl = trim((string)($a->nomor_template_surat ?? ''));
-                        $ns  = trim((string)($a->nomor_surat ?? ''));
+                    if (count($arsip) === 0) {
+                        $html .= '<tr><td colspan="7" align="center">Tidak ada data</td></tr>';
+                    }
 
-                        // rapikan
-                        $ns = ltrim($ns, '/');
-
-                        // 1️⃣ HASIL GENERATE TEMPLATE
-                        if ($tpl !== '' && $ns !== '') {
-                            return $tpl . '/' . $ns . '/P.Blh';
-                        }
-
-                        // 2️⃣ ARSIP MANUAL / DATA LAMA (PASTIKAN ADA P.Blh)
-                        if ($ns !== '') {
-                            return (stripos($ns, '/P.Blh') !== false)
-                                ? $ns
-                                : $ns . '/P.Blh';
-                        }
-
-                        // 3️⃣ TIDAK ADA DATA
-                        return '-';
-                    })($a)
-                ) . '</td>
-
-
-            <td>' . htmlspecialchars(
-                    (function ($a) {
-                        $tpl = trim((string)($a->nomor_template_surat ?? ''));
-                        $np  = trim((string)($a->nomor_pengantar ?? ''));
-
-                        // bersihkan data kotor
-                        $np = str_replace(['nomor_teamplate_surat/', 'nomor_teamplate_surat', 'Array'], '', $np);
-                        $np = ltrim($np, '/');
-
-                        // ambil kode banjar:
-                        // 1) dari kolom kode_banjar kalau ada
-                        $kd = trim((string)($a->kode_banjar ?? ''));
-
-                        // 2) kalau kosong, coba ambil dari string nomor_pengantar setelah "KBD"
-                        if ($kd === '' && preg_match('#KBD\.?([A-Za-z0-9_-]+)#i', $np, $m)) {
-                            $kd = $m[1]; // misal "tgh"
-                        }
-
-                        // ambil nomor pengantar angka sebelum /KBD...
-                        $np_num = preg_split('#/KBD#i', $np)[0];
-
-                        if ($tpl !== '' && $np_num !== '') return $tpl . '/' . $np_num . '/KBD.' . $kd;
-                        if ($np_num !== '') return $np_num . ($kd !== '' ? '/KBD.' . $kd : '');
-                        return '-';
-                    })($a)
-                ) . '</td>
-
-
-            <td>' . htmlspecialchars($a->nama ?? '-') . '</td>
-            <td>' . htmlspecialchars($a->alamat_penerima ?? '-') . '</td>
-           
-           <td>' . htmlspecialchars(
-                    (!empty($a->jenis_surat) && !empty($a->nama_surat)) ? ($a->nama_surat . '  ' . $a->jenis_surat) : (!empty($a->jenis_surat) ? $a->jenis_surat : (!empty($a->nama_surat) ? $a->nama_surat : '-'))
-                ) . '</td>
-
-        </tr>';
-            }
-
-            if (count($arsip) === 0) {
-                $html .= '<tr><td colspan="7" align="center">Tidak ada data</td></tr>';
-            }
-
-            $html .= '
-        </tbody>
-    </table>
-    </body>
-    </html>';
+                    $html .= '
+                </tbody>
+            </table>
+            </body>
+            </html>';
 
             $dompdf->loadHtml($html);
             $dompdf->render();
-
             $filename = 'rekapan_arsip_' . date('Ymd_His') . '.pdf';
             $dompdf->stream($filename, ['Attachment' => true]);
             exit;
         }
 
+       // ==========================
+      // EXPORT EXCEL TANPA COMPOSER
+      // ==========================
+            elseif ($type === 'xls') {
+                $filename = 'rekapan_arsip_' . date('Ymd_His') . '.html';
 
-        // ==========================
-        // EXPORT EXCEL TANPA COMPOSER
-        // ==========================
-        elseif ($type === 'xlsx') {
+                header("Content-Type: text/html; charset=utf-8");
+                header("Content-Disposition: attachment; filename=\"$filename\"");
+                header("Pragma: no-cache");
+                header("Expires: 0");
 
+                echo '<html><head><meta charset="UTF-8"></head><body>';
+                echo '<table border="1" cellspacing="0" cellpadding="5">';
+                echo '<tr><th colspan="7" style="font-size:14px;font-weight:bold;text-align:center;">REKAPAN ARSIP SURAT</th></tr>';
+                echo '<tr><td colspan="7">Periode: ' . (!empty($from) ? $from : '-') . ' s/d ' . (!empty($to) ? $to : '-') . '</td></tr>';
+                echo '<tr style="font-weight:bold;background:#f0f0f0;text-align:center;">';
+                echo '<th>No</th><th>Tanggal Surat</th><th>Nomor Surat</th><th>Nomor Pengantar Kelian</th><th>Nama Penerima</th><th>Alamat Penerima</th><th>Jenis Surat</th>';
+                echo '</tr>';
 
-            // ==========================
-            // URUTKAN DATA BERDASARKAN TANGGAL (PALING AWAL DULU)
-            // ==========================
-            usort($arsip, function ($a, $b) {
+                if (!empty($arsip)) {
+                    $no = 1;
+                    foreach ($arsip as $a) {
+                        $tanggal = !empty($a->tanggal_surat)
+                            ? date('d-m-Y', strtotime($a->tanggal_surat))
+                            : date('d-m-Y', strtotime($a->created_at));
 
-                // pakai tanggal_surat kalau ada, fallback ke created_at
-                $tglA = !empty($a->tanggal_surat) ? $a->tanggal_surat : $a->created_at;
-                $tglB = !empty($b->tanggal_surat) ? $b->tanggal_surat : $b->created_at;
+                        $nomor_surat = $this->format_nomor_surat($a);
+                        $nomor_pengantar = $this->format_nomor_pengantar($a);
 
-                return strtotime($tglA) <=> strtotime($tglB); // ASC
-            });
-
-            $filename = 'rekapan_arsip_' . date('Ymd_His') . '.xls';
-
-            header("Content-Type: application/vnd.ms-excel; charset=utf-8");
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-
-            echo '<html><head><meta charset="UTF-8"></head><body>';
-            echo '<table border="1" cellspacing="0" cellpadding="5">';
-
-            // Judul
-            echo '<tr>';
-            echo '<th colspan="7" style="font-size:14px;font-weight:bold;text-align:center;">REKAPAN ARSIP SURAT</th>';
-            echo '</tr>';
-
-            // Periode
-            echo '<tr>';
-            echo '<td colspan="7">';
-            echo 'Periode: ' . (!empty($from) ? $from : '-') . ' s/d ' . (!empty($to) ? $to : '-');
-            echo '</td>';
-            echo '</tr>';
-
-            // Header tabel
-            echo '<tr style="font-weight:bold;background:#f0f0f0;text-align:center;">';
-            echo '<th>No</th>';
-            echo '<th>Tanggal Surat</th>';
-            echo '<th>Nomor Surat</th>';
-            echo '<th>Nomor Pengantar Kelian</th>';
-            echo '<th>Nama Penerima</th>';
-            echo '<th>Alamat Penerima</th>';
-            echo '<th>Jenis Surat</th>';
-            echo '</tr>';
-
-
-            // Data
-            if (!empty($arsip)) {
-                $no = 1;
-                foreach ($arsip as $a) {
-                    echo '<tr>';
-                    echo '<td align="center">' . $no++ . '</td>';
-                    echo '<td>' . (!empty($a->created_at) ? date('d-m-Y', strtotime($a->created_at)) : '-') . '</td>';
-                    echo '<td>' . htmlspecialchars(
-                        (function ($a) {
-                            $tpl = trim((string)($a->nomor_template_surat ?? ''));
-                            $ns  = trim((string)($a->nomor_surat ?? ''));
-
-                            // bersihkan data kotor
-                            $ns = str_replace(['Array'], '', $ns);
-                            $ns = ltrim($ns, '/');
-
-                            // 1️⃣ generate template
-                            if ($tpl !== '' && $ns !== '') {
-                                return $tpl . '/' . $ns . '/P.Blh';
-                            }
-
-                            // 2️⃣ arsip manual / data lama
-                            if ($ns !== '') {
-                                return (stripos($ns, '/P.Blh') !== false)
-                                    ? $ns
-                                    : $ns . '/P.Blh';
-                            }
-
-                            return '-';
-                        })($a)
-                    ) . '</td>';
-
-                    echo '<td>' . htmlspecialchars(
-                        (function ($a) {
-                            $tpl = trim((string)($a->nomor_template_surat ?? ''));
-                            $np  = trim((string)($a->nomor_pengantar ?? ''));
-
-                            // bersihkan data rusak
-                            $np = str_replace(
-                                ['nomor_teamplate_surat/', 'nomor_teamplate_surat', 'Array'],
-                                '',
-                                $np
-                            );
-                            $np = ltrim($np, '/');
-
-                            // kode banjar
-                            $kd = trim((string)($a->kode_banjar ?? ''));
-
-                            // fallback ambil dari string
-                            if ($kd === '' && preg_match('#KBD\.?([A-Za-z0-9_-]+)#i', $np, $m)) {
-                                $kd = $m[1];
-                            }
-
-                            // angka pengantar sebelum /KBD
-                            $np_num = preg_split('#/KBD#i', $np)[0];
-
-                            if ($tpl !== '' && $np_num !== '') {
-                                return $tpl . '/' . $np_num . '/KBD.' . $kd;
-                            }
-
-                            if ($np_num !== '') {
-                                return $np_num . ($kd !== '' ? '/KBD.' . $kd : '');
-                            }
-
-                            return '-';
-                        })($a)
-                    ) . '</td>';
-
-                    echo '<td>' . htmlspecialchars($a->nama ?? '-') . '</td>';
-                    echo '<td>' . htmlspecialchars($a->alamat_penerima ?? '-') . '</td>';
-                    echo '<td>' . htmlspecialchars(
-                        (!empty($a->jenis_surat) && !empty($a->nama_surat)) ? ($a->nama_surat . '  ' . $a->jenis_surat) : (!empty($a->jenis_surat) ? $a->jenis_surat : (!empty($a->nama_surat) ? $a->nama_surat : '-'))
-                    ) . '</td>';
-
-                    echo '</tr>';
+                        echo '<tr>';
+                        echo '<td align="center">' . $no++ . '</td>';
+                        echo '<td>' . $tanggal . '</td>';
+                        echo '<td>' . htmlspecialchars($nomor_surat) . '</td>';
+                        echo '<td>' . htmlspecialchars($nomor_pengantar) . '</td>';
+                        echo '<td>' . htmlspecialchars($a->nama ?? '-') . '</td>';
+                        echo '<td>' . htmlspecialchars($a->alamat_penerima ?? '-') . '</td>';
+                        echo '<td>' . htmlspecialchars($this->format_jenis_surat_admin($a)) . '</td>';
+                        echo '</tr>';
+                    }
+                } else {
+                    echo '<tr><td colspan="7" align="center">Tidak ada data</td></tr>';
                 }
-            } else {
-                echo '<tr><td colspan="7" align="center">Tidak ada data</td></tr>';
+
+                echo '</table></body></html>';
+                exit;
             }
-
-            echo '</table>';
-            echo '</body></html>';
-            exit;
-        }
-
 
         // ==========================
         // EXPORT ZIP FILE SURAT
         // ==========================
         elseif ($type === 'zip') {
-
             $zipname = 'arsip_surat_' . date('Ymd_His') . '.zip';
-            $tmpZip  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipname;
-
+            $tmpZip = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipname;
             $zip = new ZipArchive();
             if ($zip->open($tmpZip, ZipArchive::CREATE) !== TRUE) {
                 show_error('Gagal membuat file ZIP');
@@ -1450,28 +1272,15 @@ if ($pengajuan && $pengajuan->arsip_id) {
 
             foreach ($arsip as $r) {
                 if (empty($r->filename)) continue;
-
                 $file = FCPATH . 'uploads/surat/' . $r->filename;
                 if (file_exists($file)) {
-
-                    $safe_title = preg_replace(
-                        '/[^A-Za-z0-9_\-]+/',
-                        '_',
-                        trim($r->nama_surat ?? 'surat')
-                    );
-
-                    $localname =
-                        date('Ymd_His', strtotime($r->created_at ?? date('Y-m-d H:i:s'))) .
-                        '_' . $safe_title .
-                        '_id' . $r->id .
-                        '_' . $r->filename;
-
+                    $safe_title = preg_replace('/[^A-Za-z0-9_\-]+/', '_', trim($r->nama_surat ?? 'surat'));
+                    $localname = date('Ymd_His', strtotime($r->created_at ?? date('Y-m-d H:i:s'))) . '_' . $safe_title . '_id' . $r->id . '_' . $r->filename;
                     $zip->addFile($file, $localname);
                 }
             }
 
             $zip->close();
-
             header('Content-Type: application/zip');
             header('Content-Disposition: attachment; filename="' . $zipname . '"');
             header('Content-Length: ' . filesize($tmpZip));
@@ -1488,6 +1297,125 @@ if ($pengajuan && $pengajuan->arsip_id) {
         }
     }
 
+
+
+
+    private function is_template_keterangan_admin($jenis_template)
+    {
+        return strtolower(trim((string)$jenis_template)) === 'keterangan';
+    }
+
+    private function format_jenis_surat_admin($a)
+    {
+        $manual     = strtoupper(trim((string)($a->jenis_surat ?? '')));
+        $keterangan = strtoupper(trim((string)($a->keterangan_data ?? '')));
+
+        $ada_tujuan = !empty($a->id_template_tujuan);
+
+        // 1. Dari data_surat.keterangan
+        if ($keterangan !== '') {
+            return 'SURAT KETERANGAN ' . $keterangan;
+        }
+
+        // 2. Dari template tujuan
+        if ($ada_tujuan && !empty($a->nama_surat_tujuan)) {
+            return strtoupper($a->nama_surat_tujuan);
+        }
+
+        // 3. Manual admin dari template keterangan
+        if (
+            !$ada_tujuan &&
+            $manual !== '' &&
+            $this->is_template_keterangan_admin($a->jenis_template_asal ?? '')
+        ) {
+            return 'SURAT KETERANGAN ' . $manual;
+        }
+
+        // 4. Fallback
+        return strtoupper(
+            $a->jenis_surat_tujuan
+                ?? $a->nama_surat_tujuan
+                ?? $a->jenis_surat
+                ?? $a->nama_surat
+                ?? '-'
+        );
+    }
+
+    private function get_nomor_awal_admin($a)
+    {
+        $keterangan = trim((string)($a->keterangan_data ?? ''));
+        $ada_tujuan = !empty($a->id_template_tujuan);
+
+        // 1. Kalau dari data_surat.keterangan, pakai no nasional
+        if ($keterangan !== '') {
+            return trim((string)(
+                $a->no_nasional_data
+                ?? $a->no_nasional
+                ?? ''
+            ));
+        }
+
+        // 2. Kalau ada template tujuan, pakai nomor template tujuan
+        if ($ada_tujuan) {
+            return trim((string)(
+                $a->nomor_template_tujuan
+                ?? ''
+            ));
+        }
+
+        // 3. Kalau manual admin, pakai no_nasional arsip jika ada
+        if (!empty($a->no_nasional)) {
+            return trim((string)$a->no_nasional);
+        }
+
+        // 4. Fallback template asal
+        return trim((string)(
+            $a->nomor_template_db
+            ?? $a->nomor_template_surat
+            ?? ''
+        ));
+    }
+
+    private function format_nomor_surat($a)
+    {
+        $noAwal = $this->get_nomor_awal_admin($a);
+        $noPg   = trim((string)($a->nomor_pengantar ?? ''));
+
+        if ($noAwal === '') {
+            return '-';
+        }
+
+        $clean = preg_replace('/^\d+\//', '', ltrim($noPg, '/'));
+        $clean = preg_replace('/\/KBD\..*$/', '', $clean);
+
+        return $clean !== ''
+            ? $noAwal . '/' . $clean . '/P.Blh'
+            : $noAwal . '/P.Blh';
+    }
+
+    private function format_nomor_pengantar($a)
+    {
+        $noAwal = $this->get_nomor_awal_admin($a);
+        $noPg   = trim((string)($a->nomor_pengantar ?? ''));
+        $kode   = trim((string)($a->kode_banjar ?? ''));
+
+        if ($noAwal === '') {
+            return '-';
+        }
+
+        $clean = preg_replace('/^\d+\//', '', ltrim($noPg, '/'));
+        $clean = preg_replace('/\/KBD\..*$/', '', $clean);
+
+        $nomor = $clean !== ''
+            ? $noAwal . '/' . $clean
+            : $noAwal;
+
+        if ($kode !== '' && strpos($nomor, '/KBD.') === false) {
+            $nomor .= '/KBD.' . $kode;
+        }
+
+        return $nomor;
+    }
 
     public function delete_surat($id)
     {
@@ -1615,6 +1543,8 @@ if ($pengajuan && $pengajuan->arsip_id) {
             }
         }
 
+
+
         // For preview, use PhpWord to convert DOCX to HTML with better layout preservation
         $html_file = $file_path . '.html';
         if (file_exists($html_file)) {
@@ -1648,39 +1578,54 @@ if ($pengajuan && $pengajuan->arsip_id) {
         $this->load->view('template_admin/footer');
     }
 
-    public function preview_surat($arsip_id)
+    public function preview_surat($id)
     {
         $this->load->model('Arsip_model');
-        $arsip = $this->Arsip_model->get_by_id($arsip_id);
 
-        if (!$arsip || empty($arsip->filename)) {
-            show_error('Arsip tidak ditemukan');
+        $arsip = $this->Arsip_model->get_by_id($id);
+
+        if (!$arsip || empty($arsip->file_admin)) {
+            show_error('File tidak ditemukan');
         }
 
-        $file_path = FCPATH . 'uploads/surat/' . $arsip->filename;
-        if (!file_exists($file_path)) {
-            show_error('File surat tidak ditemukan');
+        $file_docx = FCPATH . 'uploads/surat/' . $arsip->file_admin;
+
+        if (!file_exists($file_docx)) {
+            show_error('File DOCX tidak ditemukan');
         }
 
-        try {
-            libxml_use_internal_errors(true); // Suppress XML warnings
-            $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_path);
-            libxml_clear_errors();
-            $temp_html = tempnam(sys_get_temp_dir(), 'preview_') . '.html';
-            $phpWord->save($temp_html, 'HTML');
-            $html_content = file_get_contents($temp_html);
-            @unlink($temp_html);
+        // file html preview
+        $html_file = $file_docx . '.html';
 
-            $data['arsip'] = $arsip;
-            $data['html_content'] = $html_content;
+        // kalau html belum ada → generate
+        if (!file_exists($html_file)) {
 
-            $this->load->view('template_admin/header');
-            $this->load->view('template_admin/sidebar');
-            $this->load->view('admin/surat/preview_surat', $data);
-            $this->load->view('template_admin/footer');
-        } catch (\Exception $e) {
-            show_error('Gagal membuka preview: ' . $e->getMessage());
+            try {
+
+                libxml_use_internal_errors(true);
+
+                $phpWord = \PhpOffice\PhpWord\IOFactory::load($file_docx);
+
+                libxml_clear_errors();
+
+                $phpWord->save($html_file, 'HTML');
+            } catch (Exception $e) {
+
+                show_error('Gagal generate preview HTML : ' . $e->getMessage());
+            }
         }
+
+        // ambil isi html
+
+        $html_content = file_get_contents($html_file);
+
+        $data['arsip'] = $arsip;
+        $data['html_content'] = $html_content;
+
+        $this->load->view('template_admin/header');
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('admin/surat/preview_surat', $data);
+        $this->load->view('template_admin/footer');
     }
 
     /**
@@ -1771,7 +1716,7 @@ if ($pengajuan && $pengajuan->arsip_id) {
                 return;
             }
 
-            $filename = $this->upload->data('file_name');
+            $file_admin = $this->upload->data('file_name');
         }
 
         // =====================
@@ -1793,14 +1738,16 @@ if ($pengajuan && $pengajuan->arsip_id) {
             'id_user'         => $id_user,
             'tanggal_surat'   => !empty($tanggal_manual) ? $tanggal_manual : null,
             'created_at'      => date('Y-m-d H:i:s'),
+            'nomor_template_surat'     => $this->input->post('nomor_template_surat', true),
             'nomor_surat'     => $this->input->post('nomor_surat', true),
             'nomor_pengantar' => $this->input->post('nomor_pengantar', true),
             'nama'            => $this->input->post('nama', true),
             'alamat_penerima' => $this->input->post('alamat_penerima', true),
-            'jenis_surat'     => $this->input->post('jenis_surat', true),
+            'jenis_surat_tujuan'     => $this->input->post('jenis_surat_tujuan', true),
             'kode_banjar'     => $dusun->kode_dusun,
+            'status'          => 'disetujui',
             'banjar'          => $dusun->nama_dusun,
-            'filename'        => $filename
+            'file_admin'     => $file_admin,
         ];
 
         $this->db->insert('arsip_surat', $insert);
@@ -1814,31 +1761,42 @@ if ($pengajuan && $pengajuan->arsip_id) {
 
     public function hapus_arsip($id)
     {
-        $row = $this->db
-            ->from('arsip_surat')
-            ->join('users', 'arsip_surat.id_user = users.id_user', 'left')
-            ->where('arsip_surat.id', (int)$id)
-            ->where('users.role', 'admin')
-            ->get()
-            ->row();
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
 
-        if (!$row) {
+        $arsip = $this->db->get_where('arsip_surat', ['id' => $id])->row();
+
+        if (!$arsip) {
             $this->session->set_flashdata('error', 'Data arsip tidak ditemukan.');
             redirect('admin/arsip');
             return;
         }
 
-        // hapus file fisik
-        if (!empty($row->filename)) {
-            $path = FCPATH . 'uploads/surat/' . $row->filename;
-            if (file_exists($path)) {
-                @unlink($path);
+        // hapus file utama
+        if (!empty($arsip->filename)) {
+            $file_path = FCPATH . 'uploads/surat/' . $arsip->filename;
+
+            if (file_exists($file_path) && is_file($file_path)) {
+                unlink($file_path);
+            }
+
+            // hapus file preview html jika ada
+            if (file_exists($file_path . '.html') && is_file($file_path . '.html')) {
+                unlink($file_path . '.html');
             }
         }
 
-        $this->db->delete('arsip_surat', ['id' => (int)$id]);
+        // hapus data database
+        $this->db->where('id', $id);
+        $this->db->delete('arsip_surat');
 
-        $this->session->set_flashdata('success', 'Arsip berhasil dihapus.');
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Arsip berhasil dihapus.');
+        } else {
+            $this->session->set_flashdata('error', 'Arsip gagal dihapus.');
+        }
+
         redirect('admin/arsip');
     }
 }

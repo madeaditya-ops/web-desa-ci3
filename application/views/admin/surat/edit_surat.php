@@ -1,6 +1,5 @@
-    <style>
-
-        .badge-terbaru {
+<style>
+    .badge-terbaru {
         background: #1cc88a;
         color: #fff;
         font-size: 11px;
@@ -17,6 +16,7 @@
         border-radius: 4px;
         margin-left: 6px;
     }
+
     /* Preview KTP normal */
     #previewKtp {
         max-width: 100%;
@@ -29,7 +29,7 @@
     #previewKtp.minimal {
         max-width: 220px;
         opacity: 0.85;
-        box-shadow: 0 2px 6px rgba(0,0,0,.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
     }
 
     /* Wrapper agar rapi */
@@ -38,104 +38,140 @@
         align-items: center;
         gap: 10px;
     }
-    </style>
+</style>
 
 
 
     <div class="container-fluid">
 
-        <?php if($this->session->flashdata('message')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?= $this->session->flashdata('message') ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
+    <?php if ($this->session->flashdata('message')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('message') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
 
-            <?php if ($this->session->flashdata('show_action_modal')): ?>
-                <?php
-                $file = $this->session->flashdata('success_file');
-                $nama = $this->session->flashdata('nama_penerima');
-                $wa   = $this->session->flashdata('no_wa_warga');
+    <?php if ($this->session->flashdata('show_action_modal')): ?>
+        <?php
+        $file = $this->session->flashdata('success_file');
+        $nama = $this->session->flashdata('nama_penerima');
+        $wa   = $this->session->flashdata('no_wa_warga');
 
-                $linkFile = base_url('uploads/surat/' . $file);
-                $pesanWa  = urlencode(
-                    "Halo $nama,\n\nSurat Anda sudah selesai dibuat.\n\nSilakan download melalui link berikut:\n$linkFile\n\nTerima kasih."
-                );
-                ?>
+        $linkFile = base_url('uploads/surat/' . $file);
+        $pesanWa  = urlencode(
+            "Halo $nama,\n\nSurat Anda sudah selesai dibuat.\n\nSilakan download melalui link berikut:\n$linkFile\n\nTerima kasih."
+        );
+        ?>
 
-                <!-- MODAL POPUP -->
-                <div class="modal fade show"
-                    id="modalAksiSurat"
-                    style="display:block;background:rgba(0,0,0,.5);"
-                    tabindex="-1">
+        <!-- MODAL POPUP -->
+        <div class="modal fade show"
+            id="modalAksiSurat"
+            style="display:block;background:rgba(0,0,0,.5);"
+            tabindex="-1">
 
-                    <div class="modal-dialog modal-sm modal-dialog-centered">
-                        <div class="modal-content shadow-lg">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content shadow-lg">
 
-                            <div class="modal-header bg-success text-white">
-                                <h6 class="modal-title">
-                                    <i class="fas fa-check-circle"></i> Surat Berhasil Dibuat
-                                </h6>
-                            </div>
+                    <div class="modal-header bg-success text-white">
+                        <h6 class="modal-title">
+                            <i class="fas fa-check-circle"></i> Surat Berhasil Dibuat
+                        </h6>
+                    </div>
 
-                            <div class="modal-body text-center">
+                    <div class="modal-body text-center">
 
-                                <!-- DOWNLOAD -->
-                                <a href="<?= $linkFile ?>"
-                                target="_blank"
-                                class="btn btn-success btn-block mb-2">
-                                    <i class="fas fa-download"></i> Download Surat
-                                </a>
+                        <!-- DOWNLOAD -->
+                        <a href="<?= $linkFile ?>"
+                            target="_blank"
+                            class="btn btn-success btn-block mb-2">
+                            <i class="fas fa-download"></i> Download Surat
+                        </a>
 
-                                <!-- KIRIM WA -->
-                                <?php if (!empty($wa)): ?>
-                                <a href="https://wa.me/<?= preg_replace('/\D/', '', $wa) ?>?text=<?= $pesanWa ?>"
+                        <!-- KIRIM WA -->
+                        <?php if (!empty($wa)): ?>
+                            <a href="https://wa.me/<?= preg_replace('/\D/', '', $wa) ?>?text=<?= $pesanWa ?>"
                                 target="_blank"
                                 class="btn btn-success btn-block"
                                 style="background:#25D366;border-color:#25D366;">
-                                    <i class="fab fa-whatsapp"></i> Kirim via WhatsApp
-                                </a>
-                                <?php endif; ?>
+                                <i class="fab fa-whatsapp"></i> Kirim via WhatsApp
+                            </a>
+                        <?php endif; ?>
 
-                            </div>
-
-                            <div class="modal-footer p-2">
-                                <button type="button"
-                                        class="btn btn-light btn-sm btn-block"
-                                        onclick="closeModalSurat()">
-                                    Tutup
-                                </button>
-                            </div>
-
-                        </div>
                     </div>
-                </div>
 
-                <script>
-                function closeModalSurat() {
-                    document.getElementById('modalAksiSurat').style.display = 'none';
-                }
-                </script>
+                    <div class="modal-footer p-2">
+                        <button type="button"
+                            class="btn btn-light btn-sm btn-block"
+                            onclick="closeModalSuratRedirect()">
+                            Tutup
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function closeModalSuratRedirect() {
+                document.getElementById('modalAksiSurat').style.display = 'none';
+
+                setTimeout(() => {
+                    window.location.href = "<?= site_url('admin/arsip') ?>";
+                }, 300);
+            }
+        </script>
 
     <?php endif; ?>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    Edit Surat : <?= htmlspecialchars($surat->nama_surat) ?>
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="col-12 mb-4">
-                    <div class="card border-left-primary shadow-sm">
-                        <div class="card-body">
-    <!-- 
-                            <h6 class="font-weight-bold text-primary mb-2">
-                                <i class="fas fa-id-card mr-1"></i>
-                                Upload Foto KTP
-                            </h6>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Edit Surat : <?= htmlspecialchars($surat->nama_surat) ?>
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="col-12 mb-4">
+                <div class="card border-left-primary shadow-sm">
+                    <div class="card-body">
+
+                        <div class="form-group">
+
+                            <label>Pilih Warga</label>
+
+                            <select class="form-control select2" id="select_warga_admin">
+                                <option value="">-- Pilih Warga --</option>
+
+                                <?php foreach ($warga as $w): ?>
+                                    <option value="<?= $w->no_nik ?>"
+                                        data-nama="<?= $w->nama ?>"
+                                        data-nik="<?= $w->no_nik ?>"
+                                        data-tempat="<?= $w->tempat_lahir ?>"
+                                        data-tgl="<?= $w->tanggal_lahir ?>"
+                                        data-pekerjaan="<?= $w->pekerjaan ?>"
+                                        data-jk="<?= $w->jenis_kelamin ?>"
+                                        data-agama="<?= $w->agama ?>"
+                                        data-id_dusun="<?= $w->id_dusun ?>"
+                                        data-banjar="<?= $w->nama_dusun ?>"
+                                        data-kode="<?= $w->kode_dusun ?>"
+                                        data-status="<?= $w->status_perkawinan ?>">
+
+                                        <?= $w->nama ?> - <?= $w->no_nik ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <small class="text-muted">
+                                Memilih warga akan otomatis mengisi data.
+                            </small>
+
+                        </div>
+                        <!-- 
+                        <h6 class="font-weight-bold text-primary mb-2">
+                            <i class="fas fa-id-card mr-1"></i>
+                            Upload Foto KTP
+                        </h6>
 
                             <p class="text-muted mb-3" style="font-size: 14px;">
                                 Gunakan fitur ini untuk <b>mengisi data surat secara otomatis</b> berdasarkan
@@ -162,23 +198,23 @@
                                 membantu pengisian data.
                             </div> -->
 
-                            <!-- PREVIEW -->
-                            <!-- <div class="mt-3 ktp-preview-wrapper">
-                                <img id="previewKtp" style="display:none;">
-                                <small id="ktpStatus" class="text-success" style="display:none;">
-                                </small>
-                            </div> --> 
-                            <div class="col-4 mb-4">
-                                <!-- <label class="font-weight-bold">Pilih Data Warga</label>
-                            <select id="pilihWarga" class="form-control" style="width:100%">
-                                    <option value="">-- Pilih Nama Warga --</option>
-                                    <?php foreach ($data_warga as $w): ?>
-                                        <option value="<?= $w->id ?>"
-                                                data-terbaru="<?= (int)$w->is_new_approved ?>">
-                                            <?= htmlspecialchars($w->nama) ?> (<?= $w->nik ?>) - <?= $w->banjar ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select> -->
+                        <!-- PREVIEW -->
+                        <!-- <div class="mt-3 ktp-preview-wrapper">
+                            <img id="previewKtp" style="display:none;">
+                            <small id="ktpStatus" class="text-success" style="display:none;">
+                            </small>
+                        </div> -->
+                        <div class="col-4 mb-4">
+                            <!-- <label class="font-weight-bold">Pilih Data Warga</label>
+                           <select id="pilihWarga" class="form-control" style="width:100%">
+                                <option value="">-- Pilih Nama Warga --</option>
+                                <?php foreach ($data_warga as $w): ?>
+                                    <option value="<?= $w->id ?>"
+                                            data-terbaru="<?= (int)$w->is_new_approved ?>">
+                                        <?= htmlspecialchars($w->nama) ?> (<?= $w->nik ?>) - <?= $w->banjar ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select> -->
 
 
                                 <!-- <small class="text-muted">
@@ -187,310 +223,322 @@
                             </div>
 
 
-                        </div>
                     </div>
                 </div>
-                <form method="post" autocomplete="off" action="<?= site_url('admin/edit_surat/' . $surat->id . '/' . ($id_pengajuan ?? '')) ?>">
-                    <input type="hidden" name="id_pengajuan" value="<?= (isset($auto_warga) && $auto_warga != null) ? $auto_warga->id : '' ?>">
-                    <?php $banjar_rendered = false; // flag agar select banjar/kode hanya satu ?>
-                    <?php if (!empty($placeholders)): ?>
-                        <div class="row">
-                            <?php foreach ($placeholders as $ph): ?>
-                                <?php $ph_clean = trim($ph); ?>
-                                <?php
-                                $ph_key = strtolower(preg_replace('/[^\w]+/u', '_', $ph_clean));
-                                // ⛔ SKIP PLACEHOLDER TTD (JANGAN BUAT INPUT)
-                                        if (in_array($ph_key, [
-                                            'ttd_kades',
-                                            'ttd_sekdes',
-                                            'ttd_bendesa',
-                                            'kadesttd'
-                                        ])) {
-                                            continue;
-                                        }
+            </div>
+            <form method="post" autocomplete="off" action="<?= site_url('admin/edit_surat/' . $surat->id . '/' . ($id_pengajuan ?? '')) ?>">
+                <input type="hidden" name="id_pengajuan" value="<?= (isset($auto_warga) && $auto_warga != null) ? $auto_warga->id : '' ?>">
+                <?php $banjar_rendered = false; // flag agar select banjar/kode hanya satu 
+                ?>
+                <?php if (!empty($placeholders)): ?>
+                    <div class="row">
+                        <?php foreach ($placeholders as $ph): ?>
+                            <?php $ph_clean = trim($ph); ?>
+                            <?php
+                            $ph_key = strtolower(preg_replace('/[^\w]+/u', '_', $ph_clean));
+                            // ⛔ SKIP PLACEHOLDER TTD (JANGAN BUAT INPUT)
+                            if (in_array($ph_key, [
+                                'ttd_kades',
+                                'ttd_sekdes',
+                                'ttd_bendesa',
+                                'kadesttd'
+                            ])) {
+                                continue;
+                            }
 
-                                        $auto_date_placeholders = [
-                                            'tanggal_surat',
-                                            'tgl_surat',
-                                            'tanggal_keluar',
-                                            'tgl_keluar',
-                                            'tanggal'
-                                        ];
+                            $auto_date_placeholders = [
+                                'tanggal_surat',
+                                'tgl_surat',
+                                'tanggal_keluar',
+                                'tgl_keluar',
+                                'tanggal'
+                            ];
 
-                                        // ⛔ TANGGAL KELUAR AUTO (JANGAN BUAT INPUT)
-                                        if (in_array($ph_key, $auto_date_placeholders)) {
-                                            continue;
-                                        }
+                            // ⛔ TANGGAL KELUAR AUTO (JANGAN BUAT INPUT)
+                            if (in_array($ph_key, $auto_date_placeholders)) {
+                                continue;
+                            }
 
-                                    // Mapping label yang lebih user-friendly
-                                    $label_mapping = [
-                                        'nomor_surat' => 'Nomor Surat',
-                                        'nomor' => 'Nomor Surat',
-                                        'nama' => 'Nama Lengkap',
-                                        'tempat_lahir' => 'Tempat Lahir',
-                                        'tanggal_lahir' => 'Tanggal Lahir',
-                                        'tgl_lahir' => 'Tanggal Lahir',
-                                        'jenis_kelamin' => 'Jenis Kelamin',
-                                        'gender' => 'Jenis Kelamin',
-                                        'jk' => 'Jenis Kelamin',
-                                        'sex' => 'Jenis Kelamin',
-                                        'kelamin' => 'Jenis Kelamin',
-                                        'agama' => 'Agama',
-                                        'religion' => 'Agama',
-                                        'status_perkawinan' => 'Status Perkawinan',
-                                        'perkawinan' => 'Status Perkawinan',
-                                        'status' => 'Status Perkawinan',
-                                        'pekerjaan' => 'Pekerjaan',
-                                        'job' => 'Pekerjaan',
-                                        'occupation' => 'Pekerjaan',
-                                        'alamat' => 'Alamat',
-                                        'address' => 'Alamat',
-                                        'banjar' => 'Banjar',
-                                        'kode' => 'Kode Banjar',
-                                        'kode_dusun' => 'Kode Banjar',
-                                        'kode_banjar' => 'Kode Banjar',
-                                        'tanggal' => 'Tanggal',
-                                        'tgl' => 'Tanggal',
-                                        'tahun' => 'Tahun',
-                                        'bulan' => 'Bulan',
-                                        'hari' => 'Hari'
-                                    ];
+                            // Mapping label yang lebih user-friendly
+                            $label_mapping = [
+                                'nomor_surat' => 'Nomor Surat',
+                                'nomor' => 'Nomor Surat',
+                                'nama' => 'Nama Lengkap',
+                                'tempat_lahir' => 'Tempat Lahir',
+                                'tanggal_lahir' => 'Tanggal Lahir',
+                                'tgl_lahir' => 'Tanggal Lahir',
+                                'jenis_kelamin' => 'Jenis Kelamin',
+                                'gender' => 'Jenis Kelamin',
+                                'jk' => 'Jenis Kelamin',
+                                'sex' => 'Jenis Kelamin',
+                                'kelamin' => 'Jenis Kelamin',
+                                'agama' => 'Agama',
+                                'religion' => 'Agama',
+                                'status_perkawinan' => 'Status Perkawinan',
+                                'perkawinan' => 'Status Perkawinan',
+                                'status' => 'Status Perkawinan',
+                                'pekerjaan' => 'Pekerjaan',
+                                'job' => 'Pekerjaan',
+                                'occupation' => 'Pekerjaan',
+                                'alamat' => 'Alamat',
+                                'address' => 'Alamat',
+                                'banjar' => 'Banjar',
+                                'kode' => 'Kode Banjar',
+                                'kode_dusun' => 'Kode Banjar',
+                                'kode_banjar' => 'Kode Banjar',
+                                'tanggal' => 'Tanggal',
+                                'tgl' => 'Tanggal',
+                                'tahun' => 'Tahun',
+                                'bulan' => 'Bulan',
+                                'hari' => 'Hari'
+                            ];
 
-                                    // tentukan layout: full width untuk textarea / panjang nama / bidang khusus
-                                    $is_textarea = (strlen($ph_clean) > 15);
-                                    $is_full = $is_textarea;
-                                    $ph_key = strtolower(preg_replace('/[^\w]+/u', '_', $ph_clean)); // dipakai sebagai name
-                                    $is_date = (stripos($ph_key, 'tgl') !== false || stripos($ph_key, 'tanggal') !== false);
-                                    $is_number = ($ph_key === 'nomor_surat' || $ph_key === 'nomor');
-                                    $is_pengantar = in_array($ph_key, ['nomor_pengantar','no_pengantar','nomor_pengantar_kelian']);
-                                    $is_nik = in_array($ph_key, ['nik','nomor_nik','nik_penduduk','no_ktp']);
-                                    $is_banjar = ($ph_key === 'banjar');
-                                    $is_keterangan = (stripos($ph_key, 'keterangan') !== false);
-                                    $is_tujuan = (stripos($ph_key, 'tujuan') !== false);
-                                    $is_pewaris = (stripos($ph_key, 'pewaris') !== false);
-                                    $is_menikah = (stripos($ph_key, 'menikah') !== false || stripos($ph_key, 'nikah') !== false);
-                                    $is_kode = in_array($ph_key, ['kode','kode_dusun','kode_banjar']);
-                                    $is_gender = in_array($ph_key, ['jenis_kelamin','gender','jk','sex','kelamin']);
-                                    $is_religion = in_array($ph_key, ['agama','religion']);
-                                    $is_marital = in_array($ph_key, ['status_perkawinan','perkawinan','status']);
-                                    $col_class = $is_full ? 'col-12' : 'col-md-6';
+                            // tentukan layout: full width untuk textarea / panjang nama / bidang khusus
+                            $is_textarea = (strlen($ph_clean) > 15);
+                            $is_full = $is_textarea;
+                            $ph_key = strtolower(preg_replace('/[^\w]+/u', '_', $ph_clean)); // dipakai sebagai name
+                            $is_date = (stripos($ph_key, 'tgl') !== false || stripos($ph_key, 'tanggal') !== false);
+                            $is_number = ($ph_key === 'nomor_surat' || $ph_key === 'nomor');
+                            $is_pengantar = in_array($ph_key, ['nomor_pengantar', 'no_pengantar', 'nomor_pengantar_kelian']);
+                            $is_nik = in_array($ph_key, ['nik', 'nomor_nik', 'nik_penduduk', 'no_ktp']);
+                            $is_banjar = ($ph_key === 'banjar');
+                            $is_keterangan = (stripos($ph_key, 'keterangan') !== false);
+                            $is_tujuan = (stripos($ph_key, 'tujuan') !== false);
+                            $is_pewaris = (stripos($ph_key, 'pewaris') !== false);
+                            $is_menikah = (stripos($ph_key, 'menikah') !== false || stripos($ph_key, 'nikah') !== false);
+                            $is_kode = in_array($ph_key, ['kode', 'kode_dusun', 'kode_banjar']);
+                            $is_gender = in_array($ph_key, ['jenis_kelamin', 'gender', 'jk', 'sex', 'kelamin']);
+                            $is_religion = in_array($ph_key, ['agama', 'religion']);
+                            $is_marital = in_array($ph_key, ['status_perkawinan', 'perkawinan', 'status']);
+                            $col_class = $is_full ? 'col-12' : 'col-md-6';
 
-                                    // Tentukan label yang akan ditampilkan
-                                    $display_label = isset($label_mapping[$ph_key]) ? $label_mapping[$ph_key] : ucwords(str_replace('_',' ', strtolower($ph_clean)));
-                                ?>
+                            // Tentukan label yang akan ditampilkan
+                            $display_label = isset($label_mapping[$ph_key]) ? $label_mapping[$ph_key] : ucwords(str_replace('_', ' ', strtolower($ph_clean)));
+                            ?>
 
-                                <?php
-                                    // Jika placeholder berkaitan dengan banjar/kode, render SATU select gabungan
-                                    if (($is_banjar || $is_kode)):
-                                        if (!$banjar_rendered):
-                                            $banjar_rendered = true;
-                                ?>
-                                        <div class="<?= $col_class ?> mb-3">
-                                                <label for="kode_banjar" class="font-weight-bold">Banjar / Kode Banjar</label>
+                            <?php
+                            // Jika placeholder berkaitan dengan banjar/kode, render SATU select gabungan
+                            if (($is_banjar || $is_kode)):
+                                if (!$banjar_rendered):
+                                    $banjar_rendered = true;
+                            ?>
+                                    <div class="<?= $col_class ?> mb-3">
+                                        <label for="kode_banjar" class="font-weight-bold">Banjar / Kode Banjar</label>
 
-                                                <select name="kode_banjar" id="kode_banjar" class="form-control" required>
-                                                    <option value="">-- Pilih Banjar --</option>
+                                        <select name="kode_banjar" id="kode_banjar" class="form-control" required>
+                                            <option value="">-- Pilih Banjar --</option>
 
-                                                    <?php foreach($dusun as $d): ?>
-                                                        <option value="<?= htmlspecialchars($d->kode_dusun) ?>"
-                                                            data-name="<?= htmlspecialchars($d->nama_dusun) ?>"
-                                                            <?= (($data_surat->kode_banjar ?? '') == $d->kode_dusun) ? 'selected' : '' ?>>
-                                                            <?= htmlspecialchars($d->nama_dusun) ?> 
-                                                            (<?= htmlspecialchars($d->kode_dusun) ?>)
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                </select>
+                                            <?php foreach ($dusun as $d): ?>
+                                                <option value="<?= htmlspecialchars($d->kode_dusun) ?>"
+                                                    data-name="<?= htmlspecialchars($d->nama_dusun) ?>"
+                                                    <?= (($data_surat->kode_banjar ?? '') == $d->kode_dusun) ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($d->nama_dusun) ?>
+                                                    (<?= htmlspecialchars($d->kode_dusun) ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
 
-                                                <input type="hidden"
-                                                    name="banjar"
-                                                    id="banjar"
-                                                    value="<?= htmlspecialchars($data_surat->banjar ?? '') ?>">
+                                        <input type="hidden"
+                                            name="banjar"
+                                            id="banjar"
+                                            value="<?= htmlspecialchars($data_surat->banjar ?? '') ?>">
 
-                                            </div>
-                                <?php
-                                        endif;
-                                        // lewati output input lain untuk placeholder banjar/kode (sudah disediakan di atas)
-                                        continue;
-                                    endif;
-                                ?>
+                                    </div>
+                            <?php
+                                endif;
+                                // lewati output input lain untuk placeholder banjar/kode (sudah disediakan di atas)
+                                continue;
+                            endif;
+                            ?>
 
                                 <div class="<?= $col_class ?> mb-3">
                                     <label for="<?= htmlspecialchars($ph_key) ?>" class="font-weight-bold">
                                         <?= $display_label ?>
                                     </label>
 
-                                    <?php if ($is_gender): ?>
-                                    <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control" required>
-                                            <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="Laki-laki"
-                                                <?= (isset($auto_warga->$ph_key) && $auto_warga->$ph_key == 'Laki-laki') ? 'selected' : '' ?>>
-                                                Laki-laki
-                                            </option>
-                                            <option value="Perempuan"
-                                                <?= (isset($auto_warga->$ph_key) && $auto_warga->$ph_key == 'Perempuan') ? 'selected' : '' ?>>
-                                                Perempuan
-                                            </option>
-                                        </select>
+                                <?php if ($is_gender): ?>
 
-
-                                    <?php elseif ($is_religion): ?>
-                                        <select name="<?= htmlspecialchars($ph_key) ?>" id="<?= htmlspecialchars($ph_key) ?>" class="form-control" required>
-                                            <option value="">-- Pilih Agama --</option>
-                                            <option value="Islam" <?= set_select($ph_key, 'Islam') ?>>Islam</option>
-                                            <option value="Kristen" <?= set_select($ph_key, 'Kristen') ?>>Kristen</option>
-                                            <option value="Katolik" <?= set_select($ph_key, 'Katolik') ?>>Katolik</option>
-                                            <option value="Hindu" <?= set_select($ph_key, 'Hindu') ?>>Hindu</option>
-                                            <option value="Buddha" <?= set_select($ph_key, 'Buddha') ?>>Buddha</option>
-                                            <option value="Konghucu" <?= set_select($ph_key, 'Konghucu') ?>>Konghucu</option>
-                                        </select>
-
-                                    <?php elseif ($is_marital): ?>
                                     <?php
-                                        $current_value = '';
+                                    $current_value = '';
+
+                                    // prioritas 1: dari form submit ulang
+                                    if (!empty(set_value($ph_key))) {
+                                        $current_value = set_value($ph_key);
+                                    }
+                                    // prioritas 2: dari auto_warga (WAJIB DIPERTAHANKAN)
+                                    elseif (isset($auto_warga->$ph_key)) {
+                                        $current_value = $auto_warga->$ph_key;
+                                    }
+                                    ?>
+
+                                    <select name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        class="form-control"
+                                        required>
+
+                                        <option value="">-- Pilih Jenis Kelamin --</option>
+
+                                        <?php foreach ($list_jk as $jk): ?>
+                                            <option value="<?= $jk->nama ?>"
+                                                <?= ($current_value == $jk->nama) ? 'selected' : '' ?>>
+                                                <?= $jk->nama ?>
+                                            </option>
+                                        <?php endforeach; ?>
+
+                                    </select>
+
+
+
+                                <?php elseif ($is_religion): ?>
+                                    <select name="agama" id="agama" class="form-control">
+                                        <option value="">-- Pilih Agama --</option>
+
+                                        <?php foreach ($list_agama as $a): ?>
+                                            <option value="<?= $a->nama ?>"
+                                                <?= (isset($auto_warga->agama) && $auto_warga->agama == $a->nama) ? 'selected' : '' ?>>
+                                                <?= $a->nama ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+
+                                <?php elseif ($is_marital): ?>
+                                    <?php
+                                    $current_value = '';
 
                                         // Prioritas 1: set_value (jika form submit ulang)
                                         if (!empty(set_value($ph_key))) {
                                             $current_value = set_value($ph_key);
                                         }
 
-                                        // Prioritas 2: Ambil dari auto_warga (PAKSA KE status_perkawinan)
-                                        elseif (isset($auto_warga->sts_kawin)) {
-                                            $current_value = $auto_warga->sts_kawin;
-                                        }
+                                    // Prioritas 2: Ambil dari auto_warga (PAKSA KE status_perkawinan)
+                                    elseif (isset($auto_warga->sts_kawin)) {
+                                        $current_value = $auto_warga->sts_kawin;
+                                    }
                                     ?>
                                     <select name="<?= htmlspecialchars($ph_key) ?>"
-                                            id="<?= htmlspecialchars($ph_key) ?>"
-                                            class="form-control" required>
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        class="form-control"
+                                        required>
 
                                         <option value="">-- Pilih Status Perkawinan --</option>
 
-                                        <option value="Belum Kawin" <?= $current_value === 'Belum Kawin' ? 'selected' : '' ?>>
-                                            Belum Kawin
-                                        </option>
-
-                                        <option value="Kawin" <?= $current_value === 'Kawin' ? 'selected' : '' ?>>
-                                            Kawin
-                                        </option>
-
-                                        <option value="Cerai Hidup" <?= $current_value === 'Cerai Hidup' ? 'selected' : '' ?>>
-                                            Cerai Hidup
-                                        </option>
-
-                                        <option value="Cerai Mati" <?= $current_value === 'Cerai Mati' ? 'selected' : '' ?>>
-                                            Cerai Mati
-                                        </option>
+                                        <?php foreach ($status_kawin_list as $s): ?>
+                                            <option value="<?= $s->nama ?>"
+                                                <?= ($current_value == $s->nama) ? 'selected' : '' ?>>
+                                                <?= $s->nama ?>
+                                            </option>
+                                        <?php endforeach; ?>
 
                                     </select>
 
+                                <?php elseif ($is_date): ?>
 
-                                    <?php elseif ($is_date): ?>
+                                    <?php
+                                    $current_value = set_value($ph_key);
 
-                                        <?php
-                                            $current_value = set_value($ph_key);
+                                    if (empty($current_value) && isset($data_surat->tanggal_lahir)) {
+                                        $current_value = $data_surat->tanggal_lahir;
+                                    }
+                                    ?>
+                                    <input type="date"
+                                        class="form-control" required
+                                        name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        value="<?= set_value($ph_key) ?>">
 
-                                            if (empty($current_value) && isset($data_surat->tanggal_lahir)) {
-                                                $current_value = $data_surat->tanggal_lahir;
-                                            }
-                                            ?>
-                                        <input type="date"
-                                            class="form-control"
-                                            name="<?= htmlspecialchars($ph_key) ?>"
-                                            id="<?= htmlspecialchars($ph_key) ?>"
-                                            value="<?= set_value($ph_key) ?>" required>
-
-                                    <?php elseif ($is_number): ?>
-                                        <input type="number"
-                                            class="form-control"
-                                            name="<?= htmlspecialchars($ph_key) ?>"
-                                            id="<?= htmlspecialchars($ph_key) ?>"
-                                            value="<?= set_value($ph_key) ?>"
-                                            placeholder="isi nomor surat dengan angka" required>
+                                <?php elseif ($is_number): ?>
+                                    <input type="number"
+                                        class="form-control" required
+                                        name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        value="<?= set_value($ph_key) ?>"
+                                        placeholder="isi nomor surat dengan angka">
 
                                 <?php elseif ($is_pengantar): ?>
 
-                                            <?php
-                                            $current_value = set_value($ph_key);
-
-                                            if (empty($current_value) && isset($data_surat->nomor_pengantar)) {
-                                                $current_value = $data_surat->nomor_pengantar;
-                                            }
-                                            ?>
-
-                                            <input type="number"
-                                                class="form-control"
-                                                name="<?= htmlspecialchars($ph_key) ?>"
-                                                id="<?= htmlspecialchars($ph_key) ?>"
-                                                value="<?= htmlspecialchars($current_value) ?>"
-                                                placeholder="isi nomor pengantar banjar dengan angka" required>
-
-                                    <?php elseif ($is_nik): ?>
                                     <?php
-                                        $current_value = '';
+                                    $current_value = set_value($ph_key);
 
-                                        if (!empty(set_value($ph_key))) {
-                                            $current_value = set_value($ph_key);
-                                        } elseif (isset($auto_warga->nik)) {
-                                            $current_value = $auto_warga->nik;
-                                        }
+                                    if (empty($current_value) && isset($data_surat->nomor_pengantar)) {
+                                        $current_value = $data_surat->nomor_pengantar;
+                                    }
                                     ?>
+
                                     <input type="number"
-                                        class="form-control"
+                                        class="form-control" required
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= htmlspecialchars($current_value) ?>"
-                                        placeholder="isi nomor nik dengan angka" required>
+                                        placeholder="isi nomor pengantar banjar dengan angka">
+
+                                <?php elseif ($is_nik): ?>
+                                    <?php
+                                    $current_value = '';
+
+                                    if (!empty(set_value($ph_key))) {
+                                        $current_value = set_value($ph_key);
+                                    } elseif (isset($auto_warga->nik)) {
+                                        $current_value = $auto_warga->nik;
+                                    }
+                                    ?>
+                                    <input type="number"
+                                        class="form-control" required
+                                        name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        value="<?= htmlspecialchars($current_value) ?>"
+                                        placeholder="isi nomor nik dengan angka">
 
 
-                                    <?php elseif ($is_menikah): ?>
+                                <?php elseif ($is_menikah): ?>
                                     <input type="text"
-                                        class="form-control"
+                                        class="form-control" required
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi nama suami/istri yang bersangkutan" required>
+                                        placeholder="isi nama suami/istri yang bersangkutan">
 
-                                    <?php elseif ($is_pewaris): ?>
+                                <?php elseif ($is_pewaris): ?>
                                     <input type="text"
-                                        class="form-control"
+                                        class="form-control" required
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi nama pewaris yang bersangkutan" required>
+                                        placeholder="isi nama pewaris yang bersangkutan">
 
-                                    <?php elseif ($is_keterangan): ?>
+                                <?php elseif ($is_keterangan): ?>
                                     <input type="text"
-                                        class="form-control"
+                                        class="form-control" required
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi keterangan dengan huruf besar" required>
+                                        placeholder="isi keterangan dengan huruf besar">
 
 
-                                    <?php elseif ($is_tujuan): ?>
+                                <?php elseif ($is_tujuan): ?>
                                     <input type="text"
-                                        class="form-control"
+                                        class="form-control" required
                                         name="<?= htmlspecialchars($ph_key) ?>"
                                         id="<?= htmlspecialchars($ph_key) ?>"
                                         value="<?= set_value($ph_key) ?>"
-                                        placeholder="isi tujuan untuk apa surat ini dibuat" required>
+                                        placeholder="isi tujuan untuk apa surat ini dibuat">
 
 
-                                    <?php elseif ($is_textarea): ?>
-                                        <textarea class="form-control"
-                                                name="<?= htmlspecialchars($ph_key) ?>"
-                                                id="<?= htmlspecialchars($ph_key) ?>"
-                                                rows="4"
-                                                placeholder="Isi <?= $display_label ?>" required><?= set_value($ph_key) ?></textarea>
+                                <?php elseif ($is_textarea): ?>
+                                    <textarea class="form-control" required
+                                        name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        rows="4"
+                                        placeholder="Isi <?= $display_label ?>"><?= set_value($ph_key) ?></textarea>
 
-                                    <?php else: ?>
-                                        <input type="text"
-                                            class="form-control"
-                                            name="<?= htmlspecialchars($ph_key) ?>"
-                                            id="<?= htmlspecialchars($ph_key) ?>"
-                                            value="<?= set_value($ph_key) ?>"
-                                            placeholder="Isi <?= $display_label ?>" required>
-                                    <?php endif; ?>
-                                </div>
+                                <?php else: ?>
+                                    <input type="text"
+                                        class="form-control" required
+                                        name="<?= htmlspecialchars($ph_key) ?>"
+                                        id="<?= htmlspecialchars($ph_key) ?>"
+                                        value="<?= set_value($ph_key) ?>"
+                                        placeholder="Isi <?= $display_label ?>">
+                                <?php endif; ?>
+                            </div>
 
                             <?php endforeach; ?>
                         </div>
@@ -512,40 +560,40 @@
     </div>
 
 
-    <!-- Script: sinkronkan hidden banjar dengan select kode_banjar -->
-    <script>
-        (function(){
-            var kodeSelect = document.getElementById('kode_banjar');
-            var banjarInput = document.getElementById('banjar');
+<!-- Script: sinkronkan hidden banjar dengan select kode_banjar -->
+<script>
+    (function() {
+        var kodeSelect = document.getElementById('kode_banjar');
+        var banjarInput = document.getElementById('banjar');
 
-            function syncBanjar(){
-                if (!kodeSelect) return;
-                var opt = kodeSelect.options[kodeSelect.selectedIndex];
-                var name = opt ? opt.getAttribute('data-name') || '' : '';
-                if (banjarInput) banjarInput.value = name;
-            }
+        function syncBanjar() {
+            if (!kodeSelect) return;
+            var opt = kodeSelect.options[kodeSelect.selectedIndex];
+            var name = opt ? opt.getAttribute('data-name') || '' : '';
+            if (banjarInput) banjarInput.value = name;
+        }
 
-            // set initial value: jika ada set_value('banjar') kosong, coba isi berdasarkan selected kode
-            document.addEventListener('DOMContentLoaded', function(){
-                syncBanjar();
-            });
+        // set initial value: jika ada set_value('banjar') kosong, coba isi berdasarkan selected kode
+        document.addEventListener('DOMContentLoaded', function() {
+            syncBanjar();
+        });
 
-            if (kodeSelect){
-                kodeSelect.addEventListener('change', syncBanjar);
-            }
-        })();
-    </script>
+        if (kodeSelect) {
+            kodeSelect.addEventListener('change', syncBanjar);
+        }
+    })();
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-    const upload  = document.getElementById('uploadKtp');
+<script>
+    const upload = document.getElementById('uploadKtp');
     const preview = document.getElementById('previewKtp');
     // ===============================
     // KECILKAN PREVIEW KTP (MINIMAL)
     // ===============================
-    const status  = document.getElementById('ktpStatus');
+    const status = document.getElementById('ktpStatus');
 
     if (preview) {
         preview.classList.add('minimal');
@@ -556,8 +604,8 @@
     }
 
     /* ===============================
-    HELPER: FORMAT TANGGAL
-    dd-MM-yyyy / dd/MM/yyyy → yyyy-MM-dd
+       HELPER: FORMAT TANGGAL
+       dd-MM-yyyy / dd/MM/yyyy → yyyy-MM-dd
     ================================ */
     function toHtmlDateFormat(dateStr) {
         if (!dateStr || typeof dateStr !== 'string') return '';
@@ -568,7 +616,7 @@
     }
 
     /* ===============================
-    HELPER: SET VALUE BY ALIAS (AMAN)
+       HELPER: SET VALUE BY ALIAS (AMAN)
     ================================ */
     function setValueByAliases(aliases, value, withPlaceholder = true) {
         if (value === undefined || value === null || value === '') return;
@@ -607,17 +655,17 @@
 
 
     /* ===============================
-    PREPROCESS IMAGE (ANTI BURAM)
+       PREPROCESS IMAGE (ANTI BURAM)
     ================================ */
     function preprocessImage(file, callback) {
         const img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
             // OCR suka resolusi BESAR
             const scale = 2;
-            canvas.width  = img.width  * scale;
+            canvas.width = img.width * scale;
             canvas.height = img.height * scale;
 
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -627,9 +675,9 @@
 
             // grayscale + threshold ringan
             for (let i = 0; i < d.length; i += 4) {
-                const gray = d[i]*0.3 + d[i+1]*0.59 + d[i+2]*0.11;
-                const val  = gray > 140 ? 255 : 0;
-                d[i] = d[i+1] = d[i+2] = val;
+                const gray = d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11;
+                const val = gray > 140 ? 255 : 0;
+                d[i] = d[i + 1] = d[i + 2] = val;
             }
 
             ctx.putImageData(imgData, 0, 0);
@@ -638,11 +686,11 @@
         img.src = URL.createObjectURL(file);
     }
     /* ===============================
-    AUTO CROP KTP (ASUMSI RATIO 85.6:54)
+       AUTO CROP KTP (ASUMSI RATIO 85.6:54)
     ================================ */
     function autoCropKTP(file, callback) {
         const img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
@@ -655,13 +703,16 @@
 
             // Grayscale
             for (let i = 0; i < d.length; i += 4) {
-                const g = d[i]*0.3 + d[i+1]*0.59 + d[i+2]*0.11;
-                d[i] = d[i+1] = d[i+2] = g;
+                const g = d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11;
+                d[i] = d[i + 1] = d[i + 2] = g;
             }
             ctx.putImageData(imgData, 0, 0);
 
             // Cari area non-putih (deteksi kartu)
-            let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+            let minX = canvas.width,
+                minY = canvas.height,
+                maxX = 0,
+                maxY = 0;
             const threshold = 245;
 
             for (let y = 0; y < canvas.height; y++) {
@@ -698,17 +749,17 @@
     }
 
     /* ===============================
-    PARSING & ISI FORM
+       PARSING & ISI FORM
     ================================ */
     function processOcrText(text) {
-        text = (text || '').toUpperCase().replace(/\r/g,'');
+        text = (text || '').toUpperCase().replace(/\r/g, '');
 
         // helper kecil: rapikan
-        const cleanLine = (s) => (s||'')
+        const cleanLine = (s) => (s || '')
             .toUpperCase()
-            .replace(/O/g,'0')
-            .replace(/[^\w\s:\/\-,.]/g,' ')
-            .replace(/\s+/g,' ')
+            .replace(/O/g, '0')
+            .replace(/[^\w\s:\/\-,.]/g, ' ')
+            .replace(/\s+/g, ' ')
             .trim();
 
         // potong jika ketemu label berikutnya (biar tidak nyambung)
@@ -738,16 +789,16 @@
         // normalisasi NIK (OCR sering salah huruf jadi angka)
         const normalizeNik = (raw) => {
             if (!raw) return '';
-            let s = raw.toUpperCase().replace(/\s+/g,'');
+            let s = raw.toUpperCase().replace(/\s+/g, '');
             s = s
-                .replace(/O/g,'0').replace(/D/g,'0')
-                .replace(/I/g,'1').replace(/L/g,'1')
-                .replace(/Z/g,'2')
-                .replace(/S/g,'5')
-                .replace(/B/g,'8')
-                .replace(/G/g,'6')
-                .replace(/Q/g,'0');
-            s = s.replace(/[^\d]/g,'');
+                .replace(/O/g, '0').replace(/D/g, '0')
+                .replace(/I/g, '1').replace(/L/g, '1')
+                .replace(/Z/g, '2')
+                .replace(/S/g, '5')
+                .replace(/B/g, '8')
+                .replace(/G/g, '6')
+                .replace(/Q/g, '0');
+            s = s.replace(/[^\d]/g, '');
             const m = s.match(/\d{16}/);
             return m ? m[0] : '';
         };
@@ -764,8 +815,8 @@
         nama = cutAtNextLabel(nama);
 
         // ===== TTL =====
-        let ttl = pickValue(/\bTEMPAT\/TGL LAHIR\b\s*:\s*([^\n]+)/i)
-            || pickValue(/\bTEMPAT\/TANGGAL LAHIR\b\s*:\s*([^\n]+)/i);
+        let ttl = pickValue(/\bTEMPAT\/TGL LAHIR\b\s*:\s*([^\n]+)/i) ||
+            pickValue(/\bTEMPAT\/TANGGAL LAHIR\b\s*:\s*([^\n]+)/i);
         ttl = cleanLine(ttl);
 
         let tempat_lahir = '';
@@ -787,13 +838,13 @@
         let agamaLine = pickValue(/\bAGAMA\b\s*:\s*([^\n]+)/i);
         agamaLine = cutAtNextLabel(agamaLine);
         let agama = '';
-        ['ISLAM','KRISTEN','KATOLIK','HINDU','BUDDHA','KONGHUCU'].forEach(a => {
+        ['ISLAM', 'KRISTEN', 'KATOLIK', 'HINDU', 'BUDDHA', 'KONGHUCU'].forEach(a => {
             if (agamaLine.includes(a)) agama = a.charAt(0) + a.slice(1).toLowerCase();
         });
 
         // ===== Status perkawinan =====
-        let statusLine = pickValue(/\bSTATUS PERKAWINAN\b\s*:\s*([^\n]+)/i)
-                    || pickValue(/\bSTATUS\b\s*:\s*([^\n]+)/i);
+        let statusLine = pickValue(/\bSTATUS PERKAWINAN\b\s*:\s*([^\n]+)/i) ||
+            pickValue(/\bSTATUS\b\s*:\s*([^\n]+)/i);
         statusLine = cleanLine(statusLine);
         let status = '';
         if (statusLine.includes('BELUM') && statusLine.includes('KAWIN')) status = 'Belum Kawin';
@@ -811,15 +862,15 @@
         alamat = cutAtNextLabel(alamat);
 
         // ===== ISI FORM =====
-        setValueByAliases(['nik','nomor_nik','nik_penduduk','no_ktp'], nik);
-        setValueByAliases(['nama','nama_lengkap','nama_penduduk'], nama);
+        setValueByAliases(['nik', 'nomor_nik', 'nik_penduduk', 'no_ktp'], nik);
+        setValueByAliases(['nama', 'nama_lengkap', 'nama_penduduk'], nama);
         setValueByAliases(['tempat_lahir'], tempat_lahir);
-        setValueByAliases(['tanggal_lahir','tgl_lahir'], tanggal_lahir);
-        setValueByAliases(['jenis_kelamin','jk','gender'], jenis_kelamin);
+        setValueByAliases(['tanggal_lahir', 'tgl_lahir'], tanggal_lahir);
+        setValueByAliases(['jenis_kelamin', 'jk', 'gender'], jenis_kelamin);
         setValueByAliases(['agama'], agama);
-        setValueByAliases(['status_perkawinan','perkawinan','status'], status);
-        setValueByAliases(['pekerjaan','job','occupation'], pekerjaan);
-        setValueByAliases(['alamat','alamat_lengkap','alamat_penduduk'], alamat);
+        setValueByAliases(['status_perkawinan', 'perkawinan', 'status'], status);
+        setValueByAliases(['pekerjaan', 'job', 'occupation'], pekerjaan);
+        setValueByAliases(['alamat', 'alamat_lengkap', 'alamat_penduduk'], alamat);
 
         Swal.fire({
             icon: 'success',
@@ -831,9 +882,9 @@
 
 
     /* ===============================
-    EVENT UPLOAD KTP
+       EVENT UPLOAD KTP
     ================================ */
-    upload.addEventListener('change', function () {
+    upload.addEventListener('change', function() {
         const file = this.files[0];
         if (!file) return;
 
@@ -847,22 +898,23 @@
             didOpen: () => Swal.showLoading()
         });
 
-    autoCropKTP(file, function (croppedBlob) {
-        preprocessImage(croppedBlob, function (processedBlob) {
-            Tesseract.recognize(
-                processedBlob,
-                'ind+eng',
-                {
-                    tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
-                    tessedit_char_whitelist:
-                        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:-/., '
-                }
-            ).then(({ data: { text } }) => {
-                Swal.close();
-                processOcrText(text);
+        autoCropKTP(file, function(croppedBlob) {
+            preprocessImage(croppedBlob, function(processedBlob) {
+                Tesseract.recognize(
+                    processedBlob,
+                    'ind+eng', {
+                        tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
+                        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:-/., '
+                    }
+                ).then(({
+                    data: {
+                        text
+                    }
+                }) => {
+                    Swal.close();
+                    processOcrText(text);
+                });
             });
         });
     });
-    });
-    </script>
-
+</script>
