@@ -373,30 +373,7 @@ class Admin extends CI_Controller
             show_404();
         }
 
-        // $id_data = $this->session->flashdata('auto_fill_id');
-        // $data_surat = $this->db
-        //     ->get_where('data_surat', ['id' => $id_data])
-        //     ->row();
-        // if ($id_data) {
-        //     $data['auto_warga'] = $this->Data_surat_model->get_by_id($id_data);
-
-        //     $this->db->where('id', $id_data)
-        //         ->update('data_surat', ['status' => 'disetujui']);
-
-        //     $this->db->where('id', $data_surat->arsip_id)
-        //         ->update('arsip_surat', ['status' => 'disetujui']);
-
-        //     $this->db->insert('notifikasi', [
-        //         'tujuan_role' => 'kadus',
-        //         'pesan'       => 'Surat telah disetujui, mohon segera ke kantor desa',
-        //         'link'        => site_url('kadus/arsip'),
-        //         'status'      => 'belum dibaca',
-        //         'created_at'  => date('Y-m-d H:i:s')
-        //     ]);
-        // } else {
-        //     $data['auto_warga'] = null;
-        // }
-
+        // ubah1
         $id_data = $id_pengajuan; 
     
         $data_surat = $this->db->get_where('data_surat', ['id' => $id_data])->row();
@@ -694,6 +671,7 @@ if ($pengajuan && $pengajuan->arsip_id) {
         'file_admin'  => $new_filename,
         'id_admin'    => $id_admin,
         'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
+        'jenis_surat' => $jenis_surat_val,
         'status'      => 'setuju'
     ]);
         $this->db->where('id', $id_pengajuan_post);
@@ -702,21 +680,21 @@ if ($pengajuan && $pengajuan->arsip_id) {
 } else {
     // INSERT: Jika Admin buat surat baru mandiri tanpa pengajuan
     $this->db->insert('arsip_surat', [
-        'file_admin'     => $new_filename,
-        'id_user'        => $this->session->userdata('id_user'),
-        'id_admin'       => $id_admin,
+        'file_admin'           => $new_filename,
+        'id_user'              => $this->session->userdata('id_user'),
+        'id_admin'             => $id_admin,
         'id_template'          => $idTemplate, 
         'nomor_template_surat' => $nomorTemplate,
-        'kode_banjar' => $data_input['kode_banjar'] ?? '',
-        'banjar'      => $data_input['banjar'] ?? '',
-        'nomor_surat' => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
-        'nomor_pengantar' => $nomor_pengantar,
-        'nama'           => $data_input['nama'] ?? null,
-        'alamat_penerima' => $alamat_penerima,
-        'jenis_surat'    => $jenis_surat_val,
-        'status'         => 'setuju',
-        'created_at'     => date('Y-m-d H:i:s')
-    ]);
+        'kode_banjar'          => $data_input['kode_banjar'] ?? '',
+        'banjar'               => $data_input['banjar'] ?? '',
+        'nomor_surat'          => $get_value_with_aliases('nomor_surat', $data_input, $aliases) ?? $this->input->post('nomor_surat'),
+        'nomor_pengantar'      => $nomor_pengantar,
+        'nama'                 => $data_input['nama'] ?? null,
+        'alamat_penerima'      => $alamat_penerima,
+        'jenis_surat'          => $jenis_surat_val,
+        'status'               => 'setuju',
+        'created_at'           => date('Y-m-d H:i:s')
+    ]); 
         }
 
 
