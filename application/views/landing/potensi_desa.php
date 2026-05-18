@@ -1,3 +1,10 @@
+<style>
+  .text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+</style>
+
 <section class="potensi_desa" id="potensi_desa">
   <div class="container-fluid">
     <div class="row bg-dark-subtle px-4 px-md-5 py-3">
@@ -10,11 +17,11 @@
   </div>
 
   <div class="text-center my-3">
-    <button class="btn btn-sm btn-outline-danger filter-btn active" data-filter="all">Semua</button>
+    <button class="btn btn-sm btn-outline-danger filter-btn active mb-3" data-filter="all">Semua</button>
     <?php 
     $kategori_unik = array_unique(array_column($potensi, 'kategori'));
     foreach ($kategori_unik as $kategori): ?>
-      <button class="btn btn-sm btn-outline-danger filter-btn" data-filter="<?=$kategori?>"><?=$kategori?></button>
+      <button class="btn btn-sm btn-outline-danger filter-btn mb-3" data-filter="<?=$kategori?>"><?=$kategori?></button>
     <?php endforeach; ?>
   </div>
 
@@ -27,19 +34,31 @@
       <div class="col" data-category="<?=$item['kategori']?>">        
         <div class="card h-100">
           <img src="<?=base_url('uploads/potensi/' .$item['gambar']);?>" class="card-img-top img-potensi" alt="potensi_desa" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
-          <div class="card-body">
+          <div class="card-body d-flex flex-column flex-grow-1">
             <h5 class="card-title fw-bold"><?=$item['nama']?></h5>
-            <span class="badge1"><?=$item['kategori']?></span>
-            <?php if(!empty($item['lokasi'])): ?>
-              <a href="<?=$item['lokasi']?>" target="_blank" class="badge2">
-                <i class="bi bi-geo-alt" style="padding-right: 3px;"></i>Kunjungi
-              </a>
-            <?php endif; ?>
-            <p class="card-text pt-2"><?=potong_deskripsi_perkata($item['deskripsi'], 100);?></p>
 
-            <button type="button" class="btn-modal btn btn-custom btn-lg mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
+            <div class="badge-area d-flex flex-wrap gap-2 mb-2">
+              <span class="badge1"><?=$item['kategori']?></span>
+              <?php if(!empty($item['lokasi'])): ?>
+                <a href="<?=$item['lokasi']?>" target="_blank" class="badge2">
+                  <i class="bi bi-geo-alt" style="padding-right: 3px;"></i>Kunjungi
+                </a>
+              <?php endif; ?>
+            </div>
+
+            <p class="card-text pt-2 text-justify"><?=potong_deskripsi_perkata($item['deskripsi'], 100);?></p>
+
+            <div class="row mt-auto">
+              <div class="col-12 col-md-6">
+                <button type="button"
+                        class="btn btn-custom btn-lg w-100"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalPotensi<?=$item['id_potensi']?>">
                   Selengkapnya
-            </button>
+                </button>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>  
@@ -62,12 +81,7 @@
                     </a>
                   <?php endif; ?>
                 </div>
-                <p class="modal-desc"><?=$item['deskripsi']?></p>
-                <div class="icon-sosmed mt-2">
-                <a href="https://www.facebook.com/kantor.desablahbatuh" target="_blank"><i class="bi bi-facebook fs-4 me-3 "></i></a>
-                <a href="https://www.instagram.com/desablahbatuh.ofc" target="_blank"><i class="bi bi-instagram fs-4 me-3 "></i></a>
-                <a href="https://www.youtube.com/@kantordesablahbatuh" target="_blank"><i class="bi bi-youtube fs-4 "></i></a>
-              </div>
+                <p class="modal-desc text-justify"><?=$item['deskripsi']?></p>
               </div>
             </div>
             <div class="modal-footer">
@@ -79,6 +93,7 @@
       <?php endforeach; ?>    
     </div>
   </div>
+  
 </section>
 
 <script>

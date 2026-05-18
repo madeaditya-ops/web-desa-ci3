@@ -132,8 +132,8 @@ class Users extends Kades_Middleware {
             return;
         }
 
-        if ($user->role == 'kades') {
-            $this->session->set_flashdata('error', 'User dengan role Kades tidak dapat dihapus!');
+        if ($user->role == 'superadmin') {
+            $this->session->set_flashdata('error', 'User dengan role Super Admin tidak dapat dihapus!');
             redirect('users');
             return;
         }

@@ -46,6 +46,12 @@ a{
     background-color: var(--accent);
     border: none;
     color: #fff;
+
+    &:hover{
+        background: var(--light);
+        border:1px solid var(--accent);
+        color: var(--accent);
+    }
 }
 
 .badge1{
@@ -75,7 +81,7 @@ a{
 
 
 /* Navbar */
-.navbar{
+/* .navbar{
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: sticky;
@@ -85,7 +91,7 @@ a{
 }
 
 .navbar-brand img {
-  max-height: 70px; 
+  max-height: clamp(48px, 7.5vw, 65px); 
 }
 
 .navbar,
@@ -147,12 +153,12 @@ a{
     transform: translateY(0);
     visibility: visible;
     pointer-events: auto;
-  }
-
+  } 
   /* .navbar .navbar-brand img{
     max-height: 50px;
   } */
-}
+} */
+
 
 /* Berita */
 .img-berita{
@@ -162,6 +168,12 @@ a{
   height: 380px;
   overflow: hidden;
 } */
+
+.text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
 
 .aspect-ratio-box {
   aspect-ratio: 16 / 9;
@@ -221,7 +233,7 @@ a{
 }
 
 .struktur-img {
-  width: 50%;
+  width: 100%;
   height: auto;
   object-fit: cover;
   display: block;
@@ -269,7 +281,7 @@ a{
   width: 200px;
   height: 250px;
   object-fit: cover;
-  border: 2px solid #ddd;
+  /* border: 2px solid #ddd; */
   margin-bottom: 10px;
 }
 

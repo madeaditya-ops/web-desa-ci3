@@ -39,33 +39,35 @@ class Auth extends CI_Controller {
 
         $user = $this->User_model->cek_login($username);
 
-        if (!$user || !password_verify($password, $user->password)) {
-            $this->session->set_flashdata('error', 'Username atau password salah!');
-            redirect('login');
-            return;
-        }
-
-        $this->session->set_userdata([
-            'id_user'   => $user->id_user,
-            'username'  => $user->username,
-            'nama'      => $user->nama,
-            'role'      => $user->role,
-            'dusun_id'  => $user->dusun_id,
-            'logged_in' => true
-        ]);
-
-        if ($user->role == 'kades') {
-            redirect('dashboard');
-        } elseif ($user->role == 'admin') {
-            redirect('admin');
-        } elseif ($user->role == 'kadus') {
-            redirect('kadus');
+        if (!$user) {
+            $this->session->set_flashdata('error', 'Username atau Password Salah!');
+            redirect('auth');
         } else {
-            redirect('login');
+            if (password_verify($password, $user->password)) {
+                $this->session->set_userdata([
+                    'id_user'   => $user->id_user,
+                    'nama'      => $user->nama,
+                    'username'  => $user->username,
+                    'role'      => $user->role,
+                    'dusun_id'  => $user->dusun_id,
+                    'logged_in' => true
+                ]);
+
+                if ($user->role == 'superadmin') {
+                    redirect('dashboard');
+                } elseif ($user->role == 'admin') {
+                    redirect('admin');
+                } elseif ($user->role == 'kadus') {
+                    redirect('kadus');
+                } else {
+                    redirect('auth');
+                }
+            } else {
+                $this->session->set_flashdata('error', 'Username atau Password Salah!');
+                redirect('auth');
+            }
         }
-         
     }
-    
 
     public function logout() {
         $this->session->sess_destroy();

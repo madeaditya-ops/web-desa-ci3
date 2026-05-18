@@ -13,7 +13,7 @@
                 <h6 class="mb-1 fw-semibold">Alamat</h6>
                 <p class="mb-0 small text-muted">
                     <a href="https://maps.app.goo.gl/8TbpS7mWbyBNcYqY6" target="_blank" class="text-decoration-none text-muted">
-                        Jl. Kebo Iwa No.1, Blahbatuh, Kec. Blahbatuh, Kabupaten Gianyar, Bali 80581
+                        Jl. Kebo Iwa No.2, Blahbatuh, Kec. Blahbatuh, Kabupaten Gianyar, Bali 80581
                     </a>
                 </p>
                 </div>
@@ -71,6 +71,18 @@
   </div>
 </section>
 
+<!-- Floating Button Pengaduan -->
+<?php if ($this->uri->segment(1) !== 'pengaduan') : ?>
+  <a href="<?= base_url('pengaduan');?>" 
+    id="btnPengaduan"
+    class="btn btn-danger shadow-lg position-fixed rounded-pill bottom-0 end-0 m-3 d-flex align-items-center justify-content-center shadow"
+    style="z-index:9999; display:none; opacity:0; transition:opacity 0.5s ease;">
+    Pengaduan <i class="bi bi-headset ms-2"></i>
+  </a>
+<?php endif; ?>
+
+
+
 <!-- Footer -->
 <footer class="text-white text-center py-2" style="background-color: var(--primary);">
     <div class="container">
@@ -83,7 +95,29 @@
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Script Button Pengaduan -->
+ <script>
+    window.onload = function() {
+      const slider = document.querySelector('.carousel');
+      const sliderHeight = slider ? slider.offsetHeight : 300; // fallback
+      const btn = document.getElementById("btnPengaduan");
 
+      window.addEventListener("scroll", function(){
+        if (window.scrollY > sliderHeight) {
+          btn.style.display = "flex";
+          btn.style.opacity = "1";
+        } else {
+          btn.style.opacity = "0";
+          setTimeout(() => {
+            if (window.scrollY <= sliderHeight) {
+              btn.style.display = "none";
+            }
+          }, 500);
+        }
+      });
+    };
+
+ </script>
 
  <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -106,6 +140,7 @@
 
 <!-- javascript -->
  <script src="<?= base_url('assets/js/script.js');?>"></script>
+
 
 
 </body>

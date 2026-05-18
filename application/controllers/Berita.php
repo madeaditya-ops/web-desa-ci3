@@ -57,8 +57,11 @@ class Berita extends Kades_Middleware {
                 $upload_data = $this->upload->data();
                 $gambar = $upload_data['file_name'];
 
+                $judul = $this->input->post('judul');
+
                 $data = [
-                    'judul'  => $this->input->post('judul'),
+                    'judul'  => $judul,
+                    'slug'   => create_slug($judul),
                     'isi'    => $this->input->post('isi'),
                     'gambar' => $gambar
                 ];
@@ -117,7 +120,8 @@ class Berita extends Kades_Middleware {
 
             $data = [
                 'judul' => $this->input->post('judul'),
-                    'isi'   => $this->input->post('isi'),
+                'slug'  => create_slug($this->input->post('judul')), 
+                'isi'   => $this->input->post('isi'),
                 'gambar'=> $gambar
             ];
 
@@ -140,5 +144,20 @@ class Berita extends Kades_Middleware {
             $this->session->set_flashdata('error', 'Data berita tidak ditemukan!');
         }
         redirect('berita');
+    }
+
+
+    // Halaman detail berita (untuk share)
+    public function detail($slug) {
+        $data['berita'] = $this->Berita_model->get_by_slug($slug);
+
+        if (!$data['berita']) {
+            show_404();
+        }
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/navbar');
+        $this->load->view('landing/berita_detail', $data);
+        $this->load->view('template/footer');
     }
 }

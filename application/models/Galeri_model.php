@@ -10,6 +10,13 @@ class Galeri_model extends CI_Model {
                     ->result_array();
     }
 
+    public function get_all_latest_galeri() {
+        return $this->db
+                    ->order_by('id_galeri', 'DESC')
+                    ->get('galeri')
+                    ->result();
+    }
+
     public function get_all() {
         return $this->db->get('galeri')->result();
     }
@@ -29,5 +36,10 @@ class Galeri_model extends CI_Model {
     public function delete($id) {
         return $this->db->delete('galeri', ['id_galeri' => $id]);
     }
+
+    // public function count_all()
+    // {
+    //     return $this->db->count_all('galeri');
+    // }
 
 }

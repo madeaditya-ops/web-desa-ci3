@@ -1,0 +1,355 @@
+<?php $role = $this->session->userdata('role'); ?>
+
+<div class="container-fluid">
+
+    <h1 class="h3 mb-2 text-gray-800">Daftar Pengaduan</h1>
+    <p class="mb-4">
+        Manajemen data pengaduan masyarakat yang masuk ke desa.
+    </p>
+
+    <!-- Flash Message -->
+    <?php if($this->session->flashdata('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('success') ?>
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
+    <?php if($this->session->flashdata('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('error') ?>
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
+
+    <!-- Statistik -->
+    <div class="row row-cols-1 row-cols-md-5 mb-4">
+
+        <div class="col mb-2">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <a href="<?= site_url('PengaduanAdmin?status=pending') ?>" class="text-decoration-none">
+
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending
+                        </div>
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_pending ?>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-2">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <a href="<?= site_url('PengaduanAdmin?status=diproses') ?>" class="text-decoration-none">
+
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Diproses
+                        </div>
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_diproses ?>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-2">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <a href="<?= site_url('PengaduanAdmin?status=ditolak') ?>" class="text-decoration-none">
+
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Ditolak
+                        </div>
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_ditolak ?>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-2">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <a href="<?= site_url('PengaduanAdmin?status=selesai') ?>" class="text-decoration-none">
+
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Selesai
+                        </div>
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $count_selesai ?>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-2">
+            <div class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <a href="<?= site_url('PengaduanAdmin') ?>" class="text-decoration-none">
+
+                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                            Total
+                        </div>
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= $total_pengaduan ?>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Tabel Pengaduan -->
+    <div class="card shadow mb-4">
+
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+
+            <h6 class="m-0 font-weight-bold text-primary">
+
+                Data Pengaduan
+
+                <?php if(!empty($filter_status)): ?>
+                    - <?= ucfirst($filter_status) ?>
+                <?php endif; ?>
+
+            </h6>
+
+            <?php if ($role == 'superadmin'): ?>
+
+                <small class="text-muted">
+                    Monitoring seluruh pengaduan desa
+                </small>
+
+            <?php else: ?>
+
+                <small class="text-muted">
+                    Pengaduan wilayah dusun Anda
+                </small>
+
+            <?php endif; ?>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover text-dark" id="dataTable">
+
+                    <thead class="thead-light">
+
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Nama Pelapor</th>
+                            <th>Kategori</th>
+                            <th>Deskripsi Singkat</th>
+                            <th width="15%">Tanggal Dibuat</th>
+                            <th width="15%">Tanggal Selesai</th>
+                            <th width="12%">Status</th>
+                            <th width="15%">Aksi</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <?php $no=1; foreach($pengaduan as $p): ?>
+
+                        <?php
+
+                        $selisih_hari = floor(
+                            (time() - strtotime($p->created_at)) / (60 * 60 * 24)
+                        );
+
+                        ?>
+
+                        <tr class="
+
+                            <?php
+
+                            // Pengaduan baru
+                            if (
+                                ($role == 'superadmin'
+                                    && $p->is_read == 0
+                                    && $p->status == 'pending'
+                                ) ||
+
+                                ($role == 'kadus'
+                                    && $p->is_read_kadus == 0
+                                    && $p->status == 'pending'
+                                )
+                            ) {
+                                echo 'table-primary text-dark';
+                            }
+
+                            // Pengaduan selesai
+                            elseif (
+                                $role == 'superadmin'
+                                && $p->is_read == 0
+                                && $p->status == 'selesai'
+                            ) {
+                                echo 'table-secondary text-dark';
+                            }
+
+                            ?>
+
+                        ">
+
+                            <td><?= $no++ ?></td>
+
+                            <td>
+
+                                <?= html_escape($p->nama_pelapor); ?>
+
+                                <!-- Badge Baru -->
+                                <?php if(
+                                    (
+                                        $role == 'superadmin'
+                                        && $p->is_read == 0
+                                        && $p->status == 'pending'
+                                    ) ||
+
+                                    (
+                                        $role == 'kadus'
+                                        && $p->is_read_kadus == 0
+                                        && $p->status == 'pending'
+                                    )
+                                ): ?>
+
+                                    <span class="badge badge-danger ml-2">
+                                        Baru
+                                    </span>
+
+                                <?php endif; ?>
+
+
+                                <!-- Badge Follow Up -->
+                                <?php if(
+                                    $p->status == 'pending'
+                                    && $selisih_hari >= 3
+                                    && $selisih_hari < 7
+                                ): ?>
+
+                                    <span class="badge badge-warning ml-1">
+                                        Follow Up
+                                    </span>
+
+                                <?php endif; ?>
+
+
+                                <!-- Badge Terlambat -->
+                                <?php if(
+                                    $p->status == 'pending'
+                                    && $selisih_hari >= 7
+                                ): ?>
+
+                                    <span class="badge badge-danger ml-1">
+                                        Terlambat
+                                    </span>
+
+                                <?php endif; ?>
+
+                            </td>
+
+                            <td>
+                                <?= $p->nama_kategori ?>
+                            </td>
+
+                            <td>
+
+                                <?= html_escape(mb_substr(strip_tags($p->deskripsi), 0, 70, 'UTF-8')); ?>
+
+                                <?= strlen($p->deskripsi) > 70 ? '...' : ''; ?>
+
+                            </td>
+
+                            <td>
+                                <?= !empty($p->created_at) ? date('d M Y H:i', strtotime($p->created_at)) : '-' ?>
+                            </td>
+
+                            <td>
+                                <?= !empty($p->finished_at) ? date('d M Y H:i', strtotime($p->finished_at)) : '-' ?>
+                            </td>
+
+                            <td class="text-center">
+
+                                <?php if($p->status == 'pending'): ?>
+
+                                    <span class="badge badge-warning p-2">
+                                        Pending
+                                    </span>
+
+                                <?php elseif($p->status == 'diproses'): ?>
+
+                                    <span class="badge badge-primary p-2">
+                                        Diproses
+                                    </span>
+
+                                <?php elseif($p->status == 'selesai'): ?>
+
+                                    <span class="badge badge-success p-2">
+                                        Selesai
+                                    </span>
+
+                                <?php else: ?>
+
+                                    <span class="badge badge-danger p-2">
+                                        Ditolak
+                                    </span>
+
+                                <?php endif; ?>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <a href="<?= site_url('PengaduanAdmin/detail/'.$p->id_pengaduan) ?>"
+                                   class="btn btn-info btn-sm">
+
+                                    <i class="fas fa-eye"></i>
+                                    Detail
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
