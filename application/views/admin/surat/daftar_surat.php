@@ -47,8 +47,12 @@
                                 <?php if (!empty($row->file_template) && file_exists(FCPATH . $file_path)): ?>
                                     <a href="<?= base_url($file_path) ?>"
                                        download="<?= htmlspecialchars($download_name) ?>"
-                                       class="btn btn-outline-primary btn-sm"
+                                       class="btn btn-outline-primary btn-sm swal-confirm"
                                        title="Download <?= htmlspecialchars($row->nama_surat) ?>"
+                                       data-title="Download Template Surat?"
+                                       data-text="Apakah Anda yakin ingin mengunduh template surat ini?"
+                                       data-icon="question"
+                                       data-confirm="Ya, unduh"
                                        target="_blank">
                                         <i class="fas fa-file-download"></i> Download
                                     </a>
@@ -58,7 +62,12 @@
                             </td>
                             <td class="text-center">
                                 <a href="<?= site_url('admin/edit_surat/'.$row->id_template) ?>"
-                                   class="btn btn-success btn-sm">
+                                   class="btn btn-success btn-sm swal-confirm"
+                                   title="Edit Surat"
+                                   data-title="Edit Surat?"
+                                   data-text="Apakah Anda yakin ingin mengedit surat ini?"
+                                   data-icon="question"
+                                   data-confirm="Ya, edit">
                                     <i class="fas fa-edit"></i> Edit Surat
                                 </a>
                             </td>

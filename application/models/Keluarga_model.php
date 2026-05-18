@@ -11,6 +11,15 @@ class Keluarga_model extends CI_Model {
     return $this->db->get()->result();
 }
 
+public function get_by_dusun($id_dusun)
+{
+    $this->db->select('keluarga.*, dusun.nama_dusun');
+    $this->db->from('keluarga');
+    $this->db->join('dusun', 'dusun.id_dusun = keluarga.id_dusun', 'left');
+    $this->db->where('keluarga.id_dusun', $id_dusun);
+    return $this->db->get()->result();
+}
+
     public function get_by_id($id)
     {
         return $this->db->get_where('keluarga', ['id' => $id])->row();

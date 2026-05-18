@@ -27,34 +27,67 @@
         <thead class="text-center">
           <tr>
             <th>No</th>
+            <th>Aksi</th>
+            <th>Foto</th>
+            <th>Dusun</th>
             <th>NIK</th>
             <th>Nama</th>
-            <th>Dusun</th>
+            <th>Hubungan</th>
+            <th>Agama</th>
+            <th>Status Perkawinan</th>
+            <th>Kewarganegaraan</th>
+            <th>Pendidikan</th>
+            <th>Tempat Lahir</th>
+            <th>Pekerjaan</th>
             <th>Jenis Kelamin</th>
-            <th width="150">Aksi</th>
+            <th>Keterangan</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
           <?php $no = 1;
           foreach ($warga as $w): ?>
             <tr>
               <td><?= $no++ ?></td>
-              <td><?= $w->no_nik ?></td>
-              <td><?= $w->nama ?></td>
-              <td><?= $w->nama_dusun ?></td>
-              <td><?= $w->jenis_kelamin ?></td>
-              <td>
+               <td>
                 <a href="<?= site_url('warga/detail/' . $w->id) ?>"
                   class="btn btn-info btn-sm">
-                  <i class="fas fa-eye"></i> Detail
+                  <i class="fas fa-eye"></i>
                 </a>
+                <a href="<?= base_url('warga/hapus/' . $w->id) ?>"
+                  class="btn btn-danger btn-sm"
+                  onclick="return confirm('Yakin ingin menghapus data ini?')">
+                  <i class="fas fa-trash"></i>
                 <a href="<?= base_url('warga/edit/' . $w->id) ?>" class="btn btn-warning btn-icon-split">
                   <span class="icon text-white-20">
                     <i class="fas fa-edit"></i>
                   </span>
-                  
                 </a>
               </td>
+              <td class="text-center">
+
+                <?php if ($w->foto): ?>
+
+                  <img src="<?= base_url('uploads/foto_warga/' . $w->foto) ?>" width="60">
+
+                <?php else: ?>
+
+                  <img src="<?= base_url('uploads/foto_warga/defult.png') ?>" width="60">
+
+                <?php endif ?>
+
+              </td>
+              <td><?= $w->nama_dusun ?></td>
+              <td><?= $w->no_nik ?></td>
+              <td><?= $w->nama ?></td>
+              <td><?= $w->hubungan ?></td>
+              <td><?= $w->agama ?></td>
+              <td><?= $w->status_perkawinan ?></td>
+              <td><?= $w->kewarganegaraan ?></td>
+              <td><?= $w->pendidikan ?></td>
+              <td><?= $w->tempat_lahir ?></td>
+              <td><?= $w->pekerjaan ?></td>
+              <td><?= $w->jenis_kelamin ?></td>
+              <td><?= $w->nama_keterangan ?></td>
             </tr>
           <?php endforeach ?>
         </tbody>

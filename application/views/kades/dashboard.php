@@ -24,8 +24,8 @@
             <div class="col-md-3 mb-3">
                 <div class="card bg-info text-white h-100">
                     <div class="card-body">
-                        <div class="small">Galeri</div>
-                        <div class="h3 mb-0"><?= number_format($count_galeri ?? 0) ?></div>
+                        <div class="small">Jumlah-KK</div>
+                        <div class="h3 mb-0"><?= number_format($count_keluarga ?? 0) ?></div>
                     </div>
                 </div>
             </div>
@@ -33,8 +33,8 @@
             <div class="col-md-3 mb-3">
                 <div class="card bg-warning text-white h-100">
                     <div class="card-body">
-                        <div class="small">Peraturan</div>
-                        <div class="h3 mb-0"><?= number_format($count_peraturan ?? 0) ?></div>
+                        <div class="small">Warga</div>
+                        <div class="h3 mb-0"><?= number_format($count_warga ?? 0) ?></div>
                     </div>
                 </div>
             </div>

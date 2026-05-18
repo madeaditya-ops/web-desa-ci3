@@ -2,7 +2,7 @@
 
     <h1 class="h3 mb-3 text-gray-800">Isi Data Surat</h1>
     <p class="mb-4">
-        Lengkapi data untuk surat
+        Lengkapi data untuk
         <b><?= htmlspecialchars($template->nama_surat, ENT_QUOTES, 'UTF-8') ?></b>
     </p>
 
@@ -91,13 +91,25 @@
                                 </div>
 
                                 <div class="form-group">
+
                                     <label>Jenis Kelamin</label>
 
-                                    <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
+                                    <select class="form-control"
+                                        id="jenis_kelamin"
+                                        name="jenis_kelamin"
+                                        required>
 
-                                        <option value="">-- Pilih --</option>
-                                        <option value="Laki-laki">Laki-laki</option>
-                                        <option value="Perempuan">Perempuan</option>
+                                        <option value="">-- Pilih Jenis Kelamin --</option>
+
+                                        <?php foreach ($list_jk as $jk): ?>
+
+                                            <option value="<?= htmlspecialchars($jk->nama) ?>">
+
+                                                <?= htmlspecialchars($jk->nama) ?>
+
+                                            </option>
+
+                                        <?php endforeach; ?>
 
                                     </select>
 
@@ -118,17 +130,25 @@
                                 <h6 class="font-weight-bold text-success mb-3">Data Tambahan</h6>
 
                                 <div class="form-group">
+
                                     <label>Agama</label>
 
-                                    <select class="form-control" id="agama" name="agama" required>
+                                    <select class="form-control"
+                                        id="agama"
+                                        name="agama"
+                                        required>
 
                                         <option value="">-- Pilih --</option>
-                                        <option value="Hindu">Hindu</option>
-                                        <option value="Islam">Islam</option>
-                                        <option value="Kristen">Kristen</option>
-                                        <option value="Katolik">Katolik</option>
-                                        <option value="Buddha">Buddha</option>
-                                        <option value="Khonghucu">Khonghucu</option>
+
+                                        <?php foreach ($list_agama as $agama): ?>
+
+                                            <option value="<?= htmlspecialchars($agama->nama) ?>">
+
+                                                <?= htmlspecialchars($agama->nama) ?>
+
+                                            </option>
+
+                                        <?php endforeach; ?>
 
                                     </select>
 
@@ -140,15 +160,25 @@
                                 </div>
 
                                 <div class="form-group">
+
                                     <label>Status Perkawinan</label>
 
-                                    <select class="form-control" id="sts_kawin" name="sts_kawin" required>
+                                    <select class="form-control"
+                                        id="sts_kawin"
+                                        name="sts_kawin"
+                                        required>
 
-                                        <option value="">-- Pilih --</option>
-                                        <option value="Belum Kawin">Belum Kawin</option>
-                                        <option value="Kawin">Kawin</option>
-                                        <option value="Cerai Hidup">Cerai Hidup</option>
-                                        <option value="Cerai Mati">Cerai Mati</option>
+                                        <option value="">-- Pilih Status Perkawinan --</option>
+
+                                        <?php foreach ($status_kawin_list as $status): ?>
+
+                                            <option value="<?= htmlspecialchars($status->nama) ?>">
+
+                                                <?= htmlspecialchars($status->nama) ?>
+
+                                            </option>
+
+                                        <?php endforeach; ?>
 
                                     </select>
 
@@ -183,11 +213,38 @@
 
                                     <label>Kode / Jenis Surat</label>
 
-                                    <select class="form-control" name="id_template_tujuan" required>
+                                    <select class="form-control"
+                                        name="id_template_tujuan"
+                                        id="id_template_tujuan"
+                                        required>
 
                                         <option value="">-- Pilih Jenis Surat --</option>
 
+                                        <?php
+                                        $jenis_template_aktif = $template->jenis_template ?? '';
+                                        ?>
+
                                         <?php foreach ($surat_list as $surat): ?>
+
+                                            <?php
+                                            $jenis_tujuan = $surat->jenis_template ?? '';
+
+                                            // SURAT PENGANTAR RESMI
+                                            // tampil semua surat admin kecuali SURAT KETERANGAN utama
+                                            if ($jenis_template_aktif === 'pengantar_resmi') {
+                                                if ($jenis_tujuan === 'keterangan') {
+                                                    continue;
+                                                }
+                                            }
+
+                                            // SURAT PENGANTAR LAINNYA
+                                            // hanya tampil SURAT KETERANGAN utama
+                                            elseif ($jenis_template_aktif === 'pengantar_lainnya') {
+                                                if ($jenis_tujuan !== 'keterangan') {
+                                                    continue;
+                                                }
+                                            }
+                                            ?>
 
                                             <option value="<?= $surat->id_template ?>">
                                                 <?= $surat->nomor_template_surat ?> - <?= $surat->nama_surat ?>
@@ -203,6 +260,28 @@
 
 
                             <div class="col-md-4">
+
+                                <div id="fieldTambahanSurat" style="display:none;" class="mt-3">
+
+                                    <div class="form-group">
+                                        <label>Keterangan</label>
+                                        <input type="text"
+                                            name="keterangan"
+                                            id="keterangan"
+                                            class="form-control"
+                                            placeholder="Masukkan keterangan">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Nomor Surat Nasional</label>
+                                        <input type="text"
+                                            name="no_nasional"
+                                            id="no_nasional"
+                                            class="form-control"
+                                            placeholder="Masukkan nomor surat nasional">
+                                    </div>
+
+                                </div>
 
                                 <div class="form-group">
 
@@ -238,3 +317,39 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const selectSurat = document.getElementById('id_template_tujuan');
+        const fieldTambahan = document.getElementById('fieldTambahanSurat');
+
+        function cekSuratKeterangan() {
+
+            if (!selectSurat || !fieldTambahan) return;
+
+            const selectedText =
+                selectSurat.options[selectSurat.selectedIndex]
+                .text
+                .toUpperCase()
+                .trim();
+
+            // 🔥 HANYA SURAT KETERANGAN
+            if (selectedText.endsWith('SURAT KETERANGAN')) {
+
+                fieldTambahan.style.display = 'block';
+
+            } else {
+
+                fieldTambahan.style.display = 'none';
+
+                document.getElementById('keterangan').value = '';
+                document.getElementById('no_nasional').value = '';
+            }
+        }
+
+        selectSurat.addEventListener('change', cekSuratKeterangan);
+
+        cekSuratKeterangan();
+    });
+</script>

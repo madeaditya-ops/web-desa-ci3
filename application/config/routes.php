@@ -61,7 +61,8 @@ $route['kadus'] = 'Kadus';
 
 $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
-
+$route['admin/edit_surat'] = 'admin/edit_surat';
+$route['admin/edit_surat/(:num)'] = 'admin/edit_surat/$1';
 
 $route['berita'] = 'Berita';
 $route['galeri'] = 'Galeri';

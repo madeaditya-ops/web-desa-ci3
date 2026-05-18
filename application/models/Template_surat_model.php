@@ -49,13 +49,16 @@ class Template_surat_model extends CI_Model {
     public function get_by_level_akses($level_akses) {
         return $this->db->get_where('template_surat', ['level_akses' => $level_akses])->result();
     }
-
-    public function get_surat_list() {
-        $this->db->select('id_template, nama_surat, nomor_template_surat');
-        $this->db->where('nama_surat !=', 'Surat dusun');
-        $this->db->order_by('nama_surat', 'ASC');
-        return $this->db->get('template_surat')->result();
-    }
+public function get_surat_list()
+{
+    return $this->db
+        ->select('id_template, nomor_template_surat, nama_surat, jenis_template')
+        ->from('template_surat')
+        ->where('level_akses', 'admin')
+        ->order_by('nama_surat', 'ASC')
+        ->get()
+        ->result();
+}
 
     public function get_last_nomor_by_template($id_template, $tahun)
 {
