@@ -122,8 +122,20 @@ class Pengaduan extends CI_Controller {
                 'max_length'  => 'Email maksimal 100 karakter.'
             ]
         );
-        $this->form_validation->set_rules('no_telepon','No Telepon','required');
-        $this->form_validation->set_rules('dusun_pelapor','Dusun Pelapor','required');
+        $this->form_validation->set_rules(
+            'no_telepon',
+            'No Telepon',
+            'required', 
+            [
+                'required' => 'Lengkapi nomor telepon anda.'
+            ]);
+        $this->form_validation->set_rules(
+            'dusun_pelapor',
+            'Dusun Pelapor',
+            'required',
+            [
+                'required' => 'Dusun wajib dipilih.'
+            ]);
         $this->form_validation->set_rules(
             'kategori_pengaduan',
             'Kategori Pengaduan',

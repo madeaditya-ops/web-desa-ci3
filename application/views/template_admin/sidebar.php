@@ -248,7 +248,10 @@
         </a>
         <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">Data Pengaduan</a>
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">
+                    Data Pengaduan
+                    <span class="badge badge-danger notif_pengaduan_kadus"  style="display: none; font-size: 12px;"></span>
+                </a>
                 <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
             </div>
         </div>

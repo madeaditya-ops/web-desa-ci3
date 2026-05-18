@@ -207,6 +207,11 @@
                                     class="form-control <?= error_class('no_telepon') ?>"
                                     value="<?= old('no_telepon') ?>"
                                     placeholder="Masukkan Telepon Anda">
+                                 <?php if (error('no_telepon')): ?>
+                                    <small class="text-danger">
+                                        <?= error('no_telepon') ?>
+                                    </small>
+                                <?php endif; ?>
                             </div>
 
                             
