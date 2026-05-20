@@ -1,9 +1,8 @@
 <style>
     .badge-counter {
-    font-size: 0.9rem;   
-    padding: 0.3em 0.4em; 
+        font-size: 0.9rem;
+        padding: 0.3em 0.4em;
     }
-
 </style>
 
 
@@ -113,19 +112,19 @@
         </li>
 
         <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLembaga"
-            aria-expanded="true" aria-controls="collapseLembaga">
-            <i class="fas fa-user-tie"></i>
-            <span>Lembaga</span>
-        </a>
-        <div id="collapseLembaga" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('lembaga')?>">Data Lembaga</a>
-                <a class="collapse-item" href="<?= site_url('lembaga/create')?>">Tambah Lembaga</a>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLembaga"
+                aria-expanded="true" aria-controls="collapseLembaga">
+                <i class="fas fa-user-tie"></i>
+                <span>Lembaga</span>
+            </a>
+            <div id="collapseLembaga" class="collapse" aria-labelledby="headingUtilities"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('lembaga') ?>">Data Lembaga</a>
+                    <a class="collapse-item" href="<?= site_url('lembaga/create') ?>">Tambah Lembaga</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
@@ -168,30 +167,30 @@
                 </div>
             </div>
         </li>
-       
-    <div class="sidebar-heading mt-3">
-        Public Service
-    </div>
-     <!-- Pengaduan Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-file-alt"></i>
-            <span>Pengaduan</span>
-            <span class="badge badge-danger notif_pengaduan"  style="display: none; font-size: 12px"></span>
-        </a>
-        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">
-                    Data Pengaduan
-                    <span class="badge badge-danger notif_pengaduan"  style="display: none; font-size: 12px"></span>
-                </a>
-                <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
-            </div>
+
+        <div class="sidebar-heading mt-3">
+            Public Service
         </div>
-    </li>
-           
-    <li class="nav-item">
+        <!-- Pengaduan Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-file-alt"></i>
+                <span>Pengaduan</span>
+                <span class="badge badge-danger notif_pengaduan" style="display: none; font-size: 12px"></span>
+            </a>
+            <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
+                        Data Pengaduan
+                        <span class="badge badge-danger notif_pengaduan" style="display: none; font-size: 12px"></span>
+                    </a>
+                    <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip') ?>">Arsip Pengaduan</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
                 aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-file-alt"></i>
@@ -304,42 +303,42 @@
 
         </li>
 
-             <!-- warga Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWarga"
-            aria-expanded="true" aria-controls="collapseWarga">
-            <i class="fas fa-file-alt"></i>
-            <span>Data Warga</span>
-            <span  style="display: none; font-size: 12px;"></span>
-        </a>
-        <div id="collapseWarga" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= base_url('kadus/jumlah_kk'); ?>">
-                    Data KK
-                    <span class="badge"  style="display: none; font-size: 12px;"></span>
-                </a>
-                <a class="collapse-item" href="<?= base_url('kadus/data_warga'); ?>">Data Warga</a>
+        <!-- warga Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWarga"
+                aria-expanded="true" aria-controls="collapseWarga">
+                <i class="fas fa-file-alt"></i>
+                <span>Data Warga</span>
+                <span style="display: none; font-size: 12px;"></span>
+            </a>
+            <div id="collapseWarga" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= base_url('kadus/jumlah_kk'); ?>">
+                        Data KK
+                        <span class="badge" style="display: none; font-size: 12px;"></span>
+                    </a>
+                    <a class="collapse-item" href="<?= base_url('kadus/data_warga'); ?>">Data Warga</a>
+                </div>
             </div>
-        </div>
-    </li>
-         <!-- Pengaduan Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-file-alt"></i>
-            <span>Pengaduan</span>
-            <span class="badge badge-danger jumlah_notif_kadus"  style="display: none; font-size: 12px;"></span>
-        </a>
-        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">
-                    Data Pengaduan
-                    <span class="badge badge-danger jumlah_notif_kadus"  style="display: none; font-size: 12px;"></span>
-                </a>
-                <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
+        </li>
+        <!-- Pengaduan Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-file-alt"></i>
+                <span>Pengaduan</span>
+                <span class="badge badge-danger jumlah_notif_kadus" style="display: none; font-size: 12px;"></span>
+            </a>
+            <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
+                        Data Pengaduan
+                        <span class="badge badge-danger jumlah_notif_kadus" style="display: none; font-size: 12px;"></span>
+                    </a>
+                    <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip') ?>">Arsip Pengaduan</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
     <?php endif; ?>
 
     <!-- Divider -->
@@ -387,7 +386,7 @@
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
 
-                
+
 
 
                 <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -412,10 +411,10 @@
                             </div>
                         </form>
                     </div>
-                  </li>
+                </li>
 
                 <!-- Notification Item - Alerts -->
-                <!-- <?php if($this->session->userdata('role') == 'superadmin') { ?>
+                <!-- <?php if ($this->session->userdata('role') == 'superadmin') { ?>
                     <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdown" role="button" data-toggle="dropdown">
@@ -433,7 +432,7 @@
 
 
                 <!-- Notification Item - Alerts -->
-                <!-- <?php if($this->session->userdata('role') == 'kadus') { ?>
+                <!-- <?php if ($this->session->userdata('role') == 'kadus') { ?>
                     <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdownKadus" role="button" data-toggle="dropdown">
@@ -448,7 +447,7 @@
                     </div>
                 </li>
                 <?php } ?> -->
-<!-- 
+                <!-- 
                 <?php if ($role == 'admin' || $role == 'kadus'): ?>
                     <li class="nav-item dropdown no-arrow mx-2">
                         <a class="nav-link dropdown-toggle position-relative"
@@ -481,30 +480,30 @@
                     </li>
                 <?php endif; ?> -->
 
-            <li class="nav-item dropdown no-arrow mx-1">
-    <a class="nav-link dropdown-toggle position-relative" href="#"
-       id="alertsDropdownGlobal"
-       role="button"
-       data-toggle="dropdown">
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <a class="nav-link dropdown-toggle position-relative" href="#"
+                        id="alertsDropdownGlobal"
+                        role="button"
+                        data-toggle="dropdown">
 
-        <i class="fas fa-bell fa-fw fa-lg"></i>
+                        <i class="fas fa-bell fa-fw fa-lg"></i>
 
-        <span class="badge badge-danger notif_global"
-              style="display:none;"></span>
-    </a>
+                        <span class="badge badge-danger notif_global"
+                            style="display:none;"></span>
+                    </a>
 
-   <div class="dropdown-list dropdown-menu dropdown-menu-right shadow"
-     id="dropdown_notifikasi_global">
+                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow"
+                        id="dropdown_notifikasi_global">
 
-    <div id="notif_pengaduan_area"></div>
-    <div id="notif_surat_area">
-        <span class="dropdown-item text-center small text-gray-500">
-            Tidak ada notifikasi
-        </span>
-    </div>
+                        <div id="notif_pengaduan_area"></div>
+                        <div id="notif_surat_area">
+                            <span class="dropdown-item text-center small text-gray-500">
+                                Tidak ada notifikasi
+                            </span>
+                        </div>
 
-</div>
-</li>
+                    </div>
+                </li>
 
                 <div class="topbar-divider d-none d-sm-block"></div>
 
