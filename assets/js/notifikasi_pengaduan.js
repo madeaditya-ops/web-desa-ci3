@@ -16,6 +16,27 @@ function load_notifikasi() {
 			jumlah_notif_pengaduan = parseInt(data.jumlah) || 0;
              update_badge_global();
 
+			 // BADGE SIDEBAR PENGADUAN
+			if (jumlah_notif_pengaduan > 0) {
+	$(".notif_pengaduan")
+		.text(jumlah_notif_pengaduan)
+		.attr(
+			"style",
+			"display:inline-flex !important;" +
+			"align-items:center;" +
+			"justify-content:center;" +
+			"min-width:18px;" +
+			"height:18px;" +
+			"font-size:11px;" +
+			"margin-left:6px;" +
+			"vertical-align:middle;"
+		);
+} else {
+	$(".notif_pengaduan")
+		.text(0)
+		.attr("style", "display:none !important;");
+}
+
 			 
 
 			// Jika dropdown sedang dibuka jangan refresh isi dropdown
@@ -259,7 +280,11 @@ $(document).ready(function () {
 });
 
 
-$("#alertsDropdown").on("click", function () {
+$("#alertsDropdownGlobal").on("click", function () {
+
+	if (USER_ROLE !== "superadmin") {
+		return;
+	}
 
 	$(".notif_pengaduan")
 		.hide()
