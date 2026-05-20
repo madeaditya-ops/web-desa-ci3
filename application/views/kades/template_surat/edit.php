@@ -10,7 +10,15 @@
         </div>
         <div class="card-body">
             <form action="<?= site_url('template_surat/update/'.$template->id_template) ?>" method="post" enctype="multipart/form-data">
-                
+                <div class="form-group">
+                    <label>Nomor Surat</label>
+                    <input type="text" 
+                        name="nomor_template_surat" 
+                        class="form-control"
+                        value="<?= htmlspecialchars($template->nomor_template_surat ?? '') ?>"
+                        required>
+                </div>
+
                 <div class="form-group">
                     <label for="nama_surat">Nama Surat</label>
                     <input type="text" name="nama_surat" id="nama_surat" class="form-control" value="<?= set_value('nama_surat', $template->nama_surat) ?>" required>

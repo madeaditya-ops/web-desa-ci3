@@ -1,9 +1,11 @@
-
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                Edit Template: <?= htmlspecialchars($surat->nama_surat) ?>
+                Edit Surat: <?= htmlspecialchars($surat->nama_surat) ?>
+                <?php if (isset($is_editing_generated) && $is_editing_generated): ?>
+                    <small class="text-muted">(Surat yang sudah di-generate)</small>
+                <?php endif; ?>
             </h6>
         </div>
 
@@ -22,47 +24,49 @@
                 </div>
             <?php endif; ?>
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <h5>Preview Template</h5>
-                    <div style="border: 1px solid #ddd; padding: 20px; background: #f9f9f9; max-height: 500px; overflow-y: auto;">
-                        <?= $html_content ?>
+            <form method="post" id="editForm">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h5>Edit Preview Surat (WYSIWYG)</h5>
+                        <div style="border: 1px solid #ccc; padding: 20px; margin: 10px 0; background: #fff;">
+                            <textarea name="edited_html" id="editor" style="width: 100%; height: 500px;">
+                                <?= $html_content ?>
+                            </textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-lg-6">
-                    <h5>Edit Text</h5>
-                    <form method="post">
-                        <div class="form-group">
-                            <label for="old_text" class="font-weight-bold">Teks Lama (cari)</label>
-                            <textarea name="old_text" id="old_text" class="form-control" rows="4" placeholder="Masukkan teks yang ingin diganti"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="new_text" class="font-weight-bold">Teks Baru (ganti dengan)</label>
-                            <textarea name="new_text" id="new_text" class="form-control" rows="4" placeholder="Masukkan teks pengganti"></textarea>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Ganti Teks
-                            </button>
-                            <a href="<?= site_url('admin/daftar_surat') ?>" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Kembali
-                            </a>
-                        </div>
-                    </form>
-
-                    <hr>
-                    <h6 class="text-muted">Tips:</h6>
-                    <ul class="small text-muted">
-                        <li>Copy teks dari preview di sebelah kiri</li>
-                        <li>Paste di kolom "Teks Lama"</li>
-                        <li>Tulis teks pengganti di kolom "Teks Baru"</li>
-                        <li>Klik tombol Ganti Teks</li>
-                    </ul>
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
+                    <a href="<?= site_url('admin/daftar_surat') ?>" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
                 </div>
-            </div>
+            </form>
+
+            <h6 class="text-muted">Tips:</h6>
+            <ul class="small text-muted">
+                <li>Edit teks langsung di preview di atas menggunakan editor WYSIWYG</li>
+                <li>Klik tombol Simpan Perubahan untuk update file surat</li>
+                <li>Perubahan akan overwrite file surat yang sudah di-generate</li>
+            </ul>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+<script>
+ClassicEditor
+    .create(document.querySelector('#editor'), {
+        toolbar: [
+            'bold','italic','underline',
+            '|','alignment',
+            '|','bulletedList','numberedList',
+            '|','undo','redo'
+        ]
+    })
+    .catch(error => console.error(error));
+</script>
+

@@ -12,6 +12,15 @@
             
             <form action="<?= site_url('template_surat/store') ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
+                    <label>Nomor Surat</label>
+                    <input type="text" 
+                        name="nomor_template_surat" 
+                        class="form-control"
+                        placeholder="Contoh: 474"
+                        required>
+                </div>
+
+                <div class="form-group">
                     <label for="nama_surat">Nama Surat</label>
                     <input type="text" name="nama_surat" id="nama_surat" class="form-control" value="<?= set_value('nama_surat') ?>" required>
                     <?= form_error('nama_surat', '<small class="text-danger">', '</small>'); ?>
