@@ -13,18 +13,10 @@ function load_notifikasi() {
 
 		success: function (data) {
 
-			// Badge jumlah notifikasi
-			if (data.jumlah > 0) {
+			jumlah_notif_pengaduan = parseInt(data.jumlah) || 0;
+             update_badge_global();
 
-				$(".notif_pengaduan")
-					.text(data.jumlah)
-					.show();
-
-			} else {
-
-				$(".notif_pengaduan")
-					.hide();
-			}
+			 
 
 			// Jika dropdown sedang dibuka jangan refresh isi dropdown
 			if (
@@ -110,7 +102,7 @@ function load_notifikasi() {
 				</a>
 			`;
 
-			$("#dropdown_notifikasi").html(html);
+			$("#notif_pengaduan_area").html(html);
 
 			// Ambil notif terbaru per status
 			let latest_pending = null;
@@ -259,9 +251,12 @@ function tampilkan_toast(data) {
 }
 
 
-load_notifikasi();
-
-setInterval(load_notifikasi, 5000);
+$(document).ready(function () {
+	if (USER_ROLE === "superadmin") {
+		load_notifikasi();
+		setInterval(load_notifikasi, 5000);
+	}
+});
 
 
 $("#alertsDropdown").on("click", function () {

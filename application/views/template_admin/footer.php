@@ -63,6 +63,14 @@
  <!-- Page level plugins -->
  <script src="<?= base_url('assets/admin/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
  <script src="<?= base_url('assets/admin/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
+ 
+<script>
+	const BASE_URL = "<?= base_url(); ?>";
+	const USER_ROLE = "<?= $this->session->userdata('role'); ?>";
+</script>
+
+<script src="<?= base_url('assets/js/notifikasi_global.js'); ?>"></script>
+<script src="<?= base_url('assets/js/notifikasi_surat.js'); ?>"></script>
 
  <script>
      // Panggil plugin DataTables saat dokumen siap
@@ -412,7 +420,7 @@ $(document).ready(function(){
         </tr>
     `);
 
-    $('#btnSetujui').attr('href', '<?= site_url('admin/setujui/') ?>' + id);
+    $('#btnSetujui').attr('href', '<?= site_url('admin/edit_surat/') ?>' + id);
     $('#btnTolak').attr('href', '<?= site_url('admin/tolak/') ?>' + id);
 
     $('#modalDetail').modal({

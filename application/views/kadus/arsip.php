@@ -56,26 +56,204 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $no=1; foreach($arsip as $a): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= date('d-m-Y H:i', strtotime($a->created_at)) ?></td>
-                            <td><?= htmlspecialchars($a->nama) ?></td>
-                            <td><?= htmlspecialchars($a->nomor_pengantar) ?></td>
-                            <td><?= htmlspecialchars($a->judul) ?></td>
-                            <td class="text-center">
-                                <?php if($a->status == 'menunggu'): ?>
-                                    <span class="badge badge-warning">Menunggu</span>
-                                <?php else: ?>
-                                    <span class="badge badge-success">Disetujui</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-center">
-                                <a href="<?= site_url('kadus/download_arsip/'.$a->id) ?>" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
-                            </td>
-                        </tr>
+                        <?php $no = 1;
+                        foreach ($arsip as $a): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= date('d-m-Y H:i', strtotime($a->created_at)) ?></td>
+                                <td><?= htmlspecialchars($a->nama) ?></td>
+                                <td>
+                                    <?php
+                                    $jenis_template = strtolower(trim($a->jenis_template ?? ''));
+                                    $nama_surat = strtoupper(trim($a->jenis_surat_tujuan ?? $a->judul ?? ''));
+
+                                    $is_keterangan =
+                                        ($jenis_template === 'keterangan') ||
+                                        ($nama_surat === 'SURAT KETERANGAN');
+
+                                    $noPg = trim((string)($a->nomor_pengantar ?? ''));
+                                    $kd   = trim((string)($a->kode_banjar ?? ''));
+
+                                    if ($is_keterangan) {
+
+                                        // khusus surat keterangan: ambil dari data_surat.no_nasional
+                                        $noAwal = trim((string)($a->no_nasional_data ?? ''));
+
+                                        // ambil nomor belakang dari nomor_pengantar
+                                        $parts = explode('/', ltrim($noPg, '/'));
+                                        $cleanNoPg = trim(end($parts));
+                                    } else {
+
+                                        // surat lain pakai nomor template biasa
+                                        $noAwal = trim((string)(
+                                            $a->nomor_template_surat
+                                            ?? $a->nomor_template_asli
+                                            ?? ''
+                                        ));
+
+                                        $cleanNoPg = preg_replace('/^[0-9]+\/+/', '', ltrim($noPg, '/'));
+                                    }
+
+                                    if ($noAwal !== '' && $cleanNoPg !== '') {
+                                        echo htmlspecialchars($noAwal . '/' . $cleanNoPg);
+                                    } elseif ($noAwal !== '') {
+                                        echo htmlspecialchars($noAwal);
+                                    } elseif ($cleanNoPg !== '') {
+                                        echo htmlspecialchars($cleanNoPg);
+                                    } else {
+                                        echo '-';
+                                    }
+
+                                    if ($kd !== '') {
+                                        echo '/KBD.' . htmlspecialchars($kd);
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    $surat_awal = strtoupper(trim($a->jenis_surat ?? '-'));
+                                    $surat_tujuan = strtoupper(trim($a->jenis_surat_tujuan ?? $a->judul ?? '-'));
+                                    $keterangan = strtoupper(trim($a->keterangan ?? ''));
+
+                                    echo '<span class="badge badge-secondary">';
+                                    echo htmlspecialchars($surat_awal . ' untuk');
+                                    echo '</span>';
+
+                                    echo '<br>';
+
+                                    echo '<span class="badge badge-info">';
+
+                                    if ($surat_tujuan === 'SURAT KETERANGAN' && $keterangan !== '') {
+                                        echo htmlspecialchars($surat_tujuan . ' ' . $keterangan);
+                                    } else {
+                                        echo htmlspecialchars($surat_tujuan);
+                                    }
+
+                                    echo '</span>';
+                                    ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php if ($a->status == 'menunggu'): ?>
+                                        <span class="badge badge-warning p-2">
+                                            <i class="fas fa-clock"></i> Menunggu
+                                        </span>
+                                    <?php elseif ($a->status == 'disetujui'): ?>
+                                        <span class="badge badge-success p-2">
+                                            <i class="fas fa-check-circle"></i> Disetujui
+                                        </span>
+
+                                        <br>
+
+                                        <?php if ($a->status_ambil == 'sudah'): ?>
+                                            <span class="badge badge-primary mt-1">
+                                                <i class="fas fa-check"></i> Sudah diambil
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge badge-danger mt-1">
+                                                <i class="fas fa-times"></i> Belum diambil
+                                            </span>
+                                        <?php endif; ?>
+
+                                    <?php elseif ($a->status == 'ditolak'): ?>
+
+                                        <span class="badge badge-danger p-2">
+                                            <i class="fas fa-times-circle"></i> Ditolak
+                                        </span>
+
+                                        <?php if (isset($a->new_approved) && $a->new_approved == 1): ?>
+                                            <br>
+                                            <span class="badge badge-warning mt-1">
+                                                <i class="fas fa-bell"></i> Penolakan Baru
+                                            </span>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($a->alasan_tolak)): ?>
+                                            <div class="mt-2">
+
+                                                <div class="alert alert-danger py-2 px-2 mb-0">
+                                                    <small>
+                                                        <strong>Alasan Ditolak:</strong><br>
+                                                        <?= nl2br(htmlspecialchars($a->alasan_tolak)) ?>
+                                                    </small>
+                                                </div>
+
+                                            </div>
+                                        <?php endif; ?>
+
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php if ($a->status == 'disetujui'): ?>
+
+                                        <a href="<?= site_url('kadus/download_arsip/' . $a->id) ?>" class="btn btn-primary btn-sm mb-1">
+                                            <i class="fas fa-download"></i> Unduh
+                                        </a>
+
+                                        <br>
+
+                                        <?php if ($a->status_ambil == 'belum'): ?>
+
+                                            <a href="<?= site_url('kadus/verifikasi_ambil/' . $a->id) ?>"
+                                                class="btn btn-success btn-sm swal-confirm"
+                                                data-title="Verifikasi Pengambilan?"
+                                                data-text="Pastikan surat benar-benar sudah diambil warga."
+                                                data-icon="question"
+                                                data-confirm="Ya, verifikasi">
+                                                <i class="fas fa-check"></i> Verifikasi Ambil
+                                            </a>
+
+                                        <?php else: ?>
+
+                                            <button class="btn btn-secondary btn-sm mb-1" disabled>
+                                                <i class="fas fa-check-double"></i> Sudah Diambil
+                                            </button>
+
+                                            <br>
+
+                                            <small class="text-muted">
+                                                <?= !empty($a->tanggal_ambil)
+                                                    ? date('d-m-Y H:i', strtotime($a->tanggal_ambil))
+                                                    : '-' ?>
+                                                <br>
+                                                Oleh: <?= htmlspecialchars($a->diambil_oleh ?? '-') ?>
+                                            </small>
+
+                                        <?php endif; ?>
+
+                                    <?php elseif ($a->status == 'ditolak'): ?>
+
+                                        <a href="<?= site_url('kadus/lengkapi/' . $a->id) ?>"
+                                            class="btn btn-warning btn-sm swal-confirm"
+                                            data-title="Lengkapi Data?"
+                                            data-text="Apakah Anda yakin ingin melengkapi data surat ini?"
+                                            data-icon="question"
+                                            data-confirm="Ya, lengkapi">
+
+                                            <i class="fas fa-edit"></i>
+                                            Lengkapi Data
+
+                                        </a>
+
+                                        <br>
+
+                                        <button type="button"
+                                            class="btn btn-danger btn-sm btn-hapus mt-1"
+                                            data-url="<?= site_url('kadus/hapus_pengajuan/' . $a->id) ?>">
+
+                                            <i class="fas fa-trash"></i>
+                                            Hapus
+
+                                        </button>
+
+                                    <?php else: ?>
+
+                                        <span class="text-muted small font-italic">
+                                            Menunggu Verifikasi
+                                        </span>
+
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

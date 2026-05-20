@@ -60,6 +60,7 @@ class Admin extends CI_Controller
         $this->load->model('Keluarga_model');
         $this->load->model('Template_surat_model');
         $this->load->library('upload');
+        date_default_timezone_set('Asia/Makassar');
     }
 
     public function index()
@@ -214,8 +215,83 @@ class Admin extends CI_Controller
             'jumlah' => $query->num_rows(),
             'list'   => $query->result()
         ]);
+    } 
+    
+
+    public function get_notifikasi_surat()
+{
+    $role    = $this->session->userdata('role');
+    $id_user = $this->session->userdata('id_user');
+
+if ($role == 'admin') {
+
+    $data = $this->db
+        ->select('
+            data_surat.id,
+            data_surat.nama,
+            data_surat.status,
+            data_surat.created_at,
+            users.nama AS nama_kadus
+        ')
+        ->from('data_surat')
+        ->join('users', 'users.id_user = data_surat.id_user', 'left')
+        ->where('data_surat.status', 'menunggu')
+        ->where('data_surat.notif_admin_read', 0)
+        ->order_by('data_surat.created_at', 'DESC')
+        ->limit(10)
+        ->get()
+        ->result();
+
+    echo json_encode([
+        'jumlah' => count($data),
+        'data'   => $data
+    ]);
+    return;
+}
+
+    if ($role == 'kadus') {
+
+        $data = $this->db
+            ->select('id, nama, status, alasan_tolak, created_at')
+            ->from('data_surat')
+            ->where('id_user', $id_user)
+            ->where_in('status', ['disetujui', 'ditolak'])
+            ->where('new_approved', 1)
+            ->order_by('created_at', 'DESC')
+            ->limit(10)
+            ->get()
+            ->result();
+
+        echo json_encode([
+            'jumlah' => count($data),
+            'data'   => $data
+        ]);
+        return;
     }
 
+    echo json_encode(['jumlah' => 0, 'data' => []]);
+}
+
+public function read_notifikasi_surat_admin()
+{
+    if ($this->session->userdata('role') !== 'admin') {
+        echo json_encode([
+            'status' => false
+        ]);
+        return;
+    }
+
+    $this->db
+        ->where('status', 'menunggu')
+        ->where('notif_admin_read', 0)
+        ->update('data_surat', [
+            'notif_admin_read' => 1
+        ]);
+
+    echo json_encode([
+        'status' => true
+    ]);
+}
 
 
     public function verifikasi_selesai()

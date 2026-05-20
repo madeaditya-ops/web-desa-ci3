@@ -38,6 +38,7 @@ class Kadus extends CI_Controller
         $this->load->model('Dashboard_kadus_model');
         $this->load->model('Data_surat_model');
         $this->load->library('session');
+        date_default_timezone_set('Asia/Makassar');
     }
 
     public function get_notif_kadus_realtime()
@@ -268,6 +269,7 @@ class Kadus extends CI_Controller
             'agama'           => $this->input->post('agama'),
             'pekerjaan'       => $this->input->post('pekerjaan'),
             'tujuan'          => $this->input->post('tujuan'),
+            'notif_admin_read'   => 0,
             'id_user'         => $this->session->userdata('id_user'),
             'created_at'      => date('Y-m-d H:i:s')
         ];
@@ -741,7 +743,7 @@ class Kadus extends CI_Controller
             'status'           => 'menunggu',
 
             // notif admin
-            'new_approved'     => 1,
+            'notif_admin_read' => 0,
 
             'updated_at'       => date('Y-m-d H:i:s')
 
