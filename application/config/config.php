@@ -2,7 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once FCPATH . 'vendor/autoload.php';
-if (file_exists(FCPATH . 'config.env')) {
+// Load environment file from application/ if present, otherwise fall back to project root
+if (file_exists(APPPATH . 'config.env')) {
+    $dotenv = Dotenv\Dotenv::createUnsafeImmutable(APPPATH, 'config.env');
+    $dotenv->load();
+} elseif (file_exists(FCPATH . 'config.env')) {
     $dotenv = Dotenv\Dotenv::createUnsafeImmutable(FCPATH, 'config.env');
     $dotenv->load();
 }

@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Arsip_model extends CI_Model
 {
@@ -7,6 +8,10 @@ class Arsip_model extends CI_Model
 
     public function add($data)
     {
+        // HAPUS created_at dari $data jika ada
+        unset($data['created_at']);
+
+        $this->db->set('created_at', 'NOW()', false);
         // HAPUS created_at dari $data jika ada
         unset($data['created_at']);
 
@@ -90,7 +95,60 @@ class Arsip_model extends CI_Model
     }
 
     public function get_between($from = null, $to = null, $namaSurat = null)
+    public function get_between($from = null, $to = null, $namaSurat = null)
     {
+        $this->db->select('arsip_surat.*, 
+                       template_surat.nama_surat, 
+                       template_surat.nomor_template_surat AS nomor_template_surat');
+
+        $this->db->from('arsip_surat');
+        $this->db->join(
+            'template_surat',
+            'arsip_surat.id_template = template_surat.id_template',
+            'left'
+        );
+        $this->db->join(
+            'users',
+            'arsip_surat.id_user = users.id_user',
+            'left'
+        );
+
+
+
+        // ===============================
+        // FILTER TANGGAL SURAT
+        // ===============================
+        if (!empty($from)) {
+            $this->db->where(
+                'DATE(COALESCE(arsip_surat.tanggal_surat, arsip_surat.created_at)) >=',
+                $from
+            );
+        }
+
+        if (!empty($to)) {
+            $this->db->where(
+                'DATE(COALESCE(arsip_surat.tanggal_surat, arsip_surat.created_at)) <=',
+                $to
+            );
+        }
+
+        // ===============================
+        // FILTER NAMA SURAT
+        // ===============================
+        if (!empty($namaSurat)) {
+            $this->db->where('template_surat.nama_surat', $namaSurat);
+        }
+
+        return $this->db
+            ->order_by('COALESCE(arsip_surat.tanggal_surat, arsip_surat.created_at)', 'DESC', false)
+            ->get()
+            ->result();
+    }
+
+
+    public function get_by_id($id)
+    {
+        return $this->db->where('id', $id)->get('arsip_surat')->row();
         $this->db->select('arsip_surat.*, 
                        template_surat.nama_surat, 
                        template_surat.nomor_template_surat AS nomor_template_surat');
@@ -153,10 +211,18 @@ class Arsip_model extends CI_Model
         return (int) $this->db
             ->where('status', 'disetujui')
             ->count_all_results($this->table);
+        return (int) $this->db
+            ->where('status', 'disetujui')
+            ->count_all_results($this->table);
     }
 
     public function count_between($from, $to)
     {
+        return (int) $this->db
+            ->where('status', 'disetujui')
+            ->where('created_at >=', $from)
+            ->where('created_at <=', $to)
+            ->count_all_results($this->table);
         return (int) $this->db
             ->where('status', 'disetujui')
             ->where('created_at >=', $from)
@@ -171,6 +237,14 @@ class Arsip_model extends CI_Model
     public function counts_last_days($days = 7)
     {
         $start = date('Y-m-d 00:00:00', strtotime('-' . ($days - 1) . ' days'));
+
+        $rows = $this->db
+            ->select("DATE(created_at) as date, COUNT(*) as cnt", false)
+            ->where('created_at >=', $start)
+            ->group_by('DATE(created_at)')
+            ->order_by('DATE(created_at)', 'ASC')
+            ->get($this->table)
+            ->result();
 
         $rows = $this->db
             ->select("DATE(created_at) as date, COUNT(*) as cnt", false)
@@ -202,6 +276,25 @@ class Arsip_model extends CI_Model
             $out[$r->jenis_surat] = (int) $r->cnt;
         }
 
+
+        return $out;
+    }
+
+    function counts_by_jenis()
+    {
+        $rows = $this->db
+            ->select("jenis_surat, COUNT(*) as cnt", false)
+            ->where('status', 'disetujui')
+            ->group_by('jenis_surat')
+            ->get($this->table)
+            ->result();
+
+        $out = [];
+        foreach ($rows as $r) {
+            $out[$r->jenis_surat] = (int) $r->cnt;
+        }
+
         return $out;
     }
 }
+

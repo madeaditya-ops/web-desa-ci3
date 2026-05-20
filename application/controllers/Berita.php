@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Berita_model $Berita_model
  */
-class Berita extends CI_Controller {
+class Berita extends Kades_Middleware {
 
     public function __construct() {
         parent::__construct();
@@ -34,7 +34,6 @@ class Berita extends CI_Controller {
     }
 
     public function store() {
-        // Aturan validasi
         $this->form_validation->set_rules('judul', 'Judul', 'required|trim');
         $this->form_validation->set_rules('isi', 'Isi Berita', 'required|trim');
 
@@ -46,7 +45,6 @@ class Berita extends CI_Controller {
                 $this->create();
                 return; 
             }
-
             $config['upload_path']   = './uploads/berita/';
             $config['allowed_types'] = 'jpg|png|jpeg';
             $config['max_size']      = 2048; 
@@ -111,7 +109,7 @@ class Berita extends CI_Controller {
 
                 if ($this->upload->do_upload('gambar')) {
                     $upload_data = $this->upload->data();
-                    $gambar = $upload_data['file_name']; // Ganti dengan nama gambar baru
+                    $gambar = $upload_data['file_name']; 
                 } else {
                     $error = $this->upload->display_errors();
                     $this->session->set_flashdata('error', $error);
@@ -134,15 +132,12 @@ class Berita extends CI_Controller {
     }
 
     public function delete($id) {
-        // Ambil data berita untuk mendapatkan nama file gambar
         $berita = $this->Berita_model->get_by_id($id);
 
         if ($berita) {
-            // Hapus file gambar dari folder uploads jika ada
             if ($berita->gambar && file_exists('./uploads/berita/' . $berita->gambar)) {
                 unlink('./uploads/berita/' . $berita->gambar);
             }
-            // Hapus data dari database
             $this->Berita_model->delete($id);
             $this->session->set_flashdata('success', 'Berita berhasil dihapus!');
         } else {

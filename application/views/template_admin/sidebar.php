@@ -38,7 +38,6 @@
         $judul_dropdown = "Status Surat Dusun";
     }
     ?>
-
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand bg-white d-flex align-items-center justify-content-center" href="<?= base_url('Landing') ?>">
         <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
@@ -50,20 +49,20 @@
 
 
     <?php if ($this->session->userdata('role') == 'superadmin'): ?>
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="<?= site_url('dashboard')?>">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-    </li>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="<?= site_url('dashboard') ?>">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Landing Page
-    </div>
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Landing Page
+        </div>
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
@@ -157,30 +156,24 @@
             </div>
         </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-balance-scale"></i>
-            <span>Peraturan Desa</span>
-        </a>
-        <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('peraturan')?>">Data Peraturan</a>
-                <a class="collapse-item" href="<?= site_url('peraturan/create')?>">Tambah Data</a>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-balance-scale"></i>
+                <span>Peraturan Desa</span>
+            </a>
+            <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('peraturan') ?>">Data Peraturan</a>
+                    <a class="collapse-item" href="<?= site_url('peraturan/create') ?>">Tambah Data</a>
+                </div>
             </div>
-        </div>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
-
-
-    <!-- Heading -->
+        </li>
+       
     <div class="sidebar-heading mt-3">
         Public Service
     </div>
-
-    <!-- Pengaduan Menu -->
+     <!-- Pengaduan Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
             aria-expanded="true" aria-controls="collapsePages">
@@ -198,23 +191,20 @@
             </div>
         </div>
     </li>
-
-    
+           
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-file-alt"></i>
-            <span>Surat</span>
-        </a>
-        <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= site_url('surat')?>">Data Surat</a>
-                <a class="collapse-item" href="<?= site_url('Template_surat/create')?>">Tambah Data</a>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-file-alt"></i>
+                <span>Surat</span>
+            </a>
+            <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('surat') ?>">Data Surat</a>
+                    <a class="collapse-item" href="<?= site_url('Template_surat/create') ?>">Tambah Data</a>
+                </div>
             </div>
-        </div>
-    </li>
-
-
+        </li>
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAPBDES"
@@ -316,32 +306,43 @@
             </a>
 
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="<?= base_url('kadus/jumlah_kk'); ?>">
-                <i class="fas fa-user"></i>
-                <span>Jumlah KK</span></a>
-        </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="<?= base_url('kadus/data_warga'); ?>">
-                <i class="fas fa-users"></i>
-                <span>Data Warga</span></a>
-        </li>
 
-        <!-- Pengaduan Menu -->
-        <li class="nav-item active">
-            <a class="nav-link" href="<?= site_url('PengaduanAdmin')?>">
-                <i class="fas fa-file-alt"></i>
-                <span>Pengaduan</span>
-                <span class="badge badge-danger notif_pengaduan_kadus"  style="display: none; font-size: 12px;"></span>
-            </a>
-        </li>
-
-        <li class="nav-item active">
-            <a class="nav-link" href="<?= site_url('PengaduanAdmin/arsip')?>">
-                <i class="fas fa-file-alt"></i>
-                <span>Arsip Pengaduan</span>
-            </a>
-        </li>
+             <!-- warga Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWarga"
+            aria-expanded="true" aria-controls="collapseWarga">
+            <i class="fas fa-file-alt"></i>
+            <span>Data Warga</span>
+            <span  style="display: none; font-size: 12px;"></span>
+        </a>
+        <div id="collapseWarga" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= base_url('kadus/jumlah_kk'); ?>">
+                    Data KK
+                    <span class="badge"  style="display: none; font-size: 12px;"></span>
+                </a>
+                <a class="collapse-item" href="<?= base_url('kadus/data_warga'); ?>">Data Warga</a>
+            </div>
+        </div>
+    </li>
+         <!-- Pengaduan Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-file-alt"></i>
+            <span>Pengaduan</span>
+            <span class="badge badge-danger jumlah_notif_kadus"  style="display: none; font-size: 12px;"></span>
+        </a>
+        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">
+                    Data Pengaduan
+                    <span class="badge badge-danger jumlah_notif_kadus"  style="display: none; font-size: 12px;"></span>
+                </a>
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
+            </div>
+        </div>
+    </li>
     <?php endif; ?>
 
     <!-- Divider -->
@@ -351,6 +352,7 @@
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
+
 </ul>
 
 
@@ -370,54 +372,25 @@
                 <i class="fa fa-bars"></i>
             </button>
 
+
+            <!-- Topbar Search -->
+            <!-- <form
+                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                        aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form> -->
+
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
 
-                <?php if ($role == 'admin' || $role == 'kadus'): ?>
-                    <li class="nav-item dropdown no-arrow mx-2">
-                        <a class="nav-link dropdown-toggle position-relative"
-                            href="#"
-                            id="notifDropdown"
-                            role="button"
-                            data-toggle="dropdown">
-
-                            <i class="fas fa-bell fa-fw"></i>
-
-                            <span id="notifBadge"
-                                class="badge badge-danger badge-counter"
-                                style="<?= $jumlah_notif > 0 ? '' : 'display:none;' ?>">
-                                <?= $jumlah_notif ?>
-                            </span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right shadow"
-                            style="width:400px;"
-                            id="notifDropdownMenu">
-
-                            <h6 class="dropdown-header"><?= $judul_dropdown ?></h6>
-
-                            <div id="notifList">
-                                <div class="text-center small text-gray-500 py-2">
-                                    Memuat...
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                <?php endif; ?>
-
-                <div class="dropdown-menu dropdown-menu-right shadow"
-                    style="width:300px;"
-                    id="notifDropdownMenu">
-
-                    <h6 class="dropdown-header">Pengajuan Surat</h6>
-
-                    <div id="notifList">
-                        <div class="text-center small text-gray-500">
-                            Memuat...
-                        </div>
-                    </div>
-                </div>
-                </li>
+                
 
 
                 <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -442,10 +415,10 @@
                             </div>
                         </form>
                     </div>
-                </li>
+                  </li>
 
                 <!-- Notification Item - Alerts -->
-                <?php if($this->session->userdata('role') == 'superadmin') { ?>
+                <!-- <?php if($this->session->userdata('role') == 'superadmin') { ?>
                     <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdown" role="button" data-toggle="dropdown">
@@ -459,11 +432,11 @@
                         </span>
                     </div>
                 </li>
-                <?php } ?>
+                <?php } ?> -->
 
 
                 <!-- Notification Item - Alerts -->
-                <?php if($this->session->userdata('role') == 'kadus') { ?>
+                <!-- <?php if($this->session->userdata('role') == 'kadus') { ?>
                     <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="alertsDropdownKadus" role="button" data-toggle="dropdown">
@@ -477,8 +450,64 @@
                         </span>
                     </div>
                 </li>
-                <?php } ?>
+                <?php } ?> -->
+<!-- 
+                <?php if ($role == 'admin' || $role == 'kadus'): ?>
+                    <li class="nav-item dropdown no-arrow mx-2">
+                        <a class="nav-link dropdown-toggle position-relative"
+                            href="#"
+                            id="notifDropdown"
+                            role="button"
+                            data-toggle="dropdown">
 
+                            <i class="fas fa-bell fa-fw fa-lg"></i>
+
+                            <span id="notifBadge"
+                                class="badge badge-danger badge-counter"
+                                style="<?= $jumlah_notif > 0 ? '' : 'display:none;' ?>">
+                                <?= $jumlah_notif ?>
+                            </span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right shadow"
+                            style="width:400px;"
+                            id="notifDropdownMenu">
+
+                            <h6 class="dropdown-header"><?= $judul_dropdown ?></h6>
+
+                            <div id="notifList">
+                                <div class="text-center small text-gray-500 py-2">
+                                    Memuat...
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                <?php endif; ?> -->
+
+            <li class="nav-item dropdown no-arrow mx-1">
+    <a class="nav-link dropdown-toggle position-relative" href="#"
+       id="alertsDropdownGlobal"
+       role="button"
+       data-toggle="dropdown">
+
+        <i class="fas fa-bell fa-fw fa-lg"></i>
+
+        <span class="badge badge-danger notif_global"
+              style="display:none;"></span>
+    </a>
+
+   <div class="dropdown-list dropdown-menu dropdown-menu-right shadow"
+     id="dropdown_notifikasi_global">
+
+    <div id="notif_pengaduan_area"></div>
+    <div id="notif_surat_area">
+        <span class="dropdown-item text-center small text-gray-500">
+            Tidak ada notifikasi
+        </span>
+    </div>
+
+</div>
+</li>
 
                 <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -509,5 +538,4 @@
                 </li>
             </ul>
         </nav>
-<!-- End of Topbar -->
-
+        <!-- End of Topbar -->

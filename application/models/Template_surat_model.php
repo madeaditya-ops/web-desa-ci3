@@ -10,7 +10,7 @@ class Template_surat_model extends CI_Model {
     public function get_all_kecuali_pengantar()
 {
     return $this->db
-        ->where('nama_surat !=', 'Surat dusun')
+        ->where('level_akses', 'admin')
         ->order_by('nama_surat', 'ASC')
         ->get('template_surat')
         ->result();

@@ -42,7 +42,7 @@
 
 
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
     <?php if ($this->session->flashdata('message')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -173,30 +173,30 @@
                             Upload Foto KTP
                         </h6>
 
-                        <p class="text-muted mb-3" style="font-size: 14px;">
-                            Gunakan fitur ini untuk <b>mengisi data surat secara otomatis</b> berdasarkan
-                            KTP pemohon. Pastikan foto KTP terlihat jelas agar data terbaca dengan baik.
-                        </p>
+                            <p class="text-muted mb-3" style="font-size: 14px;">
+                                Gunakan fitur ini untuk <b>mengisi data surat secara otomatis</b> berdasarkan
+                                KTP pemohon. Pastikan foto KTP terlihat jelas agar data terbaca dengan baik.
+                            </p>
 
-                        <!-- INPUT FILE -->
-                        <!-- <input type="file"
-                            id="uploadKtp"
-                            class="form-control"
-                            accept="image/*"> -->
+                            <!-- INPUT FILE -->
+                            <!-- <input type="file"
+                                id="uploadKtp"
+                                class="form-control"
+                                accept="image/*"> -->
 
-                        <!-- INFO PENGGUNAAN -->
-                        <!-- <ul class="mt-3 mb-2 text-muted" style="font-size: 13px; padding-left: 18px;">
-                            <li>Foto KTP harus <b>jelas, lurus, dan tidak blur</b></li>
-                            <li>Gunakan pencahayaan yang cukup</li>
-                            <li>Data akan <b>otomatis masuk ke form</b>, silakan cek kembali</li>
-                        </ul> -->
+                            <!-- INFO PENGGUNAAN -->
+                            <!-- <ul class="mt-3 mb-2 text-muted" style="font-size: 13px; padding-left: 18px;">
+                                <li>Foto KTP harus <b>jelas, lurus, dan tidak blur</b></li>
+                                <li>Gunakan pencahayaan yang cukup</li>
+                                <li>Data akan <b>otomatis masuk ke form</b>, silakan cek kembali</li>
+                            </ul> -->
 
-                        <!-- CATATAN KEAMANAN -->
-                        <!-- <div class="alert alert-info py-2 px-3 mt-3 mb-0" style="font-size: 13px;">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Foto KTP <b>tidak disimpan</b> di sistem, hanya digunakan sementara untuk
-                            membantu pengisian data.
-                        </div> -->
+                            <!-- CATATAN KEAMANAN -->
+                            <!-- <div class="alert alert-info py-2 px-3 mt-3 mb-0" style="font-size: 13px;">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Foto KTP <b>tidak disimpan</b> di sistem, hanya digunakan sementara untuk
+                                membantu pengisian data.
+                            </div> -->
 
                         <!-- PREVIEW -->
                         <!-- <div class="mt-3 ktp-preview-wrapper">
@@ -217,10 +217,10 @@
                             </select> -->
 
 
-                            <!-- <small class="text-muted">
-                                Pilih nama untuk mengisi otomatis data surat
-                            </small> -->
-                        </div>
+                                <!-- <small class="text-muted">
+                                    Pilih nama untuk mengisi otomatis data surat
+                                </small> -->
+                            </div>
 
 
                     </div>
@@ -351,10 +351,10 @@
                             endif;
                             ?>
 
-                            <div class="<?= $col_class ?> mb-3">
-                                <label for="<?= htmlspecialchars($ph_key) ?>" class="font-weight-bold">
-                                    <?= $display_label ?>
-                                </label>
+                                <div class="<?= $col_class ?> mb-3">
+                                    <label for="<?= htmlspecialchars($ph_key) ?>" class="font-weight-bold">
+                                        <?= $display_label ?>
+                                    </label>
 
                                 <?php if ($is_gender): ?>
 
@@ -405,10 +405,10 @@
                                     <?php
                                     $current_value = '';
 
-                                    // Prioritas 1: set_value (jika form submit ulang)
-                                    if (!empty(set_value($ph_key))) {
-                                        $current_value = set_value($ph_key);
-                                    }
+                                        // Prioritas 1: set_value (jika form submit ulang)
+                                        if (!empty(set_value($ph_key))) {
+                                            $current_value = set_value($ph_key);
+                                        }
 
                                     // Prioritas 2: Ambil dari auto_warga (PAKSA KE status_perkawinan)
                                     elseif (isset($auto_warga->sts_kawin)) {
@@ -540,11 +540,11 @@
                                 <?php endif; ?>
                             </div>
 
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <p class="text-danger">Tidak ada placeholder ditemukan di template surat ini.</p>
-                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-danger">Tidak ada placeholder ditemukan di template surat ini.</p>
+                    <?php endif; ?>
 
                 <div class="d-flex justify-content-end mt-3">
                     <a href="<?= site_url('admin/daftar_surat') ?>" class="btn btn-secondary mr-2">
@@ -558,6 +558,19 @@
         </div>
     </div>
 </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="<?= site_url('admin/daftar_surat') ?>" class="btn btn-secondary mr-2">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Generate Surat
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
 <!-- Script: sinkronkan hidden banjar dengan select kode_banjar -->
@@ -584,8 +597,8 @@
     })();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     const upload = document.getElementById('uploadKtp');

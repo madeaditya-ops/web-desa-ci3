@@ -1,15 +1,15 @@
  </div>
  <!-- End of Main Content -->
 
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Website Resmi Desa Blahbatuh 2025</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+ <!-- Footer -->
+ <footer class="sticky-footer bg-white">
+     <div class="container my-auto">
+         <div class="copyright text-center my-auto">
+             <span>Copyright &copy; Your Website 2021</span>
+         </div>
+     </div>
+ </footer>
+ <!-- End of Footer -->
 
  </div>
  <!-- End of Content Wrapper -->
@@ -63,6 +63,14 @@
  <!-- Page level plugins -->
  <script src="<?= base_url('assets/admin/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
  <script src="<?= base_url('assets/admin/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
+ 
+<script>
+	const BASE_URL = "<?= base_url(); ?>";
+	const USER_ROLE = "<?= $this->session->userdata('role'); ?>";
+</script>
+
+<script src="<?= base_url('assets/js/notifikasi_global.js'); ?>"></script>
+<script src="<?= base_url('assets/js/notifikasi_surat.js'); ?>"></script>
 
  <script>
      // Panggil plugin DataTables saat dokumen siap
@@ -214,7 +222,7 @@ $(document).ready(function(){
              const option = e.params.data.element;
 
              /* ===============================
-                 HILANGKAN LABEL "TERBARU"
+                🔥 HILANGKAN LABEL "TERBARU"
              =============================== */
              if ($(option).data('terbaru') == 1) {
                  $(option).data('terbaru', 0);
@@ -412,7 +420,7 @@ $(document).ready(function(){
         </tr>
     `);
 
-    $('#btnSetujui').attr('href', '<?= site_url('admin/setujui/') ?>' + id);
+    $('#btnSetujui').attr('href', '<?= site_url('admin/edit_surat/') ?>' + id);
     $('#btnTolak').attr('href', '<?= site_url('admin/tolak/') ?>' + id);
 
     $('#modalDetail').modal({
@@ -988,7 +996,6 @@ $(document).ready(function () {
 });
 </script>
 
-
     <!-- Notifikasi pengaduan -->
   <?php if($this->session->userdata('role') == 'superadmin'): ?>
      <script>
@@ -1007,6 +1014,6 @@ $(document).ready(function () {
 <?php endif; ?> 
 
 
-</body>
+ </body>
 
  </html>

@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Peraturan_model $Peraturan_model
  * @property CI_Upload $upload
  */
-class Peraturan extends CI_Controller {
+class Peraturan extends Kades_Middleware {
 
     public function __construct() {
         parent::__construct();

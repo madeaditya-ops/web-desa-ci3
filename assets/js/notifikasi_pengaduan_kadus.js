@@ -2,6 +2,10 @@ let last_notif_id_kadus = localStorage.getItem("last_notif_id_kadus")
 	? parseInt(localStorage.getItem("last_notif_id_kadus"))
 	: 0;
 
+// gunakan variabel global dari notifikasi_global.js
+jumlah_notif_kadus = 0;
+
+
 function load_notifikasi_kadus() {
 	$.ajax({
 		url: BASE_URL + "dashboard/get_notifikasi_kadus",
@@ -9,17 +13,25 @@ function load_notifikasi_kadus() {
 		dataType: "json",
 
 		success: function (data) {
-             console.log("DATA KADUS:", data);
+			console.log("DATA KADUS:", data);
 
-			// Badge jumlah notif
-			if (data.jumlah > 0) {
-				$(".notif_pengaduan_kadus").text(data.jumlah).show();
+			jumlah_notif_kadus = parseInt(data.jumlah) || 0;
+			update_badge_global();
+
+			// ===============================
+			// BADGE SIDEBAR PENGADUAN KADUS
+			// ===============================
+			if (jumlah_notif_kadus > 0) {
+				$(".jumlah_notif_kadus")
+					.text(jumlah_notif_kadus)
+					.attr("style", "display:inline-block !important; font-size:12px; margin-left:6px;");
 			} else {
-				$(".notif_pengaduan_kadus").hide();
+				$(".jumlah_notif_kadus")
+					.text(0)
+					.attr("style", "display:none !important;");
 			}
 
-			// Kalau dropdown lagi dibuka → tidak reload isi
-			if ($("#alertsDropdownKadus").attr("aria-expanded") === "true") {
+			if ($("#alertsDropdownGlobal").attr("aria-expanded") === "true") {
 				return;
 			}
 
@@ -43,26 +55,20 @@ function load_notifikasi_kadus() {
 			} else {
 				html = `
                 <span class="dropdown-item text-center small text-gray-500">
-                    Tidak ada pengaduan
+                    Tidak ada pengaduan dan surat
                 </span>
                 `;
 			}
 
-			html += `
-            <a class="dropdown-item text-center small text-gray-500"
-               href="${BASE_URL}PengaduanAdmin">
-               Lihat semua pengaduan
-            </a>
-            `;
+		
 
-			$("#dropdown_notifikasi_kadus").html(html);
+			$("#notif_pengaduan_area").html(html);
 
 			let max_id = parseInt(data.last_id) || 0;
 
 			console.log("Kadus localStorage ID:", last_notif_id_kadus);
 			console.log("Kadus Database last ID:", max_id);
 
-			// Deteksi notif baru
 			if (max_id > last_notif_id_kadus) {
 				console.log("Notif baru untuk Kadus!");
 
@@ -80,7 +86,6 @@ function load_notifikasi_kadus() {
 		},
 	});
 }
-
 
 function tampilkan_toast_kadus(data) {
 	let url_detail = BASE_URL + "PengaduanAdmin/detail/" + data.id_pengaduan;
@@ -113,23 +118,24 @@ function tampilkan_toast_kadus(data) {
 	});
 }
 
+$("#alertsDropdownGlobal").on("click", function () {
 
-if ($(".notif_pengaduan_kadus").length > 0) {
-	load_notifikasi_kadus();
-	setInterval(load_notifikasi_kadus, 5000);
-}
+	// hanya role kadus yang boleh reset notif pengaduan kadus
+	if (USER_ROLE !== "kadus") {
+		return;
+	}
 
-
-
-$("#alertsDropdownKadus").on("click", function () {
 	$.ajax({
 		url: BASE_URL + "dashboard/read_notifikasi_kadus",
 		method: "POST",
 		success: function () {
-			$(".notif_pengaduan_kadus")
-				.hide()
-				.text(0);
-		}
+		jumlah_notif_kadus = 0;
+		update_badge_global();
+
+		$(".jumlah_notif_kadus")
+			.text(0)
+			.attr("style", "display:none !important;");
+	}
 	});
 });
 
@@ -147,7 +153,25 @@ $(document).on("click", ".notif-item-kadus", function (e) {
 	});
 });
 
-
 $(document).on("click", 'a[href*="logout"]', function () {
 	localStorage.removeItem("last_notif_id_kadus");
+});
+
+
+// ===============================
+// AUTO LOAD SEMUA NOTIF
+// ===============================
+$(document).ready(function () {
+
+	console.log("JUMLAH BADGE GLOBAL:", $(".notif_global").length);
+	console.log("JUMLAH DROPDOWN GLOBAL:", $("#dropdown_notifikasi_global").length);
+
+	if ($(".notif_global").length > 0 && USER_ROLE === "kadus") {
+
+		load_notifikasi_kadus();
+
+		setInterval(function () {
+			load_notifikasi_kadus();
+		}, 5000);
+	}
 });

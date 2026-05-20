@@ -60,6 +60,7 @@ class Admin extends CI_Controller
         $this->load->model('Keluarga_model');
         $this->load->model('Template_surat_model');
         $this->load->library('upload');
+        date_default_timezone_set('Asia/Makassar');
     }
 
     public function index()
@@ -163,162 +164,10 @@ class Admin extends CI_Controller
     }
 
 
-    public function layanan()
-    {
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/layanan/verifikasi_data');
-        $this->load->view('template_admin/footer');
-    }
-
-
-    public function verifikasi_data()
-    {
-        $data['menunggu'] = $this->db
-            ->select('
-        data_surat.*,
-        users.nama as dibuat_oleh
-    ')
-            ->from('data_surat')
-            ->join('users', 'users.id_user = data_surat.id_user', 'left')
-            ->where('data_surat.status', 'menunggu')
-            ->order_by('data_surat.created_at', 'DESC')
-            ->get()
-            ->result();
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/layanan/verifikasi_data', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-
-
-    public function get_notif_admin_realtime()
-    {
-        // KUNCI KEAMANAN: Jika bukan admin, hentikan proses!
-        if ($this->session->userdata('role') !== 'admin') {
-            echo json_encode(['jumlah' => 0, 'list' => []]);
-            exit;
-        }
-
-        $this->db->select('data_surat.id, data_surat.nama, data_surat.banjar, data_surat.created_at');
-        $this->db->from('data_surat');
-        $this->db->join('users', 'users.id_user = data_surat.id_user');
-        $this->db->where('data_surat.status', 'menunggu');
-        $this->db->where('users.role', 'kadus');
-        $this->db->order_by('data_surat.created_at', 'DESC');
-        $query = $this->db->get();
-
-        echo json_encode([
-            'jumlah' => $query->num_rows(),
-            'list'   => $query->result()
-        ]);
-    }
-
-
-
-    public function verifikasi_selesai()
-    {
-        $data['selesai'] = $this->db
-            ->select('data_surat.*, 
-                  arsip_surat.status_ambil, 
-                  arsip_surat.tanggal_ambil, 
-                  arsip_surat.diambil_oleh')
-            ->from('data_surat')
-            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id', 'left')
-            ->order_by('data_surat.created_at', 'DESC')
-            ->get()
-            ->result();
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('admin/layanan/verifikasi_selesai', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-    public function detail_verifikasi($id)
-    {
-        $data = $this->db->get_where('data_surat', ['id' => $id])->row_array();
-
-        if ($data) {
-            echo json_encode($data);
-        } else {
-            echo json_encode([]);
-        }
-    }
-
-
-
-    public function tolak($id)
-    {
-        $alasan = $this->input->post('alasan');
-
-        $data = $this->db
-            ->get_where('data_surat', [
-                'id' => $id
-            ])
-            ->row();
-
-        if (!$data) show_404();
-
-        // update data_surat
-        $this->db->where('id', $id);
-
-        $this->db->update('data_surat', [
-
-            'status' => 'ditolak',
-
-            'alasan_tolak' => $alasan,
-
-            'new_approved' => 1
-
-        ]);
-
-        // update arsip
-        $this->db
-            ->where('data_surat_id', $id)
-            ->update('arsip_surat', [
-
-                'status' => 'ditolak'
-
-            ]);
-
-        $this->session->set_flashdata(
-            'success',
-            'Surat berhasil ditolak.'
-        );
-
-        redirect('admin/verifikasi_data');
-    }
-
-
-
-    public function get_data_warga($id)
-    {
-        $this->load->model('Data_surat_model');
-        $data = $this->Data_surat_model->get_by_id($id);
-
-        if (!$data) {
-            echo json_encode(['status' => false]);
-            return;
-        }
-
-        echo json_encode([
-            'status' => true,
-            'data' => $data
-        ]);
-    }
-
-
-
-    public function edit_surat($id, $id_pengajuan = null)
-    {
-        $this->load->model('Dusun_model');
-        $data['dusun'] = $this->Dusun_model->get_all();
-
-        $this->load->model('Data_surat_model');
-        $data['data_warga'] = $this->Data_surat_model->get_all();
+public function edit_surat($id)
+{
+    $this->load->model('Dusun_model');
+    $data['dusun'] = $this->Dusun_model->get_all();
 
         $this->load->model('Surat_model');
         $surat = $this->Surat_model->get_by_id($id);

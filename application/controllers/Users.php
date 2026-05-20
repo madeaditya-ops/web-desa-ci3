@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property User_model $User_model
  * @property Dusun_model $Dusun_model
  */
-class Users extends CI_Controller {
+class Users extends Kades_Middleware {
 
     public function __construct() {
         parent::__construct();

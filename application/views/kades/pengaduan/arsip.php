@@ -63,7 +63,6 @@
                     <thead class="thead-light">
                         <tr>
                             <th width="5%">No</th>
-                            <th>Id Pengaduan</th>
                             <th>Nama Pelapor</th>
                             <th>Deskripsi Singkat</th>
                             <th width="15%">Tanggal</th>
@@ -75,9 +74,6 @@
                         <?php $no=1; foreach($pengaduan as $p): ?>
                         <tr>
                             <td><?= $no++ ?></td>
-                            <td>
-                                <?= html_escape($p->id_pengaduan); ?>
-                            </td>
                             <td>
                                 <?= html_escape($p->nama_pelapor); ?>
                             </td>

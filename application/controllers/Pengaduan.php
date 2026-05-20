@@ -29,9 +29,9 @@ class Pengaduan extends CI_Controller {
         $data['kategori_pengaduan'] = $this->Pengaduan_model->get_kategori_pengaduan();
         $data['dusun_pelapor'] = $this->Pengaduan_model->get_dusun();
         $this->load->view('template/header', $data);
-        $this->load->view('template/navbar');
-        $this->load->view('landing/pengaduan');
-        $this->load->view('template/footer');
+        $this->load->view('template/navbar', $data);
+        $this->load->view('landing/pengaduan', $data);
+        $this->load->view('template/footer', $data);
     }
 
     public function word_limit($str)
