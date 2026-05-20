@@ -156,20 +156,6 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
-                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-file-alt"></i>
-                <span>Surat</span>
-            </a>
-            <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="<?= site_url('surat') ?>">Data Surat</a>
-                    <a class="collapse-item" href="<?= site_url('Template_surat/create') ?>">Tambah Data</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
                 aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-balance-scale"></i>
@@ -179,6 +165,42 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('peraturan') ?>">Data Peraturan</a>
                     <a class="collapse-item" href="<?= site_url('peraturan/create') ?>">Tambah Data</a>
+                </div>
+            </div>
+        </li>
+       
+    <div class="sidebar-heading mt-3">
+        Public Service
+    </div>
+     <!-- Pengaduan Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-file-alt"></i>
+            <span>Pengaduan</span>
+            <span class="badge badge-danger notif_pengaduan"  style="display: none; font-size: 12px"></span>
+        </a>
+        <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin')?>">
+                    Data Pengaduan
+                    <span class="badge badge-danger notif_pengaduan"  style="display: none; font-size: 12px"></span>
+                </a>
+                <a class="collapse-item" href="<?= site_url('PengaduanAdmin/arsip')?>">Arsip Pengaduan</a>
+            </div>
+        </div>
+    </li>
+           
+    <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
+                aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-file-alt"></i>
+                <span>Surat</span>
+            </a>
+            <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= site_url('surat') ?>">Data Surat</a>
+                    <a class="collapse-item" href="<?= site_url('Template_surat/create') ?>">Tambah Data</a>
                 </div>
             </div>
         </li>
@@ -210,8 +232,6 @@
                 </div>
             </div>
         </li>
-
-
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"
                 aria-expanded="true" aria-controls="collapsePages">
