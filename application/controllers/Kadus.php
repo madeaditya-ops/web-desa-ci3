@@ -2,14 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require FCPATH . 'vendor/autoload.php';
-defined('BASEPATH') or exit('No direct script access allowed');
 
-require FCPATH . 'vendor/autoload.php';
-
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -32,7 +25,6 @@ use PhpOffice\PhpWord\TemplateProcessor;
  * @property Data_surat_pending_model $Data_surat_pending_model
  * @property Master_data_model $Master_data_model
  */
-
 class Kadus extends CI_Controller
 {
 
@@ -40,13 +32,7 @@ class Kadus extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Template_surat_model');
-        date_default_timezone_set('Asia/Jakarta');
-        $this->load->model('Template_surat_model');
         $this->load->model('Dusun_model');
-        $this->load->model('Warga_model');
-        $this->load->model('Keluarga_model');
-        $this->load->model('Dashboard_kadus_model');
-        $this->load->model('Data_surat_model');
         $this->load->model('Warga_model');
         $this->load->model('Keluarga_model');
         $this->load->model('Dashboard_kadus_model');
@@ -117,86 +103,12 @@ class Kadus extends CI_Controller
         ]);
     }
 
-    public function get_notif_kadus_realtime()
-    {
-        // KUNCI KEAMANAN: Jika bukan kadus, hentikan proses!
-        if ($this->session->userdata('role') !== 'kadus') {
-            echo json_encode(['jumlah' => 0, 'list' => []]);
-            exit;
-        }
-
-        $id_user = $this->session->userdata('id_user');
-
-        $this->db->select('id, nama, status, alasan_tolak, created_at');
-        $this->db->where('id_user', $id_user);
-        $this->db->where('new_approved', 1);
-        $this->db->group_start();
-        $this->db->where('status', 'disetujui');
-        $this->db->or_where('status', 'ditolak');
-        $this->db->group_end();
-        $this->db->order_by('created_at', 'DESC');
-        $query = $this->db->get('data_surat');
-
-        echo json_encode([
-            'jumlah' => $query->num_rows(),
-            'list'   => $query->result()
-        ]);
-    }
-
-    public function get_surat_keluar_realtime()
-    {
-        if ($this->session->userdata('role') !== 'kadus') {
-            echo json_encode(['jumlah' => 0, 'total' => 0]);
-            exit;
-        }
-
-        $id_user = $this->session->userdata('id_user');
-
-        $jumlah = $this->Dashboard_kadus_model->count_surat_keluar($id_user);
-        $total  = $this->Dashboard_kadus_model->count_total_surat($id_user);
-
-        echo json_encode([
-            'jumlah' => $jumlah,
-            'total'  => $total
-        ]);
-    }
-
-    public function get_grafik_data_realtime()
-    {
-        if ($this->session->userdata('role') !== 'kadus') {
-            echo json_encode(['status' => [], 'hari' => []]);
-            exit;
-        }
-
-        $id_user = $this->session->userdata('id_user');
-
-        $status = $this->Dashboard_kadus_model->get_surat_status_distribution($id_user);
-        $hari   = $this->Dashboard_kadus_model->get_surat_keluar_per_hari($id_user);
-
-        echo json_encode([
-            'status' => $status,
-            'hari'   => $hari
-        ]);
-    }
-
     public function index()
     {
         $level_akses = $this->session->userdata('role');
         $id_user = $this->session->userdata('id_user');
 
-        $level_akses = $this->session->userdata('role');
-        $id_user = $this->session->userdata('id_user');
-
         $data['templates'] = $this->Template_surat_model->get_by_level_akses($level_akses);
-
-        $data['jumlah_total_surat'] = $this->Dashboard_kadus_model->count_total_surat($id_user);
-        $data['jumlah_menunggu']    = $this->Dashboard_kadus_model->count_by_status($id_user, 'menunggu');
-        $data['jumlah_disetujui']   = $this->Dashboard_kadus_model->count_by_status($id_user, 'disetujui');
-        $data['jumlah_ditolak']     = $this->Dashboard_kadus_model->count_by_status($id_user, 'ditolak');
-
-        $data['status_distribution'] = $this->Dashboard_kadus_model->get_surat_status_distribution($id_user);
-        $data['surat_per_bulan']     = $this->Dashboard_kadus_model->get_surat_per_bulan($id_user);
-        $data['surat_terbaru']       = $this->Dashboard_kadus_model->get_surat_terbaru($id_user);
 
         $data['jumlah_total_surat'] = $this->Dashboard_kadus_model->count_total_surat($id_user);
         $data['jumlah_menunggu']    = $this->Dashboard_kadus_model->count_by_status($id_user, 'menunggu');
@@ -215,16 +127,7 @@ class Kadus extends CI_Controller
 
 
     function buat_surat()
-
-    function buat_surat()
     {
-        $level_akses = $this->session->userdata('role');
-        $data['templates'] = $this->Template_surat_model->get_by_level_akses($level_akses);
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/buat_surat', $data);
-        $this->load->view('template_admin/footer');
         $level_akses = $this->session->userdata('role');
         $data['templates'] = $this->Template_surat_model->get_by_level_akses($level_akses);
 
@@ -235,10 +138,8 @@ class Kadus extends CI_Controller
     }
 
     public function form_surat($id_template)
-    public function form_surat($id_template)
     {
         $data['template'] = $this->Template_surat_model->get_by_id($id_template);
-
 
         if (!$data['template']) {
             redirect('kadus');
@@ -253,7 +154,7 @@ class Kadus extends CI_Controller
         $data['status_kawin_list'] = $this->Master_data_model->get_status_perkawinan();
         $data['list_agama'] = $this->Master_data_model->get_agama();
 
-        //  CEK APAKAH SURAT KETERANGAN
+        // 🔥 CEK APAKAH SURAT KETERANGAN
         $nama_surat = strtoupper($data['template']->nama_surat);
 
         $data['is_surat_keterangan'] =
@@ -287,7 +188,6 @@ class Kadus extends CI_Controller
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
         $this->load->view('kadus/form_surat', $data);
-        $this->load->view('kadus/form_surat', $data);
         $this->load->view('template_admin/footer');
     }
 
@@ -295,42 +195,6 @@ class Kadus extends CI_Controller
     {
         $id_template = $this->input->post('id_template');
         $template = $this->Template_surat_model->get_by_id($id_template);
-        $dusun_id = $this->session->userdata('dusun_id');
-        $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
-
-        // 1. Siapkan Data untuk Word dan JSON
-        $post_data = $this->input->post();
-
-        $id_template_pengantar = $this->input->post('id_template'); // 131 (Surat dusun)
-        $id_template_tujuan    = $this->input->post('id_template_tujuan'); // 128/129/...
-        // Ambil nama dusun asli
-        $nama_dusun_asli = $dusun_data ? $dusun_data->nama_dusun : '';
-        $post_data['kop_dusun']  = strtoupper($nama_dusun_asli); // Untuk ${kop_surat} di KOP (KAPITAL)
-        $post_data['dusun']      = $nama_dusun_asli;             // Untuk ${dusun} di ISI (Normal)
-
-        $post_data['tgl_buat']   = $this->tanggal_indonesia(date('Y-m-d'));
-        $post_data['nama_kadus'] = strtoupper($this->session->userdata('nama'));
-        $post_data['kode_dusun'] = $dusun_data ? $dusun_data->kode_dusun : '';
-        $post_data['tahun']      = date('Y');
-        $alamat_lengkap = 'Br. ' .
-            ($post_data['dusun'] ?? '-') .
-            ' /Kec. Blahbatuh Kab. Gianyar';
-
-        $id_tujuan = $this->input->post('id_template_tujuan');
-
-        $kode_surat = $this->db
-            ->select('nomor_template_surat')
-            ->get_where('template_surat', ['id_template' => $id_tujuan])
-            ->row('nomor_template_surat');
-
-        $nomor_pengantar = '' . $post_data['no'];
-
-        // 2. LOGIKA GENERATE FILE (DI SIMPAN KE SERVER, BUKAN DOWNLOAD)
-        $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
-        $new_filename = 'Draft_' . preg_replace('/[^A-Za-z0-9]/', '_', $post_data['nama']) . '_' . time() . '.docx';
-        $save_path = FCPATH . 'uploads/surat/' . $new_filename;
-
-        if (file_exists($template_file)) {
         $dusun_id = $this->session->userdata('dusun_id');
         $dusun_data = $this->Dusun_model->get_by_id($dusun_id);
 
@@ -405,6 +269,7 @@ class Kadus extends CI_Controller
             'agama'           => $this->input->post('agama'),
             'pekerjaan'       => $this->input->post('pekerjaan'),
             'tujuan'          => $this->input->post('tujuan'),
+            'notif_admin_read'   => 0,
             'id_user'         => $this->session->userdata('id_user'),
             'created_at'      => date('Y-m-d H:i:s')
         ];
@@ -534,23 +399,10 @@ class Kadus extends CI_Controller
             ob_clean();
             flush();
             readfile($file_path);
-            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file_path));
-
-            // Bersihkan buffer agar file tidak korup
-            ob_clean();
-            flush();
-            readfile($file_path);
             exit;
         } else {
             $this->session->set_flashdata('error', 'File fisik tidak ditemukan di folder uploads/surat/');
             redirect('kadus/arsip');
-        } else {
-            $this->session->set_flashdata('error', 'File fisik tidak ditemukan di folder uploads/surat/');
-            redirect('kadus/arsip');
         }
     }
 
@@ -566,240 +418,7 @@ class Kadus extends CI_Controller
 
     // data warga masing masing dusun
     public function data_warga()
-    private function tanggal_indonesia($tanggal)
     {
-        $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        $ts = strtotime($tanggal);
-        return date('j', $ts) . ' ' . $bulan[(int)date('n', $ts)] . ' ' . date('Y', $ts);
-    }
-
-
-
-
-    // data warga masing masing dusun
-    public function data_warga()
-    {
-
-        $dusun_id = $this->session->userdata('dusun_id');
-        $data['warga'] = $this->db
-            ->select('w.*, d.nama_dusun, h.nama as hubungan, jk.nama as jenis_kelamin, a.nama as agama, sp.nama as status_perkawinan, kw.nama as kewarganegaraan, p.nama as pendidikan, ket.nama_keterangan')
-            ->from('warga w')
-            ->join('keluarga k', 'k.id = w.keluarga_id')
-            ->join('dusun d', 'k.id_dusun = d.id_dusun', 'left')
-            ->join('hubungan h', 'w.hubungan_id = h.id', 'left')
-            ->join('jenis_kelamin jk', 'w.jenis_kelamin_id = jk.id', 'left')
-            ->join('agama a', 'w.agama_id = a.id', 'left')
-            ->join('status_perkawinan sp', 'w.status_perkawinan_id = sp.id', 'left')
-            ->join('kewarganegaraan kw', 'w.kewarganegaraan_id = kw.id', 'left')
-            ->join('pendidikan p', 'w.pendidikan_id = p.id', 'left')
-            ->join('keterangan ket', 'w.id_keterangan = ket.id_keterangan', 'left')
-            ->where('k.id_dusun', $dusun_id)
-            ->order_by('w.nama', 'ASC')
-            ->get()
-            ->result();
-
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/warga/data_warga', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-    public function tambah()
-    {
-        $dusun_id = $this->session->userdata('dusun_id');
-        $data['title'] = 'Tambah Warga';
-        $data['keluarga'] = $this->db
-            ->where('id_dusun', $dusun_id)
-            ->get('keluarga')
-            ->result();
-        $data['hubungan'] = $this->db->get('hubungan')->result();
-        $data['jenis_kelamin'] = $this->db->get('jenis_kelamin')->result();
-        $data['agama'] = $this->db->get('agama')->result();
-        $data['status_perkawinan'] = $this->db->get('status_perkawinan')->result();
-        $data['kewarganegaraan'] = $this->db->get('kewarganegaraan')->result();
-        $data['pendidikan'] = $this->db->get('pendidikan')->result();
-
-        $this->load->view('template_admin/header', $data);
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/warga/tambah', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-    public function simpan()
-    {
-        $data = [
-            'keluarga_id' => $this->input->post('keluarga_id'),
-            'no_nik' => $this->input->post('no_nik'),
-            'nama' => $this->input->post('nama'),
-            'hubungan_id' => $this->input->post('hubungan_id'),
-            'jenis_kelamin_id' => $this->input->post('jenis_kelamin_id'),
-            'agama_id' => $this->input->post('agama_id'),
-            'status_perkawinan_id' => $this->input->post('status_perkawinan_id'),
-            'kewarganegaraan_id' => $this->input->post('kewarganegaraan_id'),
-            'pendidikan_id' => $this->input->post('pendidikan_id'),
-            'tempat_lahir' => $this->input->post('tempat_lahir'),
-            'tanggal_lahir' => $this->input->post('tanggal_lahir'),
-            'pekerjaan' => $this->input->post('pekerjaan'),
-            'keterangan' => $this->input->post('keterangan')
-        ];
-
-        // Validasi wajib
-        if (empty($data['no_nik']) || empty($data['nama']) || empty($data['hubungan_id']) || empty($data['jenis_kelamin_id']) || empty($data['agama_id'])) {
-            $this->session->set_flashdata('error', 'Field wajib harus diisi!');
-            redirect('warga/tambah');
-        }
-
-        // Cek duplikat NIK
-        if ($this->db->get_where('warga', ['no_nik' => $data['no_nik']])->row()) {
-            $this->session->set_flashdata('error', 'NIK sudah terdaftar!');
-            redirect('warga/tambah');
-        }
-
-        $this->Warga_model->insert($data);
-        $this->session->set_flashdata('success', 'Data warga berhasil ditambahkan!');
-        redirect('kadus/warga/data_warga');
-    }
-
-    public function edit($id)
-    {
-        $data['title'] = 'Edit Warga';
-        $data['warga'] = $this->Warga_model->get_by_id($id);
-        $dusun_id = $this->session->userdata('dusun_id');
-
-        $data['keluarga'] = $this->db
-            ->where('id_dusun', $dusun_id)
-            ->get('keluarga')
-            ->result();
-        $data['hubungan'] = $this->db->get('hubungan')->result();
-        $data['jenis_kelamin'] = $this->db->get('jenis_kelamin')->result();
-        $data['agama'] = $this->db->get('agama')->result();
-        $data['status_perkawinan'] = $this->db->get('status_perkawinan')->result();
-        $data['kewarganegaraan'] = $this->db->get('kewarganegaraan')->result();
-        $data['pendidikan'] = $this->db->get('pendidikan')->result();
-        $data['keterangan_list'] = $this->db->get('keterangan')->result();
-
-        $this->load->view('template_admin/header', $data);
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/warga/edit', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-    public function update($id)
-    {
-        $data = [
-            'keluarga_id' => $this->input->post('keluarga_id'),
-            'no_nik' => $this->input->post('no_nik'),
-            'nama' => $this->input->post('nama'),
-            'hubungan_id' => $this->input->post('hubungan_id'),
-            'jenis_kelamin_id' => $this->input->post('jenis_kelamin_id'),
-            'agama_id' => $this->input->post('agama_id'),
-            'status_perkawinan_id' => $this->input->post('status_perkawinan_id'),
-            'kewarganegaraan_id' => $this->input->post('kewarganegaraan_id'),
-            'pendidikan_id' => $this->input->post('pendidikan_id'),
-            'tempat_lahir' => $this->input->post('tempat_lahir'),
-            'tanggal_lahir' => $this->input->post('tanggal_lahir'),
-            'pekerjaan' => $this->input->post('pekerjaan'),
-            'keterangan' => $this->input->post('keterangan'),
-            'id_keterangan' => $this->input->post('id_keterangan'),
-        ];
-
-        // Validasi wajib
-        if (
-            empty($data['no_nik']) ||
-            empty($data['nama']) ||
-            empty($data['hubungan_id']) ||
-            empty($data['jenis_kelamin_id']) ||
-            empty($data['agama_id'])
-        ) {
-            $this->session->set_flashdata('error', 'Field wajib harus diisi!');
-            redirect('kadus/edit/' . $id);
-        }
-
-        // Cek duplikat NIK kecuali untuk data sendiri
-        $existing = $this->db->get_where('warga', ['no_nik' => $data['no_nik']])->row();
-        if ($existing && $existing->id != $id) {
-            $this->session->set_flashdata('error', 'NIK sudah terdaftar!');
-            redirect('warga/edit/' . $id);
-        }
-
-        $this->Warga_model->update($id, $data);
-        $this->session->set_flashdata('success', 'Data warga berhasil diupdate!');
-        redirect('kadus/data_warga');
-    }
-
-    public function delete($id)
-    {
-        $this->Warga_model->delete($id);
-        redirect('kadus/data_warga');
-    }
-
-    // import dan export warga menggunakan excel
-
-    public function detail($id)
-    {
-        // data warga
-        $data['warga'] = $this->db
-            ->select('
-            warga.*,
-            keluarga.no_kk,
-            dusun.nama_dusun,
-            jenis_kelamin.nama as jenis_kelamin,
-            agama.nama as agama,
-            ket.nama_keterangan,
-            status_perkawinan.nama as status_kawin
-        ')
-            ->from('warga')
-            ->join('keluarga', 'keluarga.id = warga.keluarga_id', 'left')
-            ->join('dusun', 'dusun.id_dusun = keluarga.id_dusun', 'left')
-            ->join('jenis_kelamin', 'jenis_kelamin.id = warga.jenis_kelamin_id', 'left')
-            ->join('agama', 'agama.id = warga.agama_id', 'left')
-            ->join('status_perkawinan', 'status_perkawinan.id = warga.status_perkawinan_id', 'left')
-            ->join('keterangan ket', 'warga.id_keterangan = ket.id_keterangan', 'left')
-            ->where('warga.id', $id)
-            ->get()
-            ->row();
-
-        // riwayat surat warga
-        $data['riwayat_surat'] = $this->db
-            ->select('
-            data_surat.*,
-            template_surat.nama_surat,
-            data_surat.data_surat_id
-            ')
-            ->from('data_surat')
-            ->join('template_surat', 'template_surat.id_template = data_surat.id_template', 'left')
-            ->where('data_surat.nik', $data['warga']->no_nik)
-            ->order_by('data_surat.created_at', 'DESC')
-            ->get()
-            ->result();
-
-        $this->load->view('template_admin/header');
-        $this->load->view('template_admin/sidebar');
-        $this->load->view('kadus/warga/detail', $data);
-        $this->load->view('template_admin/footer');
-    }
-
-    public function download_surat($id_data_surat)
-    {
-
-        $surat = $this->db
-            ->select('arsip_surat.filename')
-            ->from('data_surat')
-            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id')
-            ->where('data_surat.id', $id_data_surat)
-            ->get()
-            ->row();
-
-        if (!$surat) {
-            show_404();
-        }
-
-        $file = FCPATH . 'uploads/surat/' . $surat->filename;
-
-        if (file_exists($file)) {
-
-            header('Content-Description: File Transfer');
 
         $dusun_id = $this->session->userdata('dusun_id');
         $data['warga'] = $this->db
@@ -1032,16 +651,6 @@ class Kadus extends CI_Controller
         } else {
 
             $this->session->set_flashdata('error', 'File surat tidak ditemukan');
-            header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-            header('Content-Length: ' . filesize($file));
-
-            ob_clean();
-            flush();
-            readfile($file);
-            exit;
-        } else {
-
-            $this->session->set_flashdata('error', 'File surat tidak ditemukan');
             redirect('kadus');
         }
     }
@@ -1134,7 +743,7 @@ class Kadus extends CI_Controller
             'status'           => 'menunggu',
 
             // notif admin
-            'new_approved'     => 1,
+            'notif_admin_read' => 0,
 
             'updated_at'       => date('Y-m-d H:i:s')
 
@@ -1723,4 +1332,4 @@ public function arsip_pdf()
         'Attachment' => false
     ]);
 }
-}
+    }
