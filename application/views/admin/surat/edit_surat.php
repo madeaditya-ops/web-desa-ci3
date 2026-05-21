@@ -559,18 +559,6 @@
     </div>
 </div>
 
-                    <div class="d-flex justify-content-end mt-3">
-                        <a href="<?= site_url('admin/daftar_surat') ?>" class="btn btn-secondary mr-2">
-                            <i class="fas fa-arrow-left"></i> Kembali
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Generate Surat
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 
 <!-- Script: sinkronkan hidden banjar dengan select kode_banjar -->
