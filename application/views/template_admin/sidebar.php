@@ -6,19 +6,24 @@
 </style>
 
 
+
 <!-- Sidebar -->
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <?php
+
     $role = $this->session->userdata('role');
     $jumlah_notif = 0;
     $judul_dropdown = "Pemberitahuan";
 
+
     if ($role == 'admin') {
+
         $jumlah_notif = $this->db->join('users', 'users.id_user = data_surat.id_user')
             ->where(['data_surat.status' => 'menunggu', 'users.role' => 'kadus'])
             ->count_all_results('data_surat');
         $judul_dropdown = "Pengajuan Surat Baru";
     } elseif ($role == 'kadus') {
+        
         $id_user = $this->session->userdata('id_user');
 
         $this->db->where('id_user', $id_user);
@@ -32,8 +37,6 @@
         $judul_dropdown = "Status Surat Dusun";
     }
     ?>
-
-
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand bg-white d-flex align-items-center justify-content-center" href="<?= base_url('Landing') ?>">
         <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
@@ -45,7 +48,6 @@
 
 
     <?php if ($this->session->userdata('role') == 'superadmin'): ?>
-
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" href="<?= site_url('dashboard') ?>">
@@ -255,7 +257,6 @@
         </li>
     <?php endif; ?>
 
-
     <?php if ($this->session->userdata('role') == 'admin'): ?>
         <li class="nav-item active">
             <a class="nav-link" href="<?= base_url('admin'); ?>">
@@ -277,7 +278,7 @@
                     <span class="badge badge-danger"><?= $jumlah_notif ?></span>
                 <?php endif; ?>
             </a>
-
+            <!-- FIX: ID diganti menjadi collapseSuratAdmin agar tidak bentrok dengan superadmin -->
             <div id="collapseSuratAdmin" class="collapse" aria-labelledby="headingSuratAdmin" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('admin/verifikasi_data') ?>">Surat Masuk</a>
@@ -321,7 +322,7 @@
                 <span>Data Warga</span>
                 <span style="display: none; font-size: 12px;"></span>
             </a>
-
+            <!-- FIX: ID diganti menjadi collapseWargaKadus agar tidak bentrok -->
             <div id="collapseWargaKadus" class="collapse" aria-labelledby="headingWargaKadus" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= base_url('kadus/jumlah_kk'); ?>">
@@ -341,7 +342,7 @@
                 <span>Pengaduan</span>
                 <span class="badge badge-danger jumlah_notif_kadus" style="display: none; font-size: 12px;"></span>
             </a>
-            
+            <!-- FIX: ID diganti menjadi collapsePengaduanKadus agar tidak bentrok dengan superadmin -->
             <div id="collapsePengaduanKadus" class="collapse" aria-labelledby="headingPengaduanKadus" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
@@ -384,6 +385,9 @@
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
 
+
+
+
                 <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                 <li class="nav-item dropdown no-arrow d-sm-none">
                     <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
@@ -407,6 +411,7 @@
                         </form>
                     </div>
                 </li>
+
 
                 <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle position-relative" href="#"
@@ -463,5 +468,3 @@
             </ul>
         </nav>
         <!-- End of Topbar -->
-
-
