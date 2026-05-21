@@ -227,7 +227,7 @@ class Kadus extends CI_Controller
 
         // 2. LOGIKA GENERATE FILE (DI SIMPAN KE SERVER, BUKAN DOWNLOAD)
         $template_file = FCPATH . 'uploads/template_surat/' . $template->file_template;
-        $new_filename = 'Draft_' . preg_replace('/[^A-Za-z0-9]/', '_', $post_data['nama']) . '_' . time() . '.docx';
+        $new_filename = 'PENGANTAR_' . preg_replace('/[^A-Za-z0-9]/', '_', $post_data['nama']) . '_' . time() . '.docx';
         $save_path = FCPATH . 'uploads/surat/' . $new_filename;
 
         if (file_exists($template_file)) {

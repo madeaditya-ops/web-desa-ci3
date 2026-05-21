@@ -17,19 +17,13 @@ class Dashboard extends CI_Controller {
         $this->load->database();
         $this->load->library('session');
         $this->load->helper('url');
-         $this->load->model('Warga_model');
-         $this->load->model('Keluarga_model');
-         $this->load->model('Template_surat_model');
-         $this->load->model('Potensi_model');
-        $this->load->model('Galeri_model');
-        $this->load->model('Pengaduan_model');
-        $this->load->helper('formatHariJam_helper');
-        $this->load->helper('url');
         $this->load->model('Warga_model');
         $this->load->model('Keluarga_model');
         $this->load->model('Template_surat_model');
         $this->load->model('Potensi_model');
         $this->load->model('Galeri_model');
+        $this->load->model('Pengaduan_model');
+        $this->load->helper('formatharijam_helper');
         date_default_timezone_set('Asia/Makassar');
     }
 

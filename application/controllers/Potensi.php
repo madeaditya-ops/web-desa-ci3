@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Potensi_model $Potensi_model
  */
-class Potensi extends Kades_Middleware {
+class Potensi extends SuperAdmin_Middleware {
 
     public function __construct() {
         parent::__construct();

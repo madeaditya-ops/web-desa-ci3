@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Berita_model $Berita_model
  */
-class Berita extends Kades_Middleware {
+class Berita extends SuperAdmin_Middleware {
 
     public function __construct() {
         parent::__construct();

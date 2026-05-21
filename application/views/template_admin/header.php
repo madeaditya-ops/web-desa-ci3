@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Desa Blahbatuh</title>
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url('assets/admin/vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
@@ -24,6 +24,10 @@
 
     <!-- Custom styles for this page -->
     <link href="<?= base_url('assets/admin/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+
+    <!-- Logo icon -->
+    <link rel="icon" type="image/png" href="<?= base_url('assets/image/logo_desa_blahbatuh.png'); ?>">
+
     <!-- Sweet Alert -->
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

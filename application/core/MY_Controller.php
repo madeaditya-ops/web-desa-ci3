@@ -25,10 +25,10 @@ class MY_Controller extends CI_Controller {
     }
 }
 
-class Kades_Middleware extends MY_Controller {
+class SuperAdmin_Middleware extends MY_Controller {
     public function __construct() {
         parent::__construct();
-        if ($this->session->userdata('role') !== 'kades') {
+        if ($this->session->userdata('role') !== 'superadmin') {
             $this->_redirect_to_home();
         }
     }

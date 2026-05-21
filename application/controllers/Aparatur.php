@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Aparatur_model $Aparatur_model
  */
-class Aparatur extends Kades_Middleware {
+class Aparatur extends SuperAdmin_Middleware {
 
     public function __construct() {
         parent::__construct();

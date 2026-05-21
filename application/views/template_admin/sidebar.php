@@ -6,24 +6,19 @@
 </style>
 
 
-
 <!-- Sidebar -->
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <?php
-    // 1. Cek role user yang sedang login
     $role = $this->session->userdata('role');
     $jumlah_notif = 0;
     $judul_dropdown = "Pemberitahuan";
 
-    // 2. Hitung notifikasi berdasarkan Role
     if ($role == 'admin') {
-        // ADMIN: Hitung pengajuan yang masih 'menunggu' dari Kadus
         $jumlah_notif = $this->db->join('users', 'users.id_user = data_surat.id_user')
             ->where(['data_surat.status' => 'menunggu', 'users.role' => 'kadus'])
             ->count_all_results('data_surat');
         $judul_dropdown = "Pengajuan Surat Baru";
     } elseif ($role == 'kadus') {
-        // KADUS: Hitung surat miliknya yang sudah 'disetujui' atau 'ditolak' dan belum dilihat
         $id_user = $this->session->userdata('id_user');
 
         $this->db->where('id_user', $id_user);
@@ -37,6 +32,8 @@
         $judul_dropdown = "Status Surat Dusun";
     }
     ?>
+
+
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand bg-white d-flex align-items-center justify-content-center" href="<?= base_url('Landing') ?>">
         <img src="<?= base_url('assets/image/logo_desa.svg'); ?>" alt="Logo Desa" class="img-fluid w-100" style="max-height: 65px;">
@@ -48,6 +45,7 @@
 
 
     <?php if ($this->session->userdata('role') == 'superadmin'): ?>
+
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" href="<?= site_url('dashboard') ?>">
@@ -63,29 +61,29 @@
             Landing Page
         </div>
 
-        <!-- Nav Item - Pages Collapse Menu -->
+        <!-- Nav Item - Berita -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBerita"
+                aria-expanded="true" aria-controls="collapseBerita">
                 <i class="fas fa-newspaper"></i>
                 <span>Berita</span>
             </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div id="collapseBerita" class="collapse" aria-labelledby="headingBerita" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="<?= site_url('berita') ?>"> Data Berita</a>
+                    <a class="collapse-item" href="<?= site_url('berita') ?>">Data Berita</a>
                     <a class="collapse-item" href="<?= site_url('berita/create') ?>">Tambah Data</a>
                 </div>
             </div>
         </li>
 
-        <!-- Nav Item - Utilities Collapse Menu -->
+        <!-- Nav Item - Aparatur -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                aria-expanded="true" aria-controls="collapseUtilities">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAparatur"
+                aria-expanded="true" aria-controls="collapseAparatur">
                 <i class="fas fa-user-tie"></i>
                 <span>Aparatur</span>
             </a>
-            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+            <div id="collapseAparatur" class="collapse" aria-labelledby="headingAparatur"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('aparatur') ?>">Data Aparatur</a>
@@ -93,14 +91,15 @@
                 </div>
             </div>
         </li>
-        <!-- Nav Item - Pages Collapse Menu -->
+
+        <!-- Nav Item - Warga -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsewarga"
-                aria-expanded="true" aria-controls="collapsewarga">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWargaSuperadmin"
+                aria-expanded="true" aria-controls="collapseWargaSuperadmin">
                 <i class="fas fa-users"></i>
                 <span>Warga</span>
             </a>
-            <div id="collapsewarga" class="collapse" aria-labelledby="headingwarga"
+            <div id="collapseWargaSuperadmin" class="collapse" aria-labelledby="headingWargaSuperadmin"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('keluarga/index') ?>">Data Keluarga</a>
@@ -110,14 +109,15 @@
                 </div>
             </div>
         </li>
-    
-    <li class="nav-item">
+
+        <!-- Nav Item - Lembaga -->
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLembaga"
                 aria-expanded="true" aria-controls="collapseLembaga">
                 <i class="fas fa-user-tie"></i>
                 <span>Lembaga</span>
             </a>
-            <div id="collapseLembaga" class="collapse" aria-labelledby="headingUtilities"
+            <div id="collapseLembaga" class="collapse" aria-labelledby="headingLembaga"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('lembaga') ?>">Data Lembaga</a>
@@ -126,14 +126,14 @@
             </div>
         </li>
 
-        <!-- Nav Item - Pages Collapse Menu -->
+        <!-- Nav Item - Galeri -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                aria-expanded="true" aria-controls="collapsePages">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGaleri"
+                aria-expanded="true" aria-controls="collapseGaleri">
                 <i class="fas fa-images"></i>
                 <span>Galeri</span>
             </a>
-            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapseGaleri" class="collapse" aria-labelledby="headingGaleri" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('galeri') ?>">Data Galeri</a>
                     <a class="collapse-item" href="<?= site_url('galeri/create') ?>">Tambah Data</a>
@@ -141,13 +141,14 @@
             </div>
         </li>
 
+        <!-- Nav Item - Potensi Desa -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePotensi"
-                aria-expanded="true" aria-controls="collapsePages">
+                aria-expanded="true" aria-controls="collapsePotensi">
                 <i class="fas fa-seedling"></i>
                 <span>Potensi desa</span>
             </a>
-            <div id="collapsePotensi" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapsePotensi" class="collapse" aria-labelledby="headingPotensi" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('potensi') ?>">Data Potensi</a>
                     <a class="collapse-item" href="<?= site_url('potensi/create') ?>">Tambah Data</a>
@@ -155,13 +156,14 @@
             </div>
         </li>
 
+        <!-- Nav Item - Peraturan Desa -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeraturan"
-                aria-expanded="true" aria-controls="collapsePages">
+                aria-expanded="true" aria-controls="collapsePeraturan">
                 <i class="fas fa-balance-scale"></i>
                 <span>Peraturan Desa</span>
             </a>
-            <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapsePeraturan" class="collapse" aria-labelledby="headingPeraturan" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('peraturan') ?>">Data Peraturan</a>
                     <a class="collapse-item" href="<?= site_url('peraturan/create') ?>">Tambah Data</a>
@@ -172,15 +174,16 @@
         <div class="sidebar-heading mt-3">
             Public Service
         </div>
-        <!-- Pengaduan Menu -->
+
+        <!-- Nav Item - Pengaduan (superadmin) -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
-                aria-expanded="true" aria-controls="collapsePages">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduanSuperadmin"
+                aria-expanded="true" aria-controls="collapsePengaduanSuperadmin">
                 <i class="fas fa-file-alt"></i>
                 <span>Pengaduan</span>
                 <span class="badge badge-danger notif_pengaduan" style="display: none; font-size: 12px"></span>
             </a>
-            <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapsePengaduanSuperadmin" class="collapse" aria-labelledby="headingPengaduanSuperadmin" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
                         Data Pengaduan
@@ -191,13 +194,14 @@
             </div>
         </li>
 
+        <!-- Nav Item - Surat (superadmin) -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSurat"
-                aria-expanded="true" aria-controls="collapsePages">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSuratSuperadmin"
+                aria-expanded="true" aria-controls="collapseSuratSuperadmin">
                 <i class="fas fa-file-alt"></i>
                 <span>Surat</span>
             </a>
-            <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapseSuratSuperadmin" class="collapse" aria-labelledby="headingSuratSuperadmin" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('surat') ?>">Data Surat</a>
                     <a class="collapse-item" href="<?= site_url('Template_surat/create') ?>">Tambah Data</a>
@@ -205,13 +209,14 @@
             </div>
         </li>
 
+        <!-- Nav Item - APBDES -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAPBDES"
-                aria-expanded="true" aria-controls="collapsePages">
+                aria-expanded="true" aria-controls="collapseAPBDES">
                 <i class="fas fa-money-check-alt"></i>
                 <span>APBDES</span>
             </a>
-            <div id="collapseAPBDES" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapseAPBDES" class="collapse" aria-labelledby="headingAPBDES" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('apbdes') ?>">Data APBDES</a>
                     <a class="collapse-item" href="<?= site_url('apbdes/create') ?>">Tambah Data</a>
@@ -219,13 +224,14 @@
             </div>
         </li>
 
+        <!-- Nav Item - Dusun -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDusun"
-                aria-expanded="true" aria-controls="collapsePages">
+                aria-expanded="true" aria-controls="collapseDusun">
                 <i class="fas fa-home"></i>
                 <span>Dusun</span>
             </a>
-            <div id="collapseDusun" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapseDusun" class="collapse" aria-labelledby="headingDusun" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('dusun') ?>">Data Dusun</a>
                     <a class="collapse-item" href="<?= site_url('dusun/create') ?>">Tambah Data</a>
@@ -233,14 +239,14 @@
             </div>
         </li>
 
-
+        <!-- Nav Item - Users -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"
-                aria-expanded="true" aria-controls="collapsePages">
+                aria-expanded="true" aria-controls="collapseUsers">
                 <i class="fas fa-user-cog"></i>
                 <span>Users</span>
             </a>
-            <div id="collapseUsers" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div id="collapseUsers" class="collapse" aria-labelledby="headingUsers" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('users') ?>">Data Users</a>
                     <a class="collapse-item" href="<?= site_url('users/create') ?>">Tambah Data</a>
@@ -248,6 +254,7 @@
             </div>
         </li>
     <?php endif; ?>
+
 
     <?php if ($this->session->userdata('role') == 'admin'): ?>
         <li class="nav-item active">
@@ -270,7 +277,8 @@
                     <span class="badge badge-danger"><?= $jumlah_notif ?></span>
                 <?php endif; ?>
             </a>
-            <div id="collapseSurat" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+
+            <div id="collapseSuratAdmin" class="collapse" aria-labelledby="headingSuratAdmin" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('admin/verifikasi_data') ?>">Surat Masuk</a>
                     <a class="collapse-item" href="<?= site_url('admin/verifikasi_selesai') ?>">Data Surat Selesai</a>
@@ -287,7 +295,7 @@
     <?php if ($this->session->userdata('role') == 'kadus'): ?>
         <li class="nav-item active">
             <a class="nav-link" href="<?= base_url('kadus'); ?>">
-                <i class="fas fa-file-alt"></i>
+                <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
         <li class="nav-item active">
@@ -303,18 +311,18 @@
                     <span class="badge badge-danger"><?= $jumlah_notif ?></span>
                 <?php endif; ?>
             </a>
-
         </li>
 
-        <!-- warga Menu -->
+        <!-- Nav Item - Data Warga (kadus) -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWarga"
-                aria-expanded="true" aria-controls="collapseWarga">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWargaKadus"
+                aria-expanded="true" aria-controls="collapseWargaKadus">
                 <i class="fas fa-file-alt"></i>
                 <span>Data Warga</span>
                 <span style="display: none; font-size: 12px;"></span>
             </a>
-            <div id="collapseWarga" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+
+            <div id="collapseWargaKadus" class="collapse" aria-labelledby="headingWargaKadus" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= base_url('kadus/jumlah_kk'); ?>">
                         Data KK
@@ -324,15 +332,17 @@
                 </div>
             </div>
         </li>
-        <!-- Pengaduan Menu -->
+
+        <!-- Nav Item - Pengaduan (kadus) -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduan"
-                aria-expanded="true" aria-controls="collapsePages">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduanKadus"
+                aria-expanded="true" aria-controls="collapsePengaduanKadus">
                 <i class="fas fa-file-alt"></i>
                 <span>Pengaduan</span>
                 <span class="badge badge-danger jumlah_notif_kadus" style="display: none; font-size: 12px;"></span>
             </a>
-            <div id="collapsePengaduan" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            
+            <div id="collapsePengaduanKadus" class="collapse" aria-labelledby="headingPengaduanKadus" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
                         Data Pengaduan
@@ -371,26 +381,8 @@
                 <i class="fa fa-bars"></i>
             </button>
 
-
-            <!-- Topbar Search -->
-            <!-- <form
-                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                        aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
-                            <i class="fas fa-search fa-sm"></i>
-                        </button>
-                    </div>
-                </div>
-            </form> -->
-
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
-
-
-
 
                 <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                 <li class="nav-item dropdown no-arrow d-sm-none">
@@ -415,73 +407,6 @@
                         </form>
                     </div>
                 </li>
-
-                <!-- Notification Item - Alerts -->
-                <!-- <?php if ($this->session->userdata('role') == 'superadmin') { ?>
-                    <li class="nav-item dropdown no-arrow mx-1">
-                    <a class="nav-link dropdown-toggle" href="#"
-                        id="alertsDropdown" role="button" data-toggle="dropdown">
-                        <i class="fas fa-bell fa-fw fa-lg"></i>
-                        <span class="badge badge-danger badge-counter notif_pengaduan"  style="display: none;"></span>
-                    </a>
-
-                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi">
-                        <span class="dropdown-item text-center small text-gray-500">
-                        Tidak ada notifikasi
-                        </span>
-                    </div>
-                </li>
-                <?php } ?> -->
-
-
-                <!-- Notification Item - Alerts -->
-                <!-- <?php if ($this->session->userdata('role') == 'kadus') { ?>
-                    <li class="nav-item dropdown no-arrow mx-1">
-                    <a class="nav-link dropdown-toggle" href="#"
-                        id="alertsDropdownKadus" role="button" data-toggle="dropdown">
-                        <i class="fas fa-bell fa-fw fa-lg"></i>
-                        <span class="badge badge-danger badge-counter notif_pengaduan_kadus"  style="display: none;"></span>
-                    </a>
-
-                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" id="dropdown_notifikasi_kadus">
-                        <span class="dropdown-item text-center small text-gray-500">
-                        Tidak ada notifikasi
-                        </span>
-                    </div>
-                </li>
-                <?php } ?> -->
-                <!-- 
-                <?php if ($role == 'admin' || $role == 'kadus'): ?>
-                    <li class="nav-item dropdown no-arrow mx-2">
-                        <a class="nav-link dropdown-toggle position-relative"
-                            href="#"
-                            id="notifDropdown"
-                            role="button"
-                            data-toggle="dropdown">
-
-                            <i class="fas fa-bell fa-fw fa-lg"></i>
-
-                            <span id="notifBadge"
-                                class="badge badge-danger badge-counter"
-                                style="<?= $jumlah_notif > 0 ? '' : 'display:none;' ?>">
-                                <?= $jumlah_notif ?>
-                            </span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right shadow"
-                            style="width:400px;"
-                            id="notifDropdownMenu">
-
-                            <h6 class="dropdown-header"><?= $judul_dropdown ?></h6>
-
-                            <div id="notifList">
-                                <div class="text-center small text-gray-500 py-2">
-                                    Memuat...
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                <?php endif; ?> -->
 
                 <li class="nav-item dropdown no-arrow mx-1">
                     <a class="nav-link dropdown-toggle position-relative" href="#"
@@ -538,3 +463,5 @@
             </ul>
         </nav>
         <!-- End of Topbar -->
+
+

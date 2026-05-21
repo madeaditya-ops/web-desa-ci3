@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Galeri_model $Galeri_model
  */
-class Galeri extends Kades_Middleware {
+class Galeri extends SuperAdmin_Middleware {
 
     public function __construct() {
         parent::__construct();

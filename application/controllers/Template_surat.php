@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Dusun_model $Dusun_model
  * @property CI_Upload $upload
  */
-class Template_surat extends Kades_Middleware {
+class Template_surat extends SuperAdmin_Middleware {
 
     public function __construct() {
         parent::__construct();
