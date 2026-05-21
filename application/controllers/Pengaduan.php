@@ -370,7 +370,7 @@ class Pengaduan extends CI_Controller {
     private function sendEmailNotification($data, $file)
     {
         $this->email->from('no-reply@desablahbatuh.site', 'Sistem Pengaduan Desa');
-        $this->email->to('desablahbatuhofc@gmail.com');
+        $this->email->to('vdwipayanti@gmail.com');
         $this->email->subject('Pengaduan Baru Masuk');
 
         $email_data = [
