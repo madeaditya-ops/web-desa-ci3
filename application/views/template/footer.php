@@ -76,7 +76,7 @@
   <a href="<?= base_url('pengaduan');?>" 
     id="btnPengaduan"
     class="btn btn-danger shadow-lg position-fixed rounded-pill bottom-0 end-0 m-3 d-flex align-items-center justify-content-center shadow"
-    style="z-index:9999; display:none; opacity:0; transition:opacity 0.5s ease;">
+    style="z-index:10; display:none; opacity:0; transition:opacity 0.5s ease;">
     Pengaduan <i class="bi bi-headset ms-2"></i>
   </a>
 <?php endif; ?>

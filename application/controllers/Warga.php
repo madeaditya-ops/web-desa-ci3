@@ -1243,10 +1243,11 @@ if (!empty($errors)) {
             ->select('
             data_surat.*,
             template_surat.nama_surat,
-            data_surat.arsip_id
+            arsip_surat.data_surat_id
             ')
             ->from('data_surat')
             ->join('template_surat', 'template_surat.id_template = data_surat.id_template', 'left')
+            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id', 'left')
             ->where('data_surat.nik', $data['warga']->no_nik)
             ->order_by('data_surat.created_at', 'DESC')
             ->get()
@@ -1264,7 +1265,7 @@ if (!empty($errors)) {
         $surat = $this->db
             ->select('arsip_surat.filename')
             ->from('data_surat')
-            ->join('arsip_surat', 'arsip_surat.id = data_surat.arsip_id')
+            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id', 'left')
             ->where('data_surat.id', $id_data_surat)
             ->get()
             ->row();

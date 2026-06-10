@@ -315,7 +315,7 @@
         </li>
 
         <!-- Nav Item - Data Warga (kadus) -->
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWargaKadus"
                 aria-expanded="true" aria-controls="collapseWargaKadus">
                 <i class="fas fa-file-alt"></i>
@@ -335,14 +335,13 @@
         </li>
 
         <!-- Nav Item - Pengaduan (kadus) -->
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaduanKadus"
                 aria-expanded="true" aria-controls="collapsePengaduanKadus">
                 <i class="fas fa-file-alt"></i>
                 <span>Pengaduan</span>
                 <span class="badge badge-danger jumlah_notif_kadus" style="display: none; font-size: 12px;"></span>
             </a>
-            <!-- FIX: ID diganti menjadi collapsePengaduanKadus agar tidak bentrok dengan superadmin -->
             <div id="collapsePengaduanKadus" class="collapse" aria-labelledby="headingPengaduanKadus" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= site_url('PengaduanAdmin') ?>">
@@ -430,9 +429,9 @@
 
                         <div id="notif_pengaduan_area"></div>
                         <div id="notif_surat_area">
-                            <span class="dropdown-item text-center small text-gray-500">
+                            <!-- <span class="dropdown-item text-center small text-gray-500">
                                 Tidak ada notifikasi
-                            </span>
+                            </span> -->
                         </div>
 
                     </div>

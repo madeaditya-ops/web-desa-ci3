@@ -61,7 +61,7 @@ a{
     color: #fff;
     background-color: var(--primary);
     border-radius: 80px;
-    cursor: pointer;
+    /* cursor: pointer; */
     font-style: normal;
     font-weight: 200;
 }
@@ -73,7 +73,7 @@ a{
     color: #fff;
     background-color: var(--accent);
     border-radius: 80px;
-    cursor: pointer;
+    /* cursor: pointer; */
     font-style: normal;
     font-weight: 200;
 }

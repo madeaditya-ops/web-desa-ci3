@@ -188,7 +188,7 @@
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'visi_misi' ? 'active' : '') ?>" href="<?= site_url('landing/visi_misi'); ?>">Visi Misi</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'struktur_pemerintahan' ? 'active' : '') ?>" href="<?= site_url('landing/struktur_pemerintahan'); ?>">Struktur Pemerintahan</a></li>
             <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'peta_wilayah' ? 'active' : '') ?>" href="<?= site_url('landing/peta_wilayah'); ?>">Peta Wilayah</a></li>
-            <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'lembaga' ? 'active' : '') ?>" href="<?= site_url('landing/lembaga'); ?>">Lembaga</a></li>
+            <li><a class="dropdown-item <?= ($this->uri->segment(2) == 'lembaga' ? 'active' : '') ?>" href="<?= site_url('landing/lembaga'); ?>">Kelembagaan Desa</a></li>
           </ul>
         </li>
 

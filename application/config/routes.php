@@ -61,10 +61,15 @@ $route['kadus'] = 'Kadus';
 
 $route['login'] = 'Auth';
 $route['logout'] = 'Auth/logout';
+
+
 $route['admin/edit_surat'] = 'admin/edit_surat';
 $route['admin/edit_surat/(:num)'] = 'admin/edit_surat/$1';
 
-$route['berita'] = 'Berita';
+$route['pengaduan'] = 'Pengaduan';
+$route['pengaduan/store'] = 'Pengaduan/store';
+
+
 $route['galeri'] = 'Galeri';
 $route['aparatur'] = 'Aparatur';
 $route['dusun'] = 'Dusun';
@@ -73,8 +78,8 @@ $route['potensi'] = 'Potensi';
 $route['peraturan'] = 'Peraturan';
 $route['apbdes'] = 'Apbdes';
 $route['surat'] = 'Template_surat';
-$route['pengaduan'] = 'Pengaduan';
-$route['pengaduan/store'] = 'Pengaduan/store';
+
+$route['berita'] = 'Berita';
 $route['berita'] = 'Berita/index';
 $route['berita/create'] = 'Berita/create';
 $route['berita/store'] = 'Berita/store';
@@ -82,5 +87,6 @@ $route['berita/edit/(:num)'] = 'Berita/edit/$1';
 $route['berita/update/(:num)'] = 'Berita/update/$1';
 $route['berita/delete/(:num)'] = 'Berita/delete/$1';
 $route['berita/(:any)'] = 'berita/detail/$1';
+
 $route['anggota_lembaga/(:num)'] = 'anggota_lembaga/index/$1';
 $route['bidang_lembaga/(:num)'] = 'bidang_lembaga/index/$1';

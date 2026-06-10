@@ -167,7 +167,10 @@
                                 <select name="dusun_pelapor" id="dusun_pelapor" class="form-control <?= error_class('dusun_pelapor') ?>">
                                     <option value="">Pilih Dusun</option>
                                     <?php foreach ($dusun_pelapor as $dusun): ?>
-                                        <option value="<?= $dusun->id_dusun ?>"><?= $dusun->nama_dusun ?></option>
+                                        <option value="<?= $dusun->id_dusun ?>"
+                                            <?= old('dusun_pelapor') == $dusun->id_dusun ? 'selected' : '' ?>>
+                                            <?= $dusun->nama_dusun ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                                 <?php if (error('dusun_pelapor')): ?>
@@ -223,7 +226,10 @@
                             <select name="kategori_pengaduan" id="kategori_pengaduan" class="form-control <?= error_class('kategori_pengaduan') ?>">
                                 <option value="">Pilih Kategori</option>
                                 <?php foreach ($kategori_pengaduan as $kategori): ?>
-                                    <option value="<?= $kategori->id_kategori ?>"><?= $kategori->nama_kategori ?></option>
+                                    <option value="<?= $kategori->id_kategori ?>"
+                                        <?= old('kategori_pengaduan') == $kategori->id_kategori ? 'selected' : '' ?>>
+                                        <?= $kategori->nama_kategori ?>                                     
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                             <?php if (error('kategori_pengaduan')): ?>

@@ -20,6 +20,17 @@
                     <textarea name="deskripsi" id="deskripsi" class="form-control" rows="3" required><?= $lembaga['deskripsi'] ?></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label>Jenis Lembaga</label>
+                    <select name="jenis_lembaga" class="form-control">
+                        <option value="">--Pilih Jenis Lembaga--</option>
+                        <option value="lembaga_desa" <?= $lembaga['jenis_lembaga'] == 'lembaga_desa' ? 'selected' : '' ?>>Lembaga Desa</option>
+                        <option value="lembaga_kemasyarakatan" <?= $lembaga['jenis_lembaga'] == 'lembaga_kemasyarakatan' ? 'selected' : '' ?>>Lembaga Kemasyarakatan</option>
+                        <option value="badan_usaha" <?= $lembaga['jenis_lembaga'] == 'badan_usaha' ? 'selected' : '' ?>>Badan Usaha Milik Desa (BUMDesa)</option>
+                        <option value="lembaga_lainnya" <?= $lembaga['jenis_lembaga'] == 'lembaga_lainnya' ? 'selected' : '' ?>>Lembaga Lainnya</option>
+                    </select>
+                </div>
+
 
                 <div class="form-group">
                     <label>Image Saat Ini</label><br>

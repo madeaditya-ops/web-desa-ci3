@@ -43,8 +43,17 @@ function load_notifikasi_kadus() {
                     <a class="dropdown-item d-flex align-items-center notif-item-kadus"
                        data-id="${item.id_pengaduan}"
                        href="javascript:void(0)">
-                        <div>
-                            <div class="small text-gray-500">${item.created_at}</div>
+                        <div class="w-100">
+							<div class="d-flex justify-content-between align-items-center mb-1">
+								<small class="text-gray-500">
+									${item.created_at}
+								</small>
+
+								<span class="badge badge-primary px-2 py-1">
+									Baru
+								</span>
+        					</div>
+
                             <span class="font-weight-bold">
                                 Pengaduan dari ${item.nama_pelapor}
                             </span>

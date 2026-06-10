@@ -76,10 +76,7 @@
                 <div class="card shadow-sm border-0 mb-3 mt-3">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
-                            <div class=" bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
-                                <i class="bi <?= $item['icon']; ?>"></i>
-                            </div>
-                            <h5 class="card-title ms-3 mb-0 fw-bold" style="color: var(--primary);">
+                            <h5 class="card-title mb-0 fw-bold" style="color: var(--primary);">
                                 <?= $item['nama_bidang']; ?>
                             </h5>
                         </div>
@@ -99,10 +96,16 @@
         <?php endif; ?>
 
         </div>
+
+        <div class="d-flex justify-content-center mt-5 small">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <i class="bi bi-house-door text-primary me-2"></i>
+                </li>
+                <?php $this->load->view('partials/breadcrumb'); ?>
+            </ol>
+        </div>
     </div>
-
-
-
 
 </section>
 

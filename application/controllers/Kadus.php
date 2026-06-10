@@ -537,11 +537,11 @@ class Kadus extends CI_Controller
             'status_perkawinan_id' => $this->input->post('status_perkawinan_id'),
             'kewarganegaraan_id' => $this->input->post('kewarganegaraan_id'),
             'pendidikan_id' => $this->input->post('pendidikan_id'),
-            'tempat_lahir' => $this->input->post('tempat_lahir'),
-            'tanggal_lahir' => $this->input->post('tanggal_lahir'),
-            'pekerjaan' => $this->input->post('pekerjaan'),
-            'keterangan' => $this->input->post('keterangan'),
-            'id_keterangan' => $this->input->post('id_keterangan'),
+            'tempat_lahir' => $this->input->post('tempat_lahir') ?: null,
+            'tanggal_lahir' => $this->input->post('tanggal_lahir') ?: null,
+            'pekerjaan' => $this->input->post('pekerjaan') ?: null,
+            'keterangan' => $this->input->post('keterangan') ?: null,
+            'id_keterangan' => $this->input->post('id_keterangan') ?: null,
         ];
 
         // Validasi wajib
@@ -605,10 +605,11 @@ class Kadus extends CI_Controller
             ->select('
             data_surat.*,
             template_surat.nama_surat,
-            data_surat.data_surat_id
+            arsip_surat.data_surat_id
             ')
             ->from('data_surat')
             ->join('template_surat', 'template_surat.id_template = data_surat.id_template', 'left')
+            ->join('arsip_surat', 'arsip_surat.data_surat_id = data_surat.id', 'left')
             ->where('data_surat.nik', $data['warga']->no_nik)
             ->order_by('data_surat.created_at', 'DESC')
             ->get()

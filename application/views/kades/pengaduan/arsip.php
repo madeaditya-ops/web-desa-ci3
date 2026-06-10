@@ -63,9 +63,10 @@
                     <thead class="thead-light">
                         <tr>
                             <th width="5%">No</th>
-                            <th>Nama Pelapor</th>
-                            <th>Deskripsi Singkat</th>
-                            <th width="15%">Tanggal</th>
+                            <th width="20%">Nama Pelapor</th>
+                            <th >Deskripsi Singkat</th>
+                            <th width="10%">Tanggal Dibuat</th>
+                            <th width="10%">Tanggal Selesai</th>
                             <th>Lokasi</th>
                             <th width="10%">Status</th>                        
                         </tr>
@@ -81,7 +82,8 @@
                                 <?= html_escape(mb_substr(strip_tags($p->deskripsi), 0, 70, 'UTF-8')); ?>
                                 <?= strlen($p->deskripsi) > 70 ? '...' : ''; ?>
                             </td>
-                            <td><?= date('d-m-Y', strtotime($p->created_at)) ?></td>
+                            <td><?= $p->created_at ? date('d-m-Y', strtotime($p->created_at)) : '-' ?></td>
+                            <td><?= $p->finished_at ? date('d-m-Y', strtotime($p->finished_at)) : '-' ?></td>
                             <td><?= html_escape($p->lokasi_pengaduan) ?></td>
                             <td class="text-center">
                                 <span class="badge badge-success p-2">Selesai</span>

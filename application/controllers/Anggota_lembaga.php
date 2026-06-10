@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Lembaga_model $Lembaga_model
  */
 
-class Anggota_lembaga extends CI_Controller {
+class Anggota_lembaga extends SuperAdmin_Middleware {
 
     public function __construct()
     {

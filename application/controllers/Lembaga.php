@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Lembaga_model $Lembaga_model
  */
 
-class Lembaga extends CI_Controller {
+class Lembaga extends SuperAdmin_Middleware {
 
     public function __construct()
     {
@@ -42,6 +42,7 @@ class Lembaga extends CI_Controller {
         $this->form_validation->set_rules('nama', 'Nama Lembaga', 'required|trim');
         $this->form_validation->set_rules('deskripsi', 'Deskripsi', 'required|trim');
         $this->form_validation->set_rules('tipe_struktur', 'Tipe Struktur', 'required|trim');
+        $this->form_validation->set_rules('jenis_lembaga', 'Jenis Lembaga', 'required|trim');
 
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('error', validation_errors());
@@ -56,12 +57,12 @@ class Lembaga extends CI_Controller {
 
         if (!empty($_FILES['image']['name'])) {
 
-            $config['upload_path']   = './uploads/lembaga/';
+            $config['upload_path']   = FCPATH . 'uploads/lembaga/';
             $config['allowed_types'] = 'jpg|jpeg|png';
             $config['max_size']      = 2048;
             $config['file_name']     = time() . '_' . $_FILES['image']['name'];
 
-            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
 
             if ($this->upload->do_upload('image')) {
                 $uploadData = $this->upload->data();
@@ -79,6 +80,7 @@ class Lembaga extends CI_Controller {
             'icon'          => $icon,
             'image'         => $image,
             'deskripsi'     => $this->input->post('deskripsi', TRUE),
+            'jenis_lembaga' => $this->input->post('jenis_lembaga', TRUE),
             'tipe_struktur' => $this->input->post('tipe_struktur', TRUE),
             'created_at'    => date('Y-m-d H:i:s'),
         ];
@@ -110,6 +112,7 @@ class Lembaga extends CI_Controller {
         $this->form_validation->set_rules('nama', 'Nama Lembaga', 'required|trim');
         $this->form_validation->set_rules('deskripsi', 'Deskripsi', 'required|trim');
         $this->form_validation->set_rules('tipe_struktur', 'Tipe Struktur', 'required|trim');
+        $this->form_validation->set_rules('jenis_lembaga', 'Jenis Lembaga', 'required|trim');
 
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('error', validation_errors());
@@ -159,6 +162,7 @@ class Lembaga extends CI_Controller {
             'icon'          => $icon,
             'image'         => $image,
             'deskripsi'     => $this->input->post('deskripsi', TRUE),
+            'jenis_lembaga' => $this->input->post('jenis_lembaga', TRUE),
             'tipe_struktur' => $this->input->post('tipe_struktur', TRUE),
         ];
 

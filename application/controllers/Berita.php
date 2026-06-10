@@ -148,16 +148,50 @@ class Berita extends SuperAdmin_Middleware {
 
 
     // Halaman detail berita (untuk share)
-    public function detail($slug) {
-        $data['berita'] = $this->Berita_model->get_by_slug($slug);
+    // public function detail($slug) {
+    //     $data['berita'] = $this->Berita_model->get_by_slug($slug);
 
-        if (!$data['berita']) {
+    //     if (!$data['berita']) {
+    //         show_404();
+    //     }
+
+    //     $this->load->view('template/header', $data);
+    //     $this->load->view('template/navbar');
+    //     $this->load->view('landing/berita_detail', $data);
+    //     $this->load->view('template/footer');
+    // }
+
+    // Halaman detail berita (untuk share)
+    public function detail($slug) {
+        $berita = $this->Berita_model->get_by_slug($slug);
+    
+        if (!$berita) {
             show_404();
         }
-
+    
+        
+        $data['berita'] = $berita;
+    
+       
+        $data['breadcrumb'] = [
+            [
+                'title' => 'Beranda',
+                'url'   => base_url()
+            ],
+            [
+                'title' => 'Informasi Publik',
+                'url'   => site_url('landing/berita_desa')
+            ],
+            [
+                'title' => 'Berita',
+                'url'   => '' 
+            ]
+        ];
+    
+    
         $this->load->view('template/header', $data);
         $this->load->view('template/navbar');
-        $this->load->view('landing/berita_detail', $data);
+        $this->load->view('landing/berita_detail', $data); // Data dikirim ke sini
         $this->load->view('template/footer');
     }
 }

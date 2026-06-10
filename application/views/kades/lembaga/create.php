@@ -33,6 +33,18 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Jenis Lembaga</label>
+                    <select name="jenis_lembaga" class="form-control">
+                        <option value="">--Pilih Jenis Lembaga--</option>
+                        <option value="lembaga_desa">Lembaga Desa</option>
+                        <option value="lembaga_kemasyarakatan">Lembaga Kemasyarakatan</option>
+                        <option value="badan_usaha">Badan Usaha Milik Desa (BUMDesa)</option>
+                        <option value="lembaga_lainnya">Lembaga Lainnya</option>
+                    </select>
+                    <?= form_error('jenis_lembaga', '<small class="text-danger">', '</small>') ?>
+                </div>
+
+                <div class="form-group">
                     <label>Image</label>
                     <input type="file" name="image" class="form-control-file">
                 </div>

@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         locationValid = false;
         Swal.fire({
             icon: "warning",
-            title: "Lokasi Tidak Aktif",
+            title: "Lokasi tidak dapat diakses",
             text: message
         });
     }

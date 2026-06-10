@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Lembaga_model $Lembaga_model
  */
 
-class Bidang_lembaga extends CI_Controller {
+class Bidang_lembaga extends SuperAdmin_Middleware {
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ class Bidang_lembaga extends CI_Controller {
         
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('kades/lembaga/Bidang_lembaga/index', $data);
+        $this->load->view('kades/lembaga/bidang_lembaga/index', $data);
         $this->load->view('template_admin/footer');
     }
 
@@ -36,7 +36,7 @@ class Bidang_lembaga extends CI_Controller {
         
         $this->load->view('template_admin/header');
         $this->load->view('template_admin/sidebar');
-        $this->load->view('kades/lembaga/Bidang_lembaga/create', $data);
+        $this->load->view('kades/lembaga/bidang_lembaga/create', $data);
         $this->load->view('template_admin/footer');
     }
 

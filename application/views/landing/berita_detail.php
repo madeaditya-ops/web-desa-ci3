@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
 
     <!-- Title -->
-    <title><?= htmlspecialchars($berita->judul); ?></title>
+    <title><?= htmlspecialchars($berita['judul']); ?></title>
 
     <!-- SEO Meta -->
-    <meta name="description" content="<?= substr(strip_tags($berita->isi), 0, 160); ?>">
+    <meta name="description" content="<?= substr(strip_tags($berita['isi']), 0, 160); ?>">
 
     <!-- Open Graph Meta -->
-    <meta property="og:title" content="<?= htmlspecialchars($berita->judul); ?>">
-    <meta property="og:description" content="<?= substr(strip_tags($berita->isi), 0, 160); ?>">
-    <meta property="og:image" content="<?= base_url('uploads/berita/' . $berita->gambar); ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($berita['judul']); ?>">
+    <meta property="og:description" content="<?= substr(strip_tags($berita['isi']), 0, 160); ?>">
+    <meta property="og:image" content="<?= base_url('uploads/berita/' . $berita['gambar']); ?>">
     <meta property="og:url" content="<?= current_url(); ?>">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Website Desa Blahbatuh">
@@ -42,7 +42,7 @@
 
           <div class="d-flex flex-wrap gap-2 mb-2">
                   <span class="badge1">Berita</span>
-                  <span class="badge2"> <?=$item['created_at']?> </span>
+                  <span class="badge2"> <?=$berita['created_at']?> </span>
           </div>
 
           <div class="lh-lg">

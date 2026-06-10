@@ -133,6 +133,10 @@ class PengaduanAdmin extends CI_Controller {
         }
         $this->Pengaduan_model->update($id, $data);
 
+        // $this->sendEmailNotification($id);
+        // $this->session->set_flashdata('success', $message);
+
+
         $this->session->set_flashdata('success', $message);
         $this->session->set_flashdata('trigger_email', $id); 
 
@@ -183,6 +187,7 @@ class PengaduanAdmin extends CI_Controller {
 
         $this->Pengaduan_model->update($id, $data);     
 
+        // $this->sendEmailNotification($id);
         $this->session->set_flashdata('success', 'Pengaduan berhasil diselesaikan');
         $this->session->set_flashdata('trigger_email', $id); 
 

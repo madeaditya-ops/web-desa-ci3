@@ -125,9 +125,10 @@ class Pengaduan extends CI_Controller {
         $this->form_validation->set_rules(
             'no_telepon',
             'No Telepon',
-            'required', 
+            'required|regex_match[/^\+?[0-9\s\-]{10,15}$/]', 
             [
-                'required' => 'Lengkapi nomor telepon anda.'
+                'required' => 'Lengkapi nomor telepon anda.',
+                'regex_match' => 'Format nomor telepon tidak valid.',
             ]);
         $this->form_validation->set_rules(
             'dusun_pelapor',
@@ -177,17 +178,31 @@ class Pengaduan extends CI_Controller {
                 'Verifikasi CAPTCHA gagal. Silakan coba lagi.'
             );
             redirect('pengaduan');
+            return;
         }
 
-        //Validasi Rate Limit
-        $ip = $this->input->ip_address();
+        // Pembatasan frekuensi pengaduan dikirim berbasis session
+        $riwayat_pengaduan = $this->session->userdata('riwayat_pengaduan');
 
-        if (!$this->check_rate_limit($ip, 3, 10)) {
+        if (!$riwayat_pengaduan) {
+            $riwayat_pengaduan = [];
+        }
+
+        $current_time = time();
+
+        $riwayat_pengaduan = array_filter($riwayat_pengaduan, function($timestamp) use ($current_time) {
+            return ($current_time - $timestamp) < 600;
+        });
+
+        if (count($riwayat_pengaduan) >= 3) {
+
             $this->session->set_flashdata(
                 'error',
-                'Terlalu banyak pengaduan dari jaringan Anda. Silakan coba lagi dalam 10 menit.'
+                'Anda telah mengirim beberapa pengaduan dalam waktu singkat. Silakan coba lagi dalam 10 menit.'
             );
+
             redirect('pengaduan');
+            return;
         }
 
   
@@ -220,8 +235,14 @@ class Pengaduan extends CI_Controller {
                 $foto_bukti = $upload_data['file_name'];
 
             } else {
-                $this->session->set_flashdata('error', $this->upload->display_errors('', ''));
+
+                $this->session->set_flashdata(
+                    'error',
+                    'Upload foto gagal. Pastikan file berformat JPG, JPEG, atau PNG dengan ukuran maksimal 2 MB.'
+                );
+
                 redirect('pengaduan');
+                return;
             }
         }
 
@@ -243,11 +264,16 @@ class Pengaduan extends CI_Controller {
             'longitude'        => $lng,
             'foto_bukti'       => $foto_bukti,
             'created_at'       => date('Y-m-d H:i:s'),
-            'ip_address'       => $ip,
             'is_read'       => 0
         ];
 
         $this->Pengaduan_model->insert($data);
+
+        
+        $riwayat_pengaduan[] = time();
+
+        // Simpan kembali ke session
+        $this->session->set_userdata('riwayat_pengaduan', $riwayat_pengaduan);
 
         // Kirim notifikasi ke email desa
         $this->sendEmailNotification($data, $file);
@@ -307,23 +333,6 @@ class Pengaduan extends CI_Controller {
 
 
 
-
-    private function check_rate_limit($ip, $limit = 3, $interval = 10)
-    {
-        $time_limit = date('Y-m-d H:i:s', strtotime("-$interval minutes"));
-
-        $this->db->from('pengaduan');
-        $this->db->where('ip_address', $ip);
-        $this->db->where('created_at >=', $time_limit);
-
-        $count = $this->db->count_all_results();
-
-        return $count < $limit;
-    }
-
-
-
-
     private function validateLocation($lat, $lng)
     {
         $geojson = json_decode(
@@ -373,13 +382,18 @@ class Pengaduan extends CI_Controller {
         $this->email->to('vdwipayanti@gmail.com');
         $this->email->subject('Pengaduan Baru Masuk');
 
+        $dusun = $this->db
+        ->get_where('dusun', ['id_dusun' => $data['id_dusun']])
+        ->row();
+
         $email_data = [
             'nama'      => $data['nama_pelapor'],
             'email'     => $data['email_pelapor'],
+            'no_telepon' => $data['no_telepon'],
             'lokasi'    => $data['lokasi_pengaduan'],
             'deskripsi' => $data['deskripsi'],
             'tanggal'   => $data['created_at'],
-
+            'nama_dusun'   => $dusun ? $dusun->nama_dusun : '-'
         ];
 
         $message = $this->load->view('email/pengaduan_notification', $email_data, TRUE);

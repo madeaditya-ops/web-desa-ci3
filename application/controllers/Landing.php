@@ -230,8 +230,30 @@ class Landing extends CI_Controller {
     {
         if ($slug === null) {
 
-            $data['title']   = "Lembaga Desa Blahbatuh";
+            $data['title']   = "Jenis Kelembagaan Desa Blahbatuh";
             $data['lembaga'] = $this->Lembaga_model->get_all_lembaga();
+
+            $grouped= [
+                'lembaga_desa'=>[],
+                'lembaga_kemasyarakatan'=>[],
+                'badan_usaha'=>[],
+                'lembaga_lainnya'=>[],
+            ];
+
+            foreach ($data['lembaga'] as $item) {
+                $grouped[$item['jenis_lembaga']][] = $item;
+            };
+
+            $data['lembaga_group'] = $grouped;
+
+            $nama_jenis = [
+                'lembaga_desa' => 'Lembaga Desa',
+                'lembaga_kemasyarakatan' => 'Lembaga Kemasyarakatan Desa',
+                'badan_usaha' => 'Badan Usaha Milik Desa (BUMDesa)',
+                'lembaga_lainnya' => 'Lembaga Lainnya'
+            ];
+
+            $data['nama_jenis'] = $nama_jenis;
 
             $this->load->view('template/header', $data);
             $this->load->view('template/navbar');
@@ -251,6 +273,23 @@ class Landing extends CI_Controller {
             $data['anggota'] = $this->Lembaga_model->get_anggota_by_slug($slug);
             $data['bidang']  = $this->Lembaga_model->get_bidang_by_slug($slug);
 
+
+            // Breadcrumb
+            $data['breadcrumb'] = [
+                [
+                    'title' => 'Beranda',
+                    'url'   => base_url()
+                ],
+                [
+                    'title' => 'Lembaga',
+                    'url'   => site_url('landing/lembaga')
+                ],
+                [
+                    'title' => 'Detail Lembaga',
+                    'url'   => '' // halaman aktif
+                ]
+            ];
+
             $this->load->view('template/header', $data);
             $this->load->view('template/navbar');
             $this->load->view('landing/detail_lembaga', $data);
@@ -258,6 +297,6 @@ class Landing extends CI_Controller {
         }
     }
 
-
+    
 
 }

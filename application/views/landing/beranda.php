@@ -144,7 +144,7 @@
   <div class="container-fluid px-4 px-md-5">
     <h2 class="text-center fw-bold mb-4">Berita Terbaru</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
-    <?php
+    <!-- <?php
       $current = uri_string();
 
       $active   = 'btn-active';
@@ -162,7 +162,7 @@
             class=" px-3 py-2 rounded-3 <?= ($current == 'landing/berita_desa') ? $active : $inactive; ?>">
               Semua
           </a>
-      </div>
+      </div> -->
 
     <?php foreach ($berita as $item): ?>
     <!-- Card -->
@@ -178,8 +178,8 @@
               <div class="card-body p-4 p-md-5">
                 <h4 class="card-title fw-bold mb-2"><?=htmlspecialchars($item['judul'])?> </h4>
                 <div class="d-flex flex-wrap gap-2 mb-2">
-                  <span class="badge1">Berita</span>
-                  <span class="badge2"> <?=$item['created_at']?> </span>
+                  <span class="badge1 !cursor-default">Berita</span>
+                  <span class="badge2 !cursor-default"> <?=$item['created_at']?> </span>
                 </div>
                 <p class="card-text text-justify">
                   <strong><?= lokasi_berita($item['lokasi'] ?? null); ?></strong>
@@ -275,7 +275,7 @@
   <div class="container-fluid px-4 px-md-5">
     <h2 class="text-center fw-bold mb-4">Galeri Foto</h2>
     <hr class="mx-auto mb-5" style="width: 120px; border-top: 4px solid #dc3545;">
-    <?php
+    <!-- <?php
       $current = uri_string();
 
       $active   = 'btn-active';
@@ -293,7 +293,8 @@
             class=" px-3 py-2 rounded-3 <?= ($current == 'landing/galeri_foto') ? $active : $inactive; ?>">
               Semua
           </a>
-      </div>
+      </div> -->
+
     <div class="row row-cols-1 row-cols-md-3 g-4">
       <?php foreach ($galeri as $item): ?>
         <div class="col">

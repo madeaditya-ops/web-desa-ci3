@@ -104,11 +104,11 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th>ID</th>
                 <th>Nama Pelapor</th>
                 <th>Kategori</th>
                 <th>Deskripsi</th>
-                <th>Tanggal</th>
+                <th>Tanggal Dibuat</th>
+                <th>Tanggal Selesai</th>
                 <th>Lokasi</th>
                 <th>Status</th>
             </tr>
@@ -123,11 +123,11 @@
                 <?php $no = 1; foreach ($pengaduan as $p): ?>
                 <tr>
                     <td class="text-center"><?= $no++ ?></td>
-                    <td><?= $p->id_pengaduan ?></td>
                     <td><?= $p->nama_pelapor ?></td>
                     <td><?= $p->nama_kategori ?></td>
                     <td><?= substr(strip_tags($p->deskripsi), 0, 80) ?></td>
-                    <td class="text-center"><?= date('d-m-Y', strtotime($p->created_at)) ?></td>
+                    <td class="text-center"><?= $p->created_at ? date('d-m-Y', strtotime($p->created_at)) : '-' ?></td>
+                    <td class="text-center"><?= $p->finished_at ? date('d-m-Y', strtotime($p->finished_at)) : '-' ?></td>
                     <td><?= $p->lokasi_pengaduan ?></td>
                     <td class="text-center"><?= ucfirst($p->status) ?></td>
                 </tr>
